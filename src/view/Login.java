@@ -40,9 +40,11 @@ public class Login extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(20, 35, 56));
 
         btnLogin.setBackground(new java.awt.Color(31, 51, 86));
+        btnLogin.setForeground(new java.awt.Color(255, 255, 255));
         btnLogin.setText("Login");
 
         btnForgot.setBackground(new java.awt.Color(31, 51, 86));
+        btnForgot.setForeground(new java.awt.Color(255, 255, 255));
         btnForgot.setText("Forgot?");
 
         jLabel1.setFont(new java.awt.Font("sansserif", 1, 18)); // NOI18N
