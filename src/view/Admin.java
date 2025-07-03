@@ -25,17 +25,17 @@ public class Admin extends javax.swing.JFrame {
     public Admin() {
         initComponents();
         Timer timer = new Timer(0, (e) -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String time = sdf.format(new Date());
             lblTime.setText(time);
         });
-        lblTime.setBackground(Color.gray);
         timer.start();
-        
+
         setLocationRelativeTo(null); // Đưa cửa sổ ra giữa màn hình
         initDefaultElement();
         mainPanel.setLayout(new BorderLayout()); // Sử dụng BorderLayout
     }
+
     private void setForm(JComponent com) {
 //        System.out.println("Hiển thị");
         mainPanel.removeAll();
@@ -45,20 +45,20 @@ public class Admin extends javax.swing.JFrame {
     }
 
     private void initDefaultElement() {
-    JButton[] buttons = {btnQLNV, btnQLTK, btnQLSP, btnQLKM, btnQLBH, btnTKDT};
-    for (JButton btn : buttons) {
-        btn.setFocusPainted(false);
-        btn.setBorderPainted(false);
-        btn.setContentAreaFilled(false);
-        btn.setOpaque(true);
-        btn.setBackground(Color.decode("#1c2e4a"));
-        btn.setForeground(Color.decode("#FDFAF6"));
+        JButton[] buttons = {btnQLNV, btnQLTK, btnQLSP, btnQLKM, btnQLBH, btnTKDT, btnDangXuat};
+        for (JButton btn : buttons) {
+            btn.setFocusPainted(false);
+            btn.setBorderPainted(false);
+            btn.setContentAreaFilled(false);
+            btn.setOpaque(true);
+            btn.setBackground(Color.decode("#1c2e4a"));
+            btn.setForeground(Color.decode("#FDFAF6"));
+        }
+
+        pnlMenu.setBorder(new EmptyBorder(0, 0, 0, 0));
+        Logo.setBorder(new EmptyBorder(0, 0, 0, 0));
     }
-
-    pnlMenu.setBorder(new EmptyBorder(0, 0, 0, 0));
-    Logo.setBorder(new EmptyBorder(0, 0, 0, 0));
-}
-
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -119,12 +119,12 @@ public class Admin extends javax.swing.JFrame {
         });
 
         lblTime.setBackground(new java.awt.Color(104, 142, 216));
-        lblTime.setFont(new java.awt.Font("DialogInput", 1, 33)); // NOI18N
+        lblTime.setFont(new java.awt.Font("DialogInput", 1, 18)); // NOI18N
         lblTime.setForeground(new java.awt.Color(255, 255, 255));
 
         Logo.setBackground(new java.awt.Color(21, 35, 56));
 
-        jLabel1.setFont(new java.awt.Font("DialogInput", 1, 26)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Segoe UI Light", 1, 26)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainForm_Admin/image/trangchu.png"))); // NOI18N
         jLabel1.setText(" ADMIN");
@@ -249,34 +249,35 @@ public class Admin extends javax.swing.JFrame {
         pnlMenuLayout.setHorizontalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMenuLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(Logo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(pnlMenuLayout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnQLNV, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
-                            .addComponent(btnQLTK, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
-                            .addComponent(btnQLBH, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnQLKM, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnQLSP, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
-                            .addComponent(btnTKDT, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(pnlMenuLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(Logo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(pnlMenuLayout.createSequentialGroup()
-                                    .addComponent(lblexit, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(btnDangXuat, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addContainerGap(20, Short.MAX_VALUE))
+                        .addGap(16, 16, 16)
+                        .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(pnlMenuLayout.createSequentialGroup()
+                                .addComponent(lblexit, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                                .addComponent(btnDangXuat, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnQLTK, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnQLSP, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnQLKM, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnTKDT, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnQLBH, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnQLNV, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMenuLayout.createSequentialGroup()
+                .addGap(0, 31, Short.MAX_VALUE)
+                .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         pnlMenuLayout.setVerticalGroup(
             pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnlMenuLayout.createSequentialGroup()
-                .addGap(31, 31, 31)
+                .addGap(18, 18, 18)
                 .addComponent(Logo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
                 .addComponent(btnQLNV, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(26, 26, 26)
                 .addComponent(btnQLTK, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -288,12 +289,10 @@ public class Admin extends javax.swing.JFrame {
                 .addComponent(btnQLBH, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29)
                 .addComponent(btnTKDT, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27)
-                .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblexit, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnDangXuat, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                .addGroup(pnlMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnDangXuat, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblexit, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18))
         );
 
@@ -343,7 +342,9 @@ public class Admin extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(pnlMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -372,6 +373,9 @@ public class Admin extends javax.swing.JFrame {
 
         btnTKDT.setBackground(Color.decode("#1c2e4a"));
         btnTKDT.setForeground(Color.decode("#FDFAF6"));
+
+        btnDangXuat.setBackground(Color.decode("#1c2e4a"));
+        btnDangXuat.setForeground(Color.decode("#FDFAF6"));
     }//GEN-LAST:event_btnQLNVMouseClicked
 
     private void btnQLNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQLNVActionPerformed
@@ -407,6 +411,9 @@ public class Admin extends javax.swing.JFrame {
 
         btnTKDT.setBackground(Color.decode("#1c2e4a"));
         btnTKDT.setForeground(Color.decode("#FDFAF6"));
+
+        btnDangXuat.setBackground(Color.decode("#1c2e4a"));
+        btnDangXuat.setForeground(Color.decode("#FDFAF6"));
     }//GEN-LAST:event_btnQLTKMouseClicked
 
     private void btnQLTKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQLTKActionPerformed
@@ -437,6 +444,9 @@ public class Admin extends javax.swing.JFrame {
 
         btnTKDT.setBackground(Color.decode("#1c2e4a"));
         btnTKDT.setForeground(Color.decode("#FDFAF6"));
+
+        btnDangXuat.setBackground(Color.decode("#1c2e4a"));
+        btnDangXuat.setForeground(Color.decode("#FDFAF6"));
     }//GEN-LAST:event_btnQLSPMouseClicked
 
     private void btnQLSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQLSPActionPerformed
@@ -467,6 +477,9 @@ public class Admin extends javax.swing.JFrame {
 
         btnTKDT.setBackground(Color.decode("#1c2e4a"));
         btnTKDT.setForeground(Color.decode("#FDFAF6"));
+
+        btnDangXuat.setBackground(Color.decode("#1c2e4a"));
+        btnDangXuat.setForeground(Color.decode("#FDFAF6"));
     }//GEN-LAST:event_btnQLKMMouseClicked
 
     private void btnQLKMActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQLKMActionPerformed
@@ -497,6 +510,9 @@ public class Admin extends javax.swing.JFrame {
 
         btnQLBH.setBackground(Color.decode("#1c2e4a"));
         btnQLBH.setForeground(Color.decode("#FDFAF6"));
+
+        btnDangXuat.setBackground(Color.decode("#1c2e4a"));
+        btnDangXuat.setForeground(Color.decode("#FDFAF6"));
     }//GEN-LAST:event_btnTKDTMouseClicked
 
     private void btnTKDTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTKDTActionPerformed
@@ -527,6 +543,9 @@ public class Admin extends javax.swing.JFrame {
 
         btnTKDT.setBackground(Color.decode("#1c2e4a"));
         btnTKDT.setForeground(Color.decode("#FDFAF6"));
+
+        btnDangXuat.setBackground(Color.decode("#1c2e4a"));
+        btnDangXuat.setForeground(Color.decode("#FDFAF6"));
     }//GEN-LAST:event_btnQLBHMouseClicked
 
     private void btnQLBHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQLBHActionPerformed
@@ -540,10 +559,37 @@ public class Admin extends javax.swing.JFrame {
 
     private void btnDangXuatMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnDangXuatMouseClicked
         // TODO add your handling code here:
+
     }//GEN-LAST:event_btnDangXuatMouseClicked
 
     private void btnDangXuatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangXuatActionPerformed
         // TODO add your handling code here:
+        btnDangXuat.setBackground(Color.decode("#4E6688"));
+        btnDangXuat.setForeground(Color.decode("#FDFAF6"));
+        btnDangXuat.setFocusPainted(false);       // Tắt viền khi focus
+        btnDangXuat.setBorderPainted(false);      // Tắt viền ngoài
+        btnDangXuat.setContentAreaFilled(false);  // Tắt nền mặc định
+        btnDangXuat.setOpaque(true);              // Đảm bảo có thể set background màu nếu cần
+
+        btnQLTK.setBackground(Color.decode("#1c2e4a"));
+        btnQLTK.setForeground(Color.decode("#FDFAF6"));
+
+        btnQLSP.setBackground(Color.decode("#1c2e4a"));
+        btnQLSP.setForeground(Color.decode("#FDFAF6"));
+
+        btnQLNV.setBackground(Color.decode("#1c2e4a"));
+        btnQLNV.setForeground(Color.decode("#FDFAF6"));
+
+        btnQLBH.setBackground(Color.decode("#1c2e4a"));
+        btnQLBH.setForeground(Color.decode("#FDFAF6"));
+
+        btnQLKM.setBackground(Color.decode("#1c2e4a"));
+        btnQLKM.setForeground(Color.decode("#FDFAF6"));
+
+        btnTKDT.setBackground(Color.decode("#1c2e4a"));
+        btnTKDT.setForeground(Color.decode("#FDFAF6"));
+
+
     }//GEN-LAST:event_btnDangXuatActionPerformed
 
     /**
