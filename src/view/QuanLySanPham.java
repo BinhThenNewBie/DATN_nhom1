@@ -63,7 +63,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
                 lblAnh.setIcon(null);
             } else {
                 try {
-                    String duongDanAnhDayDu = "src/Images/" + strAnh;
+                    String duongDanAnhDayDu = "src/Images_SanPham/" + strAnh;
                     File file = new File(duongDanAnhDayDu);
                     if (!file.exists()) {
                         lblAnh.setText("Không tìm thấy ảnh");
@@ -115,6 +115,8 @@ public class QuanLySanPham extends javax.swing.JFrame {
         tableModel.addRow(spDao.getRow(sp)); // Thêm vào bảng
     }
 }
+   
+   
 
 
     /**
