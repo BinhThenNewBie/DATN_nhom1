@@ -19,12 +19,15 @@ public class StaffBanHang extends javax.swing.JFrame {
      */
     public StaffBanHang() {
         initComponents();
+         setLocationRelativeTo(null);
         Timer timer = new Timer(0, (e) -> {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
             String time = sdf.format(new Date());
             lblTime.setText(time);
         });
         timer.start();
+        
+        
     }
     
     /**
