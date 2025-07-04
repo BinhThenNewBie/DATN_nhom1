@@ -31,6 +31,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
      */
     public QuanLySanPham() {
         initComponents();
+                setLocationRelativeTo(null); // Đưa cửa sổ ra giữa màn hình
         initTable();
         fillTable();
     }
