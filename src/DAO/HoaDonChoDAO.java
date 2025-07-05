@@ -55,7 +55,7 @@ public class HoaDonChoDAO {
     }
 
     public int DeleteHD(String ID_HD) {
-        String sql = "DELETE FROM HOADONCHO WHERE ID_HD = ?";
+        String sql = "DELETE FROM HOADONCHO WHERE ID_HD LIKE?";
         try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ID_HD);
             ps.executeUpdate();
@@ -67,7 +67,7 @@ public class HoaDonChoDAO {
     }
 
     public int DeleteCTHD(String ID_HD) {
-        String sql = "DELETE FROM CHITIETHOADON WHERE ID_HD = ?";
+        String sql = "DELETE FROM CHITIETHOADON WHERE ID_HD LIKE ?";
         try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ID_HD);
             ps.executeUpdate();
@@ -146,10 +146,11 @@ public class HoaDonChoDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ChiTietHoaDon cthd = new ChiTietHoaDon();
-                cthd.setID_SP(rs.getString(1));
-                cthd.setTenSP(rs.getString(2));
-                cthd.setGiaSP(rs.getFloat(3));
-                cthd.setSoLuong(rs.getInt(4));
+                cthd.setID_HD(rs.getString(1));
+                cthd.setID_SP(rs.getString(2));
+                cthd.setTenSP(rs.getString(3));
+                cthd.setGiaSP(rs.getFloat(4));
+                cthd.setSoLuong(rs.getInt(5));
                 lstHDCT.add(cthd);
             }
         } catch (Exception e) {
@@ -174,7 +175,9 @@ public class HoaDonChoDAO {
             while (rs.next()) {
                 HoaDonCho hdc = new HoaDonCho();
                 hdc.setID_HD(rs.getString(1));
-                hdc.setTongTien(rs.getFloat(2));
+                hdc.setNgayThangNam(rs.getString(2));
+                hdc.setThoiGian(rs.getString(3));
+                hdc.setTongTien(rs.getFloat(4));
                 lstHDC.add(hdc);
             }
         } catch (Exception e) {

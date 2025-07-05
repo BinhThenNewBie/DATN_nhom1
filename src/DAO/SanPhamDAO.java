@@ -30,7 +30,7 @@ public class SanPhamDAO {
                 SanPham sp = new SanPham();
                 sp.setIDSanPham(rs.getString(1));
                 sp.setTenSanPham(rs.getString(2));
-                sp.setGiaTien(rs.getString(3));
+                sp.setGiaTien(rs.getFloat(3));
                 sp.setLoaiSanPham(rs.getString(4));
                 sp.setIMG(rs.getString(5));
 
@@ -53,7 +53,7 @@ public List<SanPham> getSPByTen(String ten) {
             SanPham sp = new SanPham();
             sp.setIDSanPham(rs.getString(1));
             sp.setTenSanPham(rs.getString(2));
-            sp.setGiaTien(rs.getString(3));
+            sp.setGiaTien(rs.getFloat(3));
             sp.setLoaiSanPham(rs.getString(4));
             sp.setIMG(rs.getString(5));
 
@@ -69,7 +69,7 @@ public List<SanPham> getSPByTen(String ten) {
     public Object[] getRow(SanPham sp) {
         String ID = sp.getIDSanPham();
         String ten = sp.getTenSanPham();
-        String giaTien = sp.getGiaTien();
+        float giaTien = sp.getGiaTien();
         String loai = sp.getLoaiSanPham();
         String IMG = sp.getIMG();
         Object[] row = new Object[]{ID, ten, giaTien, loai, IMG};
@@ -86,7 +86,7 @@ public SanPham timkiem(String tenSanPham) {
                 SanPham sp = new SanPham();
                 sp.setIDSanPham(rs.getString("ID_SP"));
                 sp.setTenSanPham(rs.getString("TENSP"));
-                sp.setGiaTien(rs.getString("GIA"));
+                sp.setGiaTien(rs.getFloat("GIA"));
                 sp.setLoaiSanPham(rs.getString("LOAI"));
                 sp.setIMG(rs.getString("IMG"));
                 return sp;
@@ -112,7 +112,7 @@ public SanPham timkiem(String tenSanPham) {
                 SanPham sp = new SanPham();
                 sp.setIDSanPham(rs.getString(1));
                 sp.setTenSanPham(rs.getString(2));
-                sp.setGiaTien(rs.getString(3));
+                sp.setGiaTien(rs.getFloat(3));
                 sp.setLoaiSanPham(rs.getString(4));
                 sp.setIMG(rs.getString(5));
                 list.add(sp);
@@ -150,7 +150,7 @@ public SanPham timkiem(String tenSanPham) {
 
             ps.setString(1, sp.getIDSanPham());
             ps.setString(2, sp.getTenSanPham());
-            ps.setString(3, sp.getGiaTien());
+            ps.setFloat(3, sp.getGiaTien());
             ps.setString(4, sp.getLoaiSanPham());
             ps.setString(5, sp.getIMG());
 
@@ -168,7 +168,7 @@ public int suaSanPham(SanPham sp, String IDcu) {
         PreparedStatement pst = con.prepareStatement(sql);
         pst.setString(1, sp.getIDSanPham());
         pst.setString(2, sp.getTenSanPham());
-        pst.setString(3, sp.getGiaTien());
+        pst.setFloat(3, sp.getGiaTien());
         pst.setString(4, sp.getLoaiSanPham());
         pst.setString(5, sp.getIMG());
         pst.setString(6, IDcu); // mã cũ để WHERE

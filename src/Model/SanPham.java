@@ -9,12 +9,14 @@ package Model;
  * @author Admin
  */
 public class SanPham {
-    private String IDSanPham, tenSanPham, giaTien, loaiSanPham, IMG;
+    private String IDSanPham, tenSanPham;
+    private float giaTien;
+    private String loaiSanPham, IMG;
 
     public SanPham() {
     }
 
-    public SanPham(String IDSanPham, String tenSanPham, String giaTien, String loaiSanPham, String IMG) {
+    public SanPham(String IDSanPham, String tenSanPham, float giaTien, String loaiSanPham, String IMG) {
         this.IDSanPham = IDSanPham;
         this.tenSanPham = tenSanPham;
         this.giaTien = giaTien;
@@ -38,11 +40,11 @@ public class SanPham {
         this.tenSanPham = tenSanPham;
     }
 
-    public String getGiaTien() {
+    public float getGiaTien() {
         return giaTien;
     }
 
-    public void setGiaTien(String giaTien) {
+    public void setGiaTien(float giaTien) {
         this.giaTien = giaTien;
     }
 
@@ -60,6 +62,12 @@ public class SanPham {
 
     public void setIMG(String IMG) {
         this.IMG = IMG;
+    }
+
+    
+
+    public String getTen() {
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
     
 }
