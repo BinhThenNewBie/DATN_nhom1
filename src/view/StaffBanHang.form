@@ -88,10 +88,6 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jSeparator1" max="32767" attributes="0"/>
-                              <Group type="102" attributes="0">
-                                  <Component id="lblTittlePnlThongTin" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                              </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="lblTittleMaHD" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -117,7 +113,13 @@
                                   <Component id="lblAnh" pref="174" max="32767" attributes="0"/>
                                   <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
                               </Group>
-                              <Component id="lblTittleUuDai" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Group type="102" attributes="0">
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="lblTittlePnlThongTin" min="-2" max="-2" attributes="0"/>
+                                      <Component id="lblTittleUuDai" alignment="0" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                       <Group type="102" attributes="0">
@@ -361,7 +363,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
                           <Component id="lblTittlePnlUuDai" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="224" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="141" max="32767" attributes="0"/>
                       </Group>
                       <Component id="jSeparator3" max="32767" attributes="0"/>
                       <Component id="jScrollPane3" alignment="1" pref="0" max="32767" attributes="0"/>
@@ -494,7 +496,7 @@
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <Component id="jSeparator4" max="32767" attributes="0"/>
-                      <Component id="jScrollPane2" alignment="0" pref="721" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" alignment="0" pref="804" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
