@@ -95,7 +95,7 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
 
         jLabel4.setText("Chức vụ");
 
-        cboChucvu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "STAFF" }));
+        cboChucvu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         jPanel2.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel2.setForeground(new java.awt.Color(51, 102, 255));

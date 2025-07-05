@@ -3,18 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
-            <file>file:/C:/Users/Admin/Documents/GitHub/DATN_nhom1/src/DAO/SanPhamDAO.java</file>
             <file>file:/C:/Users/Admin/Documents/GitHub/DATN_nhom1/src/view/QuanLySanPham.java</file>
-            <file>file:/C:/Users/Admin/Documents/GitHub/DATN_nhom1/src/DBconnect/DBconnect.java</file>
+            <file>file:/C:/Users/Admin/Documents/GitHub/DATN_nhom1/src/DAO/SanPhamDAO.java</file>
             <file>file:/C:/Users/Admin/Documents/GitHub/DATN_nhom1/src/Model/SanPham.java</file>
-=======
-            <file>file:/C:/Users/admin/Desktop/FPT%20Polytechnic/File%20BaiLam%20Java%202/DATN_nhom1/src/view/Admin.java</file>
-            <file>file:/C:/Users/admin/Desktop/FPT%20Polytechnic/File%20BaiLam%20Java%202/DATN_nhom1/src/util/Mailsender.java</file>
-            <file>file:/C:/Users/admin/Desktop/FPT%20Polytechnic/File%20BaiLam%20Java%202/DATN_nhom1/src/view/forgotpass.java</file>
-            <file>file:/C:/Users/admin/Desktop/FPT%20Polytechnic/File%20BaiLam%20Java%202/DATN_nhom1/src/DBconnect/DBconnect.java</file>
-            <file>file:/C:/Users/admin/Desktop/FPT%20Polytechnic/File%20BaiLam%20Java%202/DATN_nhom1/src/view/Login.java</file>
->>>>>>> 2ca45035b58bd55d69360cecd7e40d76481d4b08
         </group>
     </open-files>
 </project-private>
