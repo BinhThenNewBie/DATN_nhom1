@@ -176,9 +176,7 @@ public class HoaDonChoDAO {
             while (rs.next()) {
                 HoaDonCho hdc = new HoaDonCho();
                 hdc.setID_HD(rs.getString(1));
-                hdc.setNgayThangNam(rs.getString(2));
-                hdc.setThoiGian(rs.getString(3));
-                hdc.setTongTien(rs.getFloat(4));
+                hdc.setTongTien(rs.getFloat(2));
                 lstHDC.add(hdc);
             }
         } catch (Exception e) {
@@ -190,8 +188,6 @@ public class HoaDonChoDAO {
     public Object getRowHDCHO(HoaDonCho hdc) {
         Object[] row = new Object[]{
             hdc.getID_HD(),
-            hdc.getNgayThangNam(),
-            hdc.getThoiGian(),
             hdc.getTongTien()
         };
         return row;
