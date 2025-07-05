@@ -40,6 +40,31 @@ public class SanPhamDAO {
         }
         return listsp;
     }
+    
+public List<SanPham> getSPByTen(String ten) {
+    List<SanPham> listsp = new ArrayList<>();
+    String sql = "SELECT * FROM SANPHAM WHERE TENSP LIKE ?";
+    Connection con = DBconnect.getConnection();
+    try {
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setString(1, "%" + ten + "%"); // tìm gần đúng
+        ResultSet rs = pst.executeQuery();
+        while (rs.next()) {
+            SanPham sp = new SanPham();
+            sp.setIDSanPham(rs.getString(1));
+            sp.setTenSanPham(rs.getString(2));
+            sp.setGiaTien(rs.getString(3));
+            sp.setLoaiSanPham(rs.getString(4));
+            sp.setIMG(rs.getString(5));
+
+            listsp.add(sp);
+        }
+    } catch (Exception ex) {
+        ex.printStackTrace();
+    }
+    return listsp;
+}
+
 
     public Object[] getRow(SanPham sp) {
         String ID = sp.getIDSanPham();

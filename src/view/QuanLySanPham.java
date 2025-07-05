@@ -50,56 +50,80 @@ public class QuanLySanPham extends javax.swing.JFrame {
     }
 
     public void showdetail() {
-        int i = tblBang.getSelectedRow();
-        if (i >= 0) {
-            SanPham sp = spDao.getAll().get(i);
-            lblID.setText(sp.getIDSanPham());
-            txtTensp.setText(sp.getTenSanPham());
-            txtGiatien.setText(sp.getGiaTien());
-            cboLoai.setSelectedItem(sp.getLoaiSanPham());
-            strAnh = sp.getIMG();
+    int i = tblBang.getSelectedRow();
+    if (i >= 0) {
+        String timKiem = txtTimkiem.getText().trim();
+        SanPham sp;
 
-            if (strAnh == null || strAnh.trim().isEmpty() || strAnh.equalsIgnoreCase("NO IMAGE")) {
-                lblAnh.setText("Hình Ảnh Không tồn tại");
-                lblAnh.setIcon(null);
-            } else {
-                try {
-                    String duongDanAnhDayDu = "src/Images_SanPham/" + strAnh;
-                    File file = new File(duongDanAnhDayDu);
-                    if (!file.exists()) {
-                        lblAnh.setText("Không tìm thấy ảnh");
-                        lblAnh.setIcon(null);
-                        return;
-                    }
-                    ImageIcon icon = new ImageIcon(duongDanAnhDayDu);
-                    Image img = icon.getImage().getScaledInstance(lblAnh.getWidth(), lblAnh.getHeight(), Image.SCALE_SMOOTH);
-                    lblAnh.setIcon(new ImageIcon(img));
-                    lblAnh.setText("");
-                } catch (Exception e) {
-                    lblAnh.setText("Ảnh Bị Lỗi");
+        if (timKiem.isEmpty()) {
+            // Không tìm kiếm, dùng getAll()
+            sp = spDao.getAll().get(i);
+        } else {
+            // Đang tìm kiếm theo tên
+            List<SanPham> list = spDao.getSPByTen(timKiem);
+            if (list.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm có tên: " + timKiem);
+                return;
+            }
+            sp = list.get(i); // lấy theo vị trí trong bảng kết quả lọc
+        }
+
+        lblID.setText(sp.getIDSanPham());
+        txtTensp.setText(sp.getTenSanPham());
+        txtGiatien.setText(sp.getGiaTien());
+        cboLoai.setSelectedItem(sp.getLoaiSanPham());
+        strAnh = sp.getIMG();
+
+        if (strAnh == null || strAnh.trim().isEmpty() || strAnh.equalsIgnoreCase("NO IMAGE")) {
+            lblAnh.setText("Hình Ảnh Không tồn tại");
+            lblAnh.setIcon(null);
+        } else {
+            try {
+                String duongDanAnhDayDu = "src/Images_SanPham/" + strAnh;
+                File file = new File(duongDanAnhDayDu);
+                if (!file.exists()) {
+                    lblAnh.setText("Không tìm thấy ảnh");
                     lblAnh.setIcon(null);
+                    return;
                 }
+                ImageIcon icon = new ImageIcon(duongDanAnhDayDu);
+                Image img = icon.getImage().getScaledInstance(lblAnh.getWidth(), lblAnh.getHeight(), Image.SCALE_SMOOTH);
+                lblAnh.setIcon(new ImageIcon(img));
+                lblAnh.setText("");
+            } catch (Exception e) {
+                lblAnh.setText("Ảnh Bị Lỗi");
+                lblAnh.setIcon(null);
             }
         }
     }
+}
 
-    public void timKiem() {
-        String tenSanPham = txtTimkiem.getText().trim();
-        if (tenSanPham.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên sản phẩm cần tìm.");
-            return;
-        }
-        SanPham sp = spDao.timkiem(tenSanPham);
-        DefaultTableModel model = (DefaultTableModel) tblBang.getModel();
-        model.setRowCount(0);
-
-        if (sp != null) {
-            Object[] row = spDao.getRow(sp);
-            model.addRow(row);
-        } else {
-            JOptionPane.showMessageDialog(this, "Không tìm thấy sản phẩm có tên đang tìm: " + tenSanPham);
-        }
+    public void timKiemTheoTen() {
+    String ten = txtTimkiem.getText().trim();
+    if (ten.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Vui lòng nhập tên sản phẩm để tìm kiếm.");
+        return;
     }
+
+    List<SanPham> list = spDao.getSPByTen(ten);
+    if (list.isEmpty()) {
+        JOptionPane.showMessageDialog(null, "Không tìm thấy sản phẩm nào.");
+    } else {
+        loadTable(list);  // nạp bảng dữ liệu tìm được
+        tblBang.setRowSelectionInterval(0, 0); // chọn dòng đầu tiên
+        showdetail(); // hiển thị chi tiết
+    }
+}
+    public void loadTable(List<SanPham> list) {
+    DefaultTableModel model = (DefaultTableModel) tblBang.getModel();
+    model.setRowCount(0);
+    for (SanPham sp : list) {
+        model.addRow(new Object[]{
+            sp.getIDSanPham(), sp.getTenSanPham(), sp.getGiaTien(), sp.getLoaiSanPham()
+        });
+    }
+}
+
 
    public void locTheoLoai() {
     String loai = cboLocSP.getSelectedItem().toString();
@@ -585,7 +609,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        timKiem();
+        timKiemTheoTen();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
