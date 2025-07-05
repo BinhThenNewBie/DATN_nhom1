@@ -31,6 +31,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
@@ -268,7 +269,20 @@ public class StaffBanHang extends javax.swing.JFrame {
             lblMaHD.setText(tblHoaDon.getValueAt(i, 0).toString());
         }
     }
-
+    
+    public void showDetailsUuDai(){
+        int i = tblUuDai.getSelectedRow();
+        if (i >= 0){
+            lblUuDai.setText(tblUuDai.getValueAt(i, 0).toString());
+        }
+    }
+    
+    public void saveMon(){
+        
+        
+        
+    }
+    
     private String generateMaHD() {
         Random rnd = new Random();
         int number = 100000 + rnd.nextInt(900000);
@@ -502,6 +516,11 @@ public class StaffBanHang extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblUuDai.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblUuDaiMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(tblUuDai);
 
         jButton1.setBackground(new java.awt.Color(31, 51, 86));
@@ -757,6 +776,11 @@ public class StaffBanHang extends javax.swing.JFrame {
         // TODO add your handling code here:
         showDetailsHDCho();
     }//GEN-LAST:event_tblHoaDonMouseClicked
+
+    private void tblUuDaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUuDaiMouseClicked
+        // TODO add your handling code here:
+        showDetailsUuDai();
+    }//GEN-LAST:event_tblUuDaiMouseClicked
 
     /**
      * @param args the command line arguments

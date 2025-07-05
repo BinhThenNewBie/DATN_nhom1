@@ -117,7 +117,6 @@ public class HoaDonChoDAO {
     
     // GET ALL ID HÓA ĐƠN
     public List<ChiTietHoaDon> getAllID_HD(String ID_HD) {
-        List<ChiTietHoaDon> list = new ArrayList<>();
         String sql = "SElECT ID_HD, ID_SP, TENSP, GIASP, SOLUONG FROM CHITIETHOADON WHERE ID_HD = ?";
         try (
             Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql);) {
@@ -130,12 +129,12 @@ public class HoaDonChoDAO {
                 ct.setTenSP(rs.getString("TENSP"));
                 ct.setGiaSP(rs.getFloat("GIASP"));
                 ct.setSoLuong(rs.getInt("SOLUONG")); 
-                list.add(ct);
+                lstHDCT.add(ct);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return list;
+        return lstHDCT;
     }
     
     /// GET ALL & GET ROW CHI TIẾT HÓA ĐƠN
