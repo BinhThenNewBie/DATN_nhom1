@@ -7,6 +7,9 @@ package view;
 import DAO.HoaDonChoDAO;
 import DAO.HoaDonDAO;
 import DAO.UuDaiDAO;
+import Model.ChiTietHoaDon;
+import Model.HoaDon;
+import Model.HoaDonCho;
 import Model.UuDai;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,6 +34,7 @@ public class StaffBanHang extends javax.swing.JFrame {
     public StaffBanHang() {
         initComponents();
         initTable();
+        fillTable();
          setLocationRelativeTo(null);
         Timer timer = new Timer(0, (e) -> {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
@@ -58,7 +62,23 @@ public class StaffBanHang extends javax.swing.JFrame {
     }
     
     public void fillTable() {
+        modelUuDai.setRowCount(0); // Xóa dữ liệu cũ
+        for (UuDai ud : udd.getAll_SL()) {
+            Object[] rowsUD = (Object[]) udd.getRow_SL(ud);
+            modelUuDai.addRow(rowsUD);
+        }
         
+        modelHDCho.setRowCount(0);
+        for (HoaDonCho hdc : hdd.getALLHDCHO()) {
+            Object[] rowsHDC = (Object[]) hdd.getRowHDCHO(hdc);
+            modelHDCho.addRow(rowsHDC);
+        }
+        
+        modelCTHD.setRowCount(0);
+        for (ChiTietHoaDon cthd : hdd.getAllCTHD()) {
+            Object[] rowsCTHD = (Object[]) hdd.getRowCTHD(cthd);
+            modelCTHD.addRow(rowsCTHD);
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -177,9 +197,6 @@ public class StaffBanHang extends javax.swing.JFrame {
                         .addGroup(pnlThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jSeparator1)
                             .addGroup(pnlThongTinLayout.createSequentialGroup()
-                                .addComponent(lblTittlePnlThongTin)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(pnlThongTinLayout.createSequentialGroup()
                                 .addGroup(pnlThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(lblTittleMaHD)
                                     .addGroup(pnlThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -198,7 +215,11 @@ public class StaffBanHang extends javax.swing.JFrame {
                                 .addGap(41, 41, 41)
                                 .addComponent(lblAnh, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
                                 .addGap(13, 13, 13))
-                            .addComponent(lblTittleUuDai)))
+                            .addGroup(pnlThongTinLayout.createSequentialGroup()
+                                .addGroup(pnlThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblTittlePnlThongTin)
+                                    .addComponent(lblTittleUuDai))
+                                .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(pnlThongTinLayout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addComponent(btnThem)
@@ -284,7 +305,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                 .addGroup(pnlUuDaiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(pnlUuDaiLayout.createSequentialGroup()
                         .addComponent(lblTittlePnlUuDai)
-                        .addGap(0, 224, Short.MAX_VALUE))
+                        .addGap(0, 141, Short.MAX_VALUE))
                     .addComponent(jSeparator3)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
@@ -360,7 +381,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                         .addComponent(lblTittlePnlChiTietHoaDon)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jSeparator4)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 721, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 804, Short.MAX_VALUE))
                 .addContainerGap())
         );
         pnlChiTietHoaDonLayout.setVerticalGroup(

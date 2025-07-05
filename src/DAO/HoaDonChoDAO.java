@@ -146,11 +146,10 @@ public class HoaDonChoDAO {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 ChiTietHoaDon cthd = new ChiTietHoaDon();
-                cthd.setID_HD(rs.getString(1));
-                cthd.setID_SP(rs.getString(2));
-                cthd.setTenSP(rs.getString(3));
-                cthd.setGiaSP(rs.getFloat(4));
-                cthd.setSoLuong(rs.getInt(5));
+                cthd.setID_SP(rs.getString(1));
+                cthd.setTenSP(rs.getString(2));
+                cthd.setGiaSP(rs.getFloat(3));
+                cthd.setSoLuong(rs.getInt(4));
                 lstHDCT.add(cthd);
             }
         } catch (Exception e) {
@@ -161,7 +160,6 @@ public class HoaDonChoDAO {
 
     public Object getRowCTHD(ChiTietHoaDon cthd) {
         Object[] row = new Object[]{
-            cthd.getID_HD(),
             cthd.getID_SP(),
             cthd.getTenSP(),
             cthd.getGiaSP(),
