@@ -211,42 +211,9 @@ public class QuanLySanPham extends javax.swing.JFrame {
         fillTable();
     }
     
-  private void suaSanPham() {
-    if (!validateForm(true)) {
-        return;
-    }
-
-    String maSP = lblID.getText().trim();
-    
-    // Kiểm tra sản phẩm có tồn tại không
-    if (!spDao.kiemTraSanPhamTonTai(maSP)) {
-        JOptionPane.showMessageDialog(this, "Sản phẩm không tồn tại trong hệ thống.");
-        return;
-    }
-
-    // Xác nhận trước khi sửa
-    int choice = JOptionPane.showConfirmDialog(this, 
-        "Bạn có chắc chắn muốn sửa sản phẩm " + maSP + "?", 
-        "Xác nhận sửa", 
-        JOptionPane.YES_NO_OPTION);
-    
-    if (choice == JOptionPane.YES_OPTION) {
-        SanPham sp = new SanPham(
-            maSP, 
-            txtTensp.getText().trim(),
-            txtGiatien.getText().trim(), 
-            cboLoai.getSelectedItem().toString(), 
-            strAnh
-        );
-        
-        if (spDao.sua(sp)) {
-            JOptionPane.showMessageDialog(this, "Sửa sản phẩm thành công!");
-            fillTable();
-            lamMoiForm();
-        } else {
-            JOptionPane.showMessageDialog(this, "Sửa sản phẩm thất bại. Vui lòng thử lại.");
-        }
-    }
+   private void suaSanPham(){
+       
+   }
    
    
 
