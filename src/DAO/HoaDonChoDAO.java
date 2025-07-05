@@ -22,7 +22,14 @@ public class HoaDonChoDAO {
     List<HoaDonCho> lstHDC = new ArrayList<>();
     List<ChiTietHoaDon> lstHDCT = new ArrayList<>();
     
-    
+    public void clearOrderTemp() {
+        String sql = "DELETE FROM CHITIETHOADON WHERE ID_HD NOT IN (SELECT ID_HD FROM HOADONCHO)";
+        try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     //CẬP NHẬT
     public int UpdateSP(String ID_SP, ChiTietHoaDon cthd) {
         String sql = "UPDATE CHITIETHOADON SET SOLUONG = ? WHERE ID_SP = ?";

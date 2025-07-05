@@ -17,7 +17,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -266,23 +265,29 @@ public class StaffBanHang extends javax.swing.JFrame {
     public void showDetailsHDCho() {
         int i = tblHoaDon.getSelectedRow();
         if (i >= 0) {
-            lblMaHD.setText(tblHoaDon.getValueAt(i, 0).toString());
+            String ID_HD = tblHoaDon.getValueAt(i, 0).toString();
+            lblMaHD.setText(ID_HD);
+            List<ChiTietHoaDon> lstcthd = hdd.getAllID_HD(ID_HD);
+            modelCTHD.setRowCount(0);
+
+            for (ChiTietHoaDon cthd : lstcthd) {
+                modelCTHD.addRow(new Object[]{
+                    cthd.getID_SP(),
+                    cthd.getTenSP(),
+                    cthd.getGiaSP(),
+                    cthd.getSoLuong()
+                });
+            }
         }
     }
-    
-    public void showDetailsUuDai(){
+
+    public void showDetailsUuDai() {
         int i = tblUuDai.getSelectedRow();
-        if (i >= 0){
+        if (i >= 0) {
             lblUuDai.setText(tblUuDai.getValueAt(i, 0).toString());
         }
     }
-    
-    public void saveMon(){
-        
-        
-        
-    }
-    
+
     private String generateMaHD() {
         Random rnd = new Random();
         int number = 100000 + rnd.nextInt(900000);
@@ -290,6 +295,8 @@ public class StaffBanHang extends javax.swing.JFrame {
     }
 
     public void createMaHD() {
+        hdd.clearOrderTemp();
+
         DefaultTableModel model = (DefaultTableModel) tblChiTietHoaDon.getModel();
         String newMaHD = generateMaHD();
         lblMaHD.setText(newMaHD);
@@ -307,8 +314,9 @@ public class StaffBanHang extends javax.swing.JFrame {
         lblMaSP.setText("");
         model.setRowCount(0);
         fillTableHDCho();
-
     }
+
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -482,7 +490,9 @@ public class StaffBanHang extends javax.swing.JFrame {
                         .addComponent(lblTittleSoLuong)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lblAnhSanPham, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(pnlThongTinLayout.createSequentialGroup()
+                        .addComponent(lblAnhSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addGroup(pnlThongTinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnThem)
