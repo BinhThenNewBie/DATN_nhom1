@@ -7,6 +7,7 @@ package DAO;
 import DBconnect.DBconnect;
 import Model.HoaDon;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -18,6 +19,25 @@ import java.util.List;
  */
 public class HoaDonDAO {
     List<HoaDon> lstHD = new ArrayList<>();
+    
+    public int saveHOADON(HoaDon hd) {
+        String sql = "INSERT INTO HOADON VALUES (?, ?, ?, ?, ?)";
+        try (Connection con = DBconnect.getConnection(); PreparedStatement pstm = con.prepareStatement(sql)) {
+            pstm.setString(1, hd.getID_HD());
+            pstm.setString(2, hd.getNgayThangNam());
+            pstm.setString(2, hd.getThoiGian());
+            pstm.setString(2, hd.getMon());
+            pstm.setFloat(3, hd.getTongTien());
+            int row = pstm.executeUpdate();
+            if (row > 0) {
+                return 1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
     public List<HoaDon> getALLHD() {
         lstHD.clear();
         String sql = "SELECT * FROM HOADON";
