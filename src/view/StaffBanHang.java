@@ -557,7 +557,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                     .addComponent(jSeparator2)
                     .addGroup(pnlMenuLayout.createSequentialGroup()
                         .addComponent(lblTittlePnlMenu)
-                        .addGap(0, 792, Short.MAX_VALUE)))
+                        .addGap(0, 822, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pnlMenuLayout.setVerticalGroup(
@@ -601,7 +601,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                         .addComponent(lblTittlePnlChiTietHoaDon)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jSeparator4)
-                    .addComponent(jScrollPane2))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 746, Short.MAX_VALUE))
                 .addContainerGap())
         );
         pnlChiTietHoaDonLayout.setVerticalGroup(
@@ -711,10 +711,10 @@ public class StaffBanHang extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(pnlUuDai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(pnlChiTietHoaDon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pnlChiTietHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(pnlHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(58, Short.MAX_VALUE))
+                        .addComponent(pnlHoaDon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap(28, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)

@@ -34,12 +34,12 @@
                   <Group type="102" attributes="0">
                       <Component id="pnlUuDai" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="pnlChiTietHoaDon" max="32767" attributes="0"/>
+                      <Component id="pnlChiTietHoaDon" min="-2" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
-                      <Component id="pnlHoaDon" min="-2" max="-2" attributes="0"/>
+                      <Component id="pnlHoaDon" max="32767" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace pref="58" max="32767" attributes="0"/>
+              <EmptySpace pref="28" max="32767" attributes="0"/>
           </Group>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
@@ -443,7 +443,7 @@
                       <Component id="jSeparator2" max="32767" attributes="0"/>
                       <Group type="102" attributes="0">
                           <Component id="lblTittlePnlMenu" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="792" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="822" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -498,7 +498,7 @@
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                       </Group>
                       <Component id="jSeparator4" max="32767" attributes="0"/>
-                      <Component id="jScrollPane2" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" alignment="0" pref="746" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
