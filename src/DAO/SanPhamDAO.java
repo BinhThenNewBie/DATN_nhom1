@@ -160,7 +160,24 @@ public SanPham timkiem(String tenSanPham) {
         }
     }
     
-    public void sua(){
-        
+public int suaSanPham(SanPham sp, String IDcu) {
+    int result = 0;
+    String sql = "UPDATE SANPHAM SET ID_SP = ?, TENSP = ?, GIA = ?, LOAI = ?, IMG = ? WHERE ID_SP = ?";
+    Connection con = DBconnect.getConnection();
+    try {
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setString(1, sp.getIDSanPham());
+        pst.setString(2, sp.getTenSanPham());
+        pst.setString(3, sp.getGiaTien());
+        pst.setString(4, sp.getLoaiSanPham());
+        pst.setString(5, sp.getIMG());
+        pst.setString(6, IDcu); // mã cũ để WHERE
+
+        result = pst.executeUpdate();
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return result;
+}
+
 }
