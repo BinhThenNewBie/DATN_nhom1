@@ -51,12 +51,13 @@ public class SanPhamDAO {
         return row;
     }
 
-public SanPham timkiem(String tenSanPham) {
-    String sql = "SELECT * FROM SANPHAM WHERE TENSP LIKE ?";
-    try (Connection con = DBconnect.getConnection(); 
-         PreparedStatement pstm = con.prepareStatement(sql)) {
-        pstm.setString(1, "%" + tenSanPham + "%");
-        try (ResultSet rs = pstm.executeQuery()) {  // Đóng ResultSet
+    public SanPham timkiem(String tenSanPham) {
+        String sql = "SELECT * FROM SANPHAM WHERE TENSP = ?";
+        try (Connection con = DBconnect.getConnection(); PreparedStatement pstm = con.prepareStatement(sql)) {
+
+            pstm.setString(1, tenSanPham);
+            ResultSet rs = pstm.executeQuery();
+
             if (rs.next()) {
                 SanPham sp = new SanPham();
                 sp.setIDSanPham(rs.getString("ID_SP"));
@@ -66,13 +67,12 @@ public SanPham timkiem(String tenSanPham) {
                 sp.setIMG(rs.getString("IMG"));
                 return sp;
             }
+
+        } catch (Exception e) {
+            System.out.println("Lỗi: " + e.getMessage());
         }
-    } catch (Exception e) {
-        System.out.println("Lỗi: " + e.getMessage());
-        e.printStackTrace();  // In stack trace để debug
+        return null;
     }
-    return null;
-}
 
     public List<SanPham> locTheoLoai(String loai) {
         List<SanPham> list = new ArrayList<>();
@@ -100,42 +100,5 @@ public SanPham timkiem(String tenSanPham) {
         return list;
     }
 
-    // Tạo mã tự động: SP + (max ID + 1)
-    public String layMaTuDong() {
-        String sql = "SELECT MAX(CAST(SUBSTRING(ID_SP, 3, LEN(ID_SP)) AS INT)) AS maxID FROM SANPHAM";
-        try (Connection con = DBconnect.getConnection(); 
-             PreparedStatement ps = con.prepareStatement(sql); 
-             ResultSet rs = ps.executeQuery()) {
-
-            if (rs.next()) {
-                int max = rs.getInt("maxID") + 1;
-                return "SP" + max;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "SP1"; // Mặc định nếu chưa có sản phẩm nào
-    }
-
-    // Thêm sản phẩm vào CSDL
-    public void them(SanPham sp) {
-        String sql = "INSERT INTO SANPHAM (ID_SP, TENSP, GIA, LOAI, IMG) VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = DBconnect.getConnection(); 
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, sp.getIDSanPham());
-            ps.setString(2, sp.getTenSanPham());
-            ps.setString(3, sp.getGiaTien());
-            ps.setString(4, sp.getLoaiSanPham());
-            ps.setString(5, sp.getIMG());
-
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     
-    public void sua(){
-        
-    }
 }
