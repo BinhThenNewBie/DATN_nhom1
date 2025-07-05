@@ -13,6 +13,7 @@ import Model.HoaDonCho;
 import Model.UuDai;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
@@ -80,6 +81,14 @@ public class StaffBanHang extends javax.swing.JFrame {
             modelCTHD.addRow(rowsCTHD);
         }
     }
+    
+    private String generateMaHD() {
+        Random rnd = new Random();
+        int number = 100000 + rnd.nextInt(900000);
+        return "HD" + number;
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
