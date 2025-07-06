@@ -12,16 +12,18 @@ public class SanPham {
     private String IDSanPham, tenSanPham;
     private float giaTien;
     private String loaiSanPham, IMG;
+    private int trangThai;
 
     public SanPham() {
     }
 
-    public SanPham(String IDSanPham, String tenSanPham, float giaTien, String loaiSanPham, String IMG) {
+    public SanPham(String IDSanPham, String tenSanPham, float giaTien, String loaiSanPham, String IMG, int trangThai) {
         this.IDSanPham = IDSanPham;
         this.tenSanPham = tenSanPham;
         this.giaTien = giaTien;
         this.loaiSanPham = loaiSanPham;
         this.IMG = IMG;
+        this.trangThai = trangThai;
     }
 
     public String getIDSanPham() {
@@ -64,10 +66,14 @@ public class SanPham {
         this.IMG = IMG;
     }
 
+    public int getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(int trangThai) {
+        this.trangThai = trangThai;
+    }
     
 
-    public String getTen() {
-        throw new UnsupportedOperationException("Not supported yet."); 
-    }
     
 }
