@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.Timer;
@@ -45,19 +46,34 @@ public class Admin extends javax.swing.JFrame {
     }
 
     private void initDefaultElement() {
-        JButton[] buttons = {btnQLNV, btnQLTK, btnQLSP, btnQLKM, btnQLBH, btnTKDT, btnDangXuat};
-        for (JButton btn : buttons) {
-            btn.setFocusPainted(false);
-            btn.setBorderPainted(false);
-            btn.setContentAreaFilled(false);
-            btn.setOpaque(true);
-            btn.setBackground(Color.decode("#1c2e4a"));
-            btn.setForeground(Color.decode("#FDFAF6"));
-        }
+    JButton[] buttons = {btnQLNV, btnQLTK, btnQLSP, btnQLKM, btnQLBH, btnTKDT, btnDangXuat};
 
-        pnlMenu.setBorder(new EmptyBorder(0, 0, 0, 0));
-        Logo.setBorder(new EmptyBorder(0, 0, 0, 0));
+    for (JButton btn : buttons) {
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setOpaque(true);
+        btn.setBackground(Color.decode("#1c2e4a")); // màu nền gốc
+        btn.setForeground(Color.decode("#FDEAF6"));
+
+        // HIỆU ỨNG HOVER
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                btn.setBackground(Color.decode("#578FCA")); // màu sáng hơn (nổi bật)
+                btn.setBorder(BorderFactory.createLineBorder(Color.decode("#88aaff"), 2)); // thêm viền sáng
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                btn.setBackground(Color.decode("#1c2e4a")); // trở lại màu gốc
+                btn.setBorder(null); // bỏ viền
+            }
+        });
     }
+
+    pnlMenu.setBorder(new EmptyBorder(0, 0, 0, 0));
+    Logo.setBorder(new EmptyBorder(0, 0, 0, 0));
+}
+
     
 
     /**
