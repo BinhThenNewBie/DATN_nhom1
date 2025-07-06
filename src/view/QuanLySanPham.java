@@ -172,6 +172,45 @@ public void khoaSanPham() {
     }
 }
 
+public void moKhoaSanPham() {
+    int i = tblBang.getSelectedRow();
+    if (i == -1) {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần mở khóa!");
+        return;
+    }
+
+    String timKiem = txtTimkiem.getText().trim();
+    SanPham sp;
+
+    if (timKiem.isEmpty()) {
+        sp = spDao.getAll().get(i);
+    } else {
+        List<SanPham> list = spDao.getSPByTen(timKiem);
+        if (list.isEmpty() || i >= list.size()) {
+            JOptionPane.showMessageDialog(this, "Không thể lấy thông tin sản phẩm!");
+            return;
+        }
+        sp = list.get(i);
+    }
+
+    if (sp.getTrangThai() == 1) {
+        JOptionPane.showMessageDialog(this, "Sản phẩm đang hoạt động!");
+        return;
+    }
+
+    int chon = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn mở khóa sản phẩm này?",
+            "Xác Nhận Mở Khóa", JOptionPane.YES_NO_OPTION);
+    if (chon == JOptionPane.YES_OPTION) {
+        boolean result = spDao.moKhoaSanPham(sp.getIDSanPham());
+        if (result) {
+            JOptionPane.showMessageDialog(this, "Mở khóa sản phẩm thành công!");
+            fillTable();
+        } else {
+            JOptionPane.showMessageDialog(this, "Mở khóa sản phẩm thất bại!");
+        }
+    }
+}
+
 // Thêm phương thức kiểm tra trạng thái khóa
 private boolean kiemTraSanPhamBiKhoa() {
     int i = tblBang.getSelectedRow();
@@ -200,6 +239,8 @@ private boolean kiemTraSanPhamBiKhoa() {
     }
     return false;
 }
+
+
 
 private boolean validateSanPham() {
     String id = lblID.getText().trim();
@@ -655,6 +696,11 @@ private void suaSanPham() {
         jButton1.setFont(new java.awt.Font("Segoe UI Light", 1, 13)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("MỞ KHÓA");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -809,6 +855,11 @@ private void suaSanPham() {
         // TODO add your handling code here:
         khoaSanPham();
     }//GEN-LAST:event_khoaSPActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        moKhoaSanPham();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

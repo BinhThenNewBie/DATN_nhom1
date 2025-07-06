@@ -21,7 +21,7 @@ public class SanPhamDAO {
 
     // 1. Khóa sản phẩm theo ID
     public boolean khoaSanPham(String idSP) {
-        String sql = "UPDATE SANPHAM SET TrangThai = 0 WHERE ID_SP = ?";
+        String sql = "UPDATE SANPHAM SET TRANGTHAI = 0 WHERE ID_SP = ?";
         try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, idSP);
             return ps.executeUpdate() > 0;
@@ -30,6 +30,17 @@ public class SanPhamDAO {
             return false;
         }
     }
+    public boolean moKhoaSanPham(String idSP) {
+    String sql = "UPDATE SANPHAM SET TRANGTHAI = 1 WHERE ID_SP = ?";
+    try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, idSP);
+        return ps.executeUpdate() > 0;
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        return false;
+    }
+}
+    
 
     // 2. Lấy sản phẩm theo ID_SP
     public List<SanPham> getAllID_SP(String ID_SP) {

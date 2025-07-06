@@ -580,6 +580,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="M&#x1ede; KH&#xd3;A"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
