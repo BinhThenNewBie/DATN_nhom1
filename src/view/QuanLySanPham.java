@@ -31,8 +31,9 @@ public class QuanLySanPham extends javax.swing.JFrame {
      */
     public QuanLySanPham() {
         initComponents();
-                setLocationRelativeTo(null); // Đưa cửa sổ ra giữa màn hình
-        initTable();
+    setLocationRelativeTo(null); // Đưa ra giữa màn hình
+    setResizable(false);         // Không cho resize (tùy chọn)        
+    initTable();
         fillTable();
     }
 
@@ -70,7 +71,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
 
         lblID.setText(sp.getIDSanPham());
         txtTensp.setText(sp.getTenSanPham());
-        txtGiatien.setText(sp.getGiaTien());
+        txtGiatien.setText(String.valueOf(sp.getGiaTien()));
         cboLoai.setSelectedItem(sp.getLoaiSanPham());
         strAnh = sp.getIMG();
 
@@ -214,16 +215,20 @@ public class QuanLySanPham extends javax.swing.JFrame {
     }
 
     private void themSanPham() {
-        if (!validateSanPham()) return;
+    if (!validateSanPham()) return;
 
-        String maSP = lblID.getText().trim();
-        SanPham sp = new SanPham(maSP, txtTensp.getText().trim(),
-                txtGiatien.getText().trim(), cboLoai.getSelectedItem().toString(), strAnh);
-        spDao.them(sp);
-        JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công.");
-        fillTable();
-        lamMoiForm();
-    }
+    String maSP = lblID.getText().trim();
+    String tenSP = txtTensp.getText().trim();
+    float giaTien = Float.parseFloat(txtGiatien.getText().trim()); // ✅ Sửa tại đây
+    String loai = cboLoai.getSelectedItem().toString();
+
+    SanPham sp = new SanPham(maSP, tenSP, giaTien, loai, strAnh); // ✅ giờ truyền float
+    spDao.them(sp);
+    JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công.");
+    fillTable();
+    lamMoiForm();
+}
+
     private void lamMoiForm() {
         lblID.setText("");
         txtTensp.setText("");
@@ -252,12 +257,12 @@ public class QuanLySanPham extends javax.swing.JFrame {
         // Lấy dữ liệu từ form
         String ID = lblID.getText().trim();
         String ten = txtTensp.getText().trim();
-        String giaTien = txtGiatien.getText().trim();
+        float gia = Float.parseFloat(txtGiatien.getText().trim());
         String loaiSanPham = cboLoai.getSelectedItem().toString();  // sửa dòng này
         String anh = strAnh; // tên ảnh (đã lưu trước đó hoặc chọn từ file)
 
         // Tạo đối tượng sản phẩm mới
-        SanPham sp = new SanPham(ID, ten, giaTien, loaiSanPham, anh);
+        SanPham sp = new SanPham(ID, ten, gia, loaiSanPham, anh);
 
         // Gọi DAO để update
         int result = spDao.suaSanPham(sp, ID);
@@ -318,23 +323,28 @@ public class QuanLySanPham extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(234, 232, 232));
 
-        jPanel3.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel3.setText("ID SẢN PHẨM");
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel4.setText("TÊN SẢN PHẨM");
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel5.setText("GIÁ TIỀN");
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel6.setText("LOẠI SẢN PHẨM");
 
         txtTensp.setFont(new java.awt.Font("Segoe UI Light", 1, 12)); // NOI18N
 
         txtGiatien.setFont(new java.awt.Font("Segoe UI Light", 1, 12)); // NOI18N
+        txtGiatien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtGiatienActionPerformed(evt);
+            }
+        });
 
         jPanel4.setBackground(new java.awt.Color(133, 151, 186));
 
@@ -431,7 +441,8 @@ public class QuanLySanPham extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnXoaSP1, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnLamMoiSP, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnLamMoiSP, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(36, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
@@ -448,9 +459,9 @@ public class QuanLySanPham extends javax.swing.JFrame {
                                 .addComponent(lblID, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(btnTaoMa, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(39, 39, 39)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(36, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(59, 59, 59))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -466,31 +477,34 @@ public class QuanLySanPham extends javax.swing.JFrame {
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(lblID, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel3))))
-                        .addGap(26, 26, 26)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtTensp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(22, 22, 22)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(30, 30, 30)
+                                .addComponent(jLabel4))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(txtTensp, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
-                            .addComponent(txtGiatien, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(23, 23, 23)
+                            .addComponent(txtGiatien, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel6)
-                            .addComponent(cboLoai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(cboLoai, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addGap(32, 32, 32)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnThemSP)
                     .addComponent(btnSuaSP)
                     .addComponent(btnXoaSP1)
                     .addComponent(btnLamMoiSP))
-                .addContainerGap())
+                .addGap(14, 14, 14))
         );
 
-        jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         txtTimkiem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
 
@@ -553,7 +567,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 876, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(27, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
@@ -593,34 +607,32 @@ public class QuanLySanPham extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(52, 52, 52))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(17, 17, 17)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 955, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 41, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -683,6 +695,10 @@ public class QuanLySanPham extends javax.swing.JFrame {
         // TODO add your handling code here:
         suaSanPham();
     }//GEN-LAST:event_btnSuaSPActionPerformed
+
+    private void txtGiatienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGiatienActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtGiatienActionPerformed
 
     /**
      * @param args the command line arguments
