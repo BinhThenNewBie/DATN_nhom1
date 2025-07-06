@@ -5,7 +5,6 @@
 package DAO;
 
 import DBconnect.DBconnect;
-import Model.SanPham;
 import Model.UuDai;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -21,7 +20,7 @@ import java.util.List;
 public class UuDaiDAO {
 
     public List<UuDai> getAll() {
-        List<UuDai> lstUD = new ArrayList<>();
+        List<UuDai> list = new ArrayList<>();
         String sql = "SELECT * FROM UUDAI";
         Connection con = DBconnect.getConnection();
         try {
@@ -34,12 +33,12 @@ public class UuDaiDAO {
                 u.setSoLuong(rs.getInt(3));
                 u.setNgayBatDau(rs.getDate(4));
                 u.setNgayKetThuc(rs.getDate(5));
-                lstUD.add(u);
+                list.add(u);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        return lstUD;
+        return list;
     }
 
     public Object[] getRow(UuDai u) {
@@ -49,7 +48,7 @@ public class UuDaiDAO {
         };
     }
 
-    public void them(UuDai u) {
+    public void insert(UuDai u) {
         String sql = "INSERT INTO UUDAI (ID_UD, GIATRI, SOLUONG, NGAYBATDAU, NGAYKETTHUC) VALUES (?, ?, ?, ?, ?)";
         try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, u.getIdUD());
@@ -63,7 +62,7 @@ public class UuDaiDAO {
         }
     }
 
-    public void sua(UuDai u) {
+    public void update(UuDai u) {
         String sql = "UPDATE UUDAI SET GIATRI = ?, SOLUONG = ?, NGAYBATDAU = ?, NGAYKETTHUC = ? WHERE ID_UD = ?";
         try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, u.getGiaTri());
@@ -77,7 +76,7 @@ public class UuDaiDAO {
         }
     }
 
-    public void xoa(String idUD) {
+    public void delete(String idUD) {
         String sql = "DELETE FROM UUDAI WHERE ID_UD = ?";
         try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, idUD);
@@ -87,7 +86,7 @@ public class UuDaiDAO {
         }
     }
 
-    public List<UuDai> getAll_GiaTri() {
+    public List<UuDai> getAll_SL() {
         List<UuDai> lstSL = new ArrayList<>();
         String sql = "SELECT GIATRI, SOLUONG FROM UUDAI";
         Connection con = DBconnect.getConnection();
@@ -105,8 +104,10 @@ public class UuDaiDAO {
         }
         return lstSL;
     }
+    
+    public Object[] getRow_SL(UuDai u) {
+    return new Object[] { u.getGiaTri(), u.getSoLuong() };
+}
 
-    public Object[] getRow_GT(UuDai u) {
-        return new Object[]{u.getGiaTri(), u.getSoLuong()};
-    }
+
 }
