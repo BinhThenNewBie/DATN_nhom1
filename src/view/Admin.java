@@ -59,8 +59,8 @@ public class Admin extends javax.swing.JFrame {
         // HIỆU ỨNG HOVER
         btn.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                btn.setBackground(Color.decode("#578FCA")); // màu sáng hơn (nổi bật)
-                btn.setBorder(BorderFactory.createLineBorder(Color.decode("#88aaff"), 2)); // thêm viền sáng
+                btn.setBackground(Color.decode("#3A6D8C")); // màu sáng hơn (nổi bật)
+                btn.setBorder(BorderFactory.createLineBorder(Color.decode("#7AB2D3"), 2)); // thêm viền sáng
             }
 
             public void mouseExited(java.awt.event.MouseEvent evt) {
