@@ -49,10 +49,6 @@ public class forgotpass2 extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Change Password");
 
-        txtnewpassword.setText("jPasswordField1");
-
-        txtcfnewpassword.setText("jPasswordField1");
-
         jLabel2.setBackground(new java.awt.Color(255, 255, 255));
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Xác nhận mật khẩu mới");
