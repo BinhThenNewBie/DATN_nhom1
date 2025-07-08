@@ -73,7 +73,7 @@ public class Email {
 
     public static void main(String[] args) {
 
-        Email.sendEmail("zuka400915@gmail.com", System.currentTimeMillis() + "", " check!");
+        Email.sendEmail("zuka400915@gmail.com", System.currentTimeMillis() + "", "check!");
 
     }
 
