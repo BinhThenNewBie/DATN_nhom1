@@ -28,7 +28,8 @@ public class TaikhoanDAO {
                 Taikhoan tk = new Taikhoan();
                 tk.setID_TK(rs.getString(1));
                 tk.setPass(rs.getString(2));
-                tk.setVaiTro(rs.getString(3));
+                tk.setEmail(rs.getString(3));
+                tk.setVaiTro(rs.getString(4));
                 Listtk.add(tk);
             }
         } catch (Exception e) {
@@ -38,8 +39,9 @@ public class TaikhoanDAO {
     public Object[] GETROW(Taikhoan tk){
         String ID_TK = tk.getID_TK();
         String Pass = tk.getPass();
+        String Email = tk.getEmail();
         String vaiTro = tk.getVaiTro();
-        Object[] rows = new Object[]{ID_TK,Pass,vaiTro};
+        Object[] rows = new Object[]{ID_TK,Pass,Email,vaiTro};
         return rows;
     }   
 }

@@ -4,19 +4,44 @@
  */
 package view;
 
+import DAO.TaikhoanDAO;
+import Model.Taikhoan;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author ADMIN
  */
 public class QuanLyTaiKhoan extends javax.swing.JFrame {
-
+    DefaultTableModel tableModel= new DefaultTableModel();
+    TaikhoanDAO tkd = new TaikhoanDAO();
     /**
      * Creates new form QuanLyTaiKhoan
      */
     public QuanLyTaiKhoan() {
         initComponents();
     }
-
+    public void initTable(){
+    tableModel = new DefaultTableModel();
+    String[] cols = new String[]{"ID tài khoản", "Password","Email", "Vai trò"};
+    tableModel.setColumnIdentifiers(cols);
+    tblTaikhoan.setModel(tableModel);
+}
+public void fillTable(){
+    tableModel.setRowCount(0);
+    for (Taikhoan tk : tkd.GETALL()) {
+        Object[] rows = tkd.GETROW(tk);
+        tableModel.addRow(rows);
+    }
+}
+public void showdetail(){
+    int chon= tblTaikhoan.getSelectedRow();
+    if(chon >=0){
+        Taikhoan nv = tkd.GETALL().get(chon);
+        txt
+    
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -35,9 +60,9 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
         txtIdnv = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTaikhoan = new javax.swing.JTable();
-        txtPass1 = new javax.swing.JTextField();
+        txtEmail = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cboVaitro = new javax.swing.JComboBox<>();
         txtPass2 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         btnMokhoa = new javax.swing.JButton();
@@ -92,7 +117,7 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
 
         jLabel3.setText("VAI TRÒ");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ADMIN", "STAFF" }));
+        cboVaitro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ADMIN", "STAFF" }));
 
         jLabel4.setText("EMAIL");
 
@@ -120,8 +145,8 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
                 .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(txtPass1, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                        .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                        .addComponent(cboVaitro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtPass2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
                     .addComponent(txtIdnv, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
@@ -169,12 +194,12 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtPass1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4))
                         .addGap(29, 29, 29)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnLammoi)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cboVaitro, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addComponent(btnMokhoa)
@@ -235,15 +260,15 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
     private javax.swing.JButton btnMokhoa;
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThem;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> cboVaitro;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblTaikhoan;
+    private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtIdnv;
-    private javax.swing.JTextField txtPass1;
     private javax.swing.JTextField txtPass2;
     // End of variables declaration//GEN-END:variables
 }
