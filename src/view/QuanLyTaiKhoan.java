@@ -6,6 +6,7 @@ package view;
 
 import DAO.TaikhoanDAO;
 import Model.Taikhoan;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -20,6 +21,8 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
      */
     public QuanLyTaiKhoan() {
         initComponents();
+        initTable();
+        fillTable();
     }
     public void initTable(){
     tableModel = new DefaultTableModel();
@@ -37,9 +40,51 @@ public void fillTable(){
 public void showdetail(){
     int chon= tblTaikhoan.getSelectedRow();
     if(chon >=0){
-        Taikhoan nv = tkd.GETALL().get(chon);
-        txt
+        Taikhoan tk = tkd.GETALL().get(chon);
+        txtIdnv.setText(tk.getID_TK());
+        txtPass.setText(tk.getPass());
+        txtEmail.setText(tk.getEmail());
+        cboVaitro.setSelectedItem(tk.getVaiTro());
+}
     
+    }
+public void lammoi(){
+    txtEmail.setText(null);
+    txtIdnv.setText(null);
+    txtPass.setText(null);
+}
+public void sua(){
+   int chon = tblTaikhoan.getSelectedRow();
+        if(chon>=0){
+            int sua = JOptionPane.showConfirmDialog(this, "Bạn muốn sửa không", "Xác nhận", JOptionPane.YES_NO_OPTION);
+     if(sua==JOptionPane.YES_OPTION){
+        String IDTK = txtIdnv.getText();
+        String Pass= txtPass.getText();
+        String Email =txtEmail.getText();
+        String vaiTro = (String) cboVaitro.getSelectedItem();
+        Taikhoan tk = new Taikhoan(IDTK, Pass, Email, vaiTro);
+    int result = tkd.sua(IDTK, tk);
+    if( result==1){
+        fillTable();
+        JOptionPane.showMessageDialog(this, "Sửa thành công");
+    }else{
+        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra");
+    }
+     }
+        }
+}
+public void them(){
+    String ID_TK = txtIdnv.getText();
+        String Pass = txtPass.getText();
+        String Email = txtEmail.getText();
+        String vaiTro = (String) cboVaitro.getSelectedItem();
+        Taikhoan tk = new Taikhoan(ID_TK, Pass, Email, vaiTro);
+    int result = tkd.Them(tk);
+    if( result==1){
+        fillTable();
+        JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công");
+    }else{
+        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra");
     }
 }
     /**
@@ -63,7 +108,7 @@ public void showdetail(){
         txtEmail = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         cboVaitro = new javax.swing.JComboBox<>();
-        txtPass2 = new javax.swing.JTextField();
+        txtPass = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         btnMokhoa = new javax.swing.JButton();
 
@@ -74,6 +119,11 @@ public void showdetail(){
         btnThem.setForeground(new java.awt.Color(255, 255, 255));
         btnThem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainForm_Admin/image/Them.png"))); // NOI18N
         btnThem.setText("THÊM TÀI KHOẢN");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
         btnSua.setBackground(new java.awt.Color(31, 51, 86));
         btnSua.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
@@ -97,6 +147,11 @@ public void showdetail(){
         btnLammoi.setForeground(new java.awt.Color(255, 255, 255));
         btnLammoi.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainForm_Admin/image/lamMoi.png"))); // NOI18N
         btnLammoi.setText("LÀM MỚI ");
+        btnLammoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLammoiActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("ID_NV");
 
@@ -113,6 +168,11 @@ public void showdetail(){
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblTaikhoan.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblTaikhoanMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblTaikhoan);
 
         jLabel3.setText("VAI TRÒ");
@@ -147,7 +207,7 @@ public void showdetail(){
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(txtEmail, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
                         .addComponent(cboVaitro, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(txtPass2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
+                        .addComponent(txtPass, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE))
                     .addComponent(txtIdnv, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -185,7 +245,7 @@ public void showdetail(){
                         .addGap(17, 17, 17)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(txtPass2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(22, 22, 22)
@@ -213,11 +273,27 @@ public void showdetail(){
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         // TODO add your handling code here:
+        sua();
     }//GEN-LAST:event_btnSuaActionPerformed
 
     private void btnMokhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMokhoaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnMokhoaActionPerformed
+
+    private void tblTaikhoanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTaikhoanMouseClicked
+        // TODO add your handling code here:
+        showdetail();
+    }//GEN-LAST:event_tblTaikhoanMouseClicked
+
+    private void btnLammoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLammoiActionPerformed
+        // TODO add your handling code here:
+        lammoi();
+    }//GEN-LAST:event_btnLammoiActionPerformed
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        // TODO add your handling code here:
+        them();
+    }//GEN-LAST:event_btnThemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -269,6 +345,6 @@ public void showdetail(){
     private javax.swing.JTable tblTaikhoan;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtIdnv;
-    private javax.swing.JTextField txtPass2;
+    private javax.swing.JTextField txtPass;
     // End of variables declaration//GEN-END:variables
 }
