@@ -40,6 +40,7 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
         jComboBox1 = new javax.swing.JComboBox<>();
         txtPass2 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
+        btnMokhoa = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -95,6 +96,16 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
 
         jLabel4.setText("EMAIL");
 
+        btnMokhoa.setBackground(new java.awt.Color(31, 51, 86));
+        btnMokhoa.setFont(new java.awt.Font("Segoe UI Light", 1, 13)); // NOI18N
+        btnMokhoa.setForeground(new java.awt.Color(255, 255, 255));
+        btnMokhoa.setText("MỞ KHÓA");
+        btnMokhoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMokhoaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -124,6 +135,10 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1)
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnMokhoa)
+                .addGap(22, 22, 22))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -161,9 +176,11 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
                     .addComponent(btnLammoi)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addComponent(btnMokhoa)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37))
+                .addGap(35, 35, 35))
         );
 
         pack();
@@ -172,6 +189,10 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSuaActionPerformed
+
+    private void btnMokhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMokhoaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnMokhoaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -211,6 +232,7 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnKhoa;
     private javax.swing.JButton btnLammoi;
+    private javax.swing.JButton btnMokhoa;
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThem;
     private javax.swing.JComboBox<String> jComboBox1;
