@@ -75,6 +75,18 @@ public class TaikhoanDAO {
         return 0;
     }
     
+    public int passwordchange(String passin, Taikhoan tk){
+        String sql = "UPDATE TAIKHOAN SET PASS = ? WHERE EMAIL = ?";
+        try (Connection con = DBconnect.getConnection();
+               PreparedStatement pstm = con.prepareStatement(sql) ) {
+            pstm.setString(1, tk.getEmail());
+            pstm.setString(2, passin);
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+    
+    
     // Phương thức khóa tài khoản
     public int khoaTaiKhoan(String ID_TK) {
         String sql = "UPDATE TAIKHOAN SET TRANGTHAI = 'LOCKED' WHERE ID_TK = ?";
