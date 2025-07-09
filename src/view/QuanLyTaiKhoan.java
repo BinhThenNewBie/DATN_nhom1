@@ -78,6 +78,12 @@ public void sua(){
      }
         }
 }
+public void mokhoatk(){
+    
+}
+public void khoatk(){
+    
+}
 //public void them(){
 //    String ID_TK = txtIdnv.getText();
 //        String Pass = txtPass.getText();
@@ -135,6 +141,11 @@ public void sua(){
         btnKhoa.setForeground(new java.awt.Color(255, 255, 255));
         btnKhoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainForm_Admin/image/Xoa.png"))); // NOI18N
         btnKhoa.setText("KHÓA TÀI KHOẢN");
+        btnKhoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKhoaActionPerformed(evt);
+            }
+        });
 
         btnLammoi.setBackground(new java.awt.Color(31, 51, 86));
         btnLammoi.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
@@ -263,6 +274,7 @@ public void sua(){
 
     private void btnMokhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMokhoaActionPerformed
         // TODO add your handling code here:
+        mokhoatk();
     }//GEN-LAST:event_btnMokhoaActionPerformed
 
     private void tblTaikhoanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTaikhoanMouseClicked
@@ -274,6 +286,11 @@ public void sua(){
         // TODO add your handling code here:
         lammoi();
     }//GEN-LAST:event_btnLammoiActionPerformed
+
+    private void btnKhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhoaActionPerformed
+        // TODO add your handling code here:
+        khoatk();
+    }//GEN-LAST:event_btnKhoaActionPerformed
 
     /**
      * @param args the command line arguments

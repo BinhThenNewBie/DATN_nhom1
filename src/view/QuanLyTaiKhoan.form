@@ -145,6 +145,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="KH&#xd3;A T&#xc0;I KHO&#x1ea2;N"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnKhoaActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnLammoi">
       <Properties>
