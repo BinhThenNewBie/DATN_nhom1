@@ -7,6 +7,10 @@ package view;
 import DAO.UuDaiDAO;
 import Model.SanPham;
 import Model.UuDai;
+import java.util.Calendar;
+import java.util.Date;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -41,18 +45,119 @@ public class QuanLyUuDai extends javax.swing.JFrame {
             tableModel.addRow(udDAO.getRow(sp));
         }
     }
+
+    private Date getDateFromComboBox(JComboBox<String> day, JComboBox<String> month, JComboBox<String> year) {
+        try {
+            String dateStr = year.getSelectedItem() + "-" + month.getSelectedItem() + "-" + day.getSelectedItem();
+            return java.sql.Date.valueOf(dateStr); // yyyy-MM-dd
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Ngày không hợp lệ");
+            return null;
+        }
+    }
+
+    public void themUuDai() {
+        UuDai ud = new UuDai();
+        ud.setGiaTri(txtGiatri.getText());
+        ud.setMoTa(txtMoTa.getText());
+        ud.setNgayBatDau(getDateFromComboBox(cboNgayStart, cboThangStart, cboNamStart));
+        ud.setNgayKetThuc(getDateFromComboBox(cboNgayEnd, cboThangEnd, cboNamEnd));
+
+        if (ud.getNgayBatDau() == null || ud.getNgayKetThuc() == null) {
+            return;
+        }
+
+        udDAO.them(ud);
+        fillTable();
+        JOptionPane.showMessageDialog(this, "Thêm thành công");
+    }
+
+    public void suaUuDai() {
+        int i = tblBang.getSelectedRow();
+        if (i < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần sửa");
+            return;
+        }
+
+        UuDai ud = new UuDai();
+        ud.setIdUD(lblID.getText());
+        ud.setGiaTri(txtGiatri.getText());
+        ud.setMoTa(txtMoTa.getText());
+        ud.setNgayBatDau(getDateFromComboBox(cboNgayStart, cboThangStart, cboNamStart));
+        ud.setNgayKetThuc(getDateFromComboBox(cboNgayEnd, cboThangEnd, cboNamEnd));
+
+        if (ud.getNgayBatDau() == null || ud.getNgayKetThuc() == null) {
+            return;
+        }
+
+        udDAO.sua(ud);
+        fillTable();
+        JOptionPane.showMessageDialog(this, "Sửa thành công");
+    }
+
+    public void xoaUuDai() {
+        int i = tblBang.getSelectedRow();
+        if (i < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần xóa");
+            return;
+        }
+
+        String id = lblID.getText();
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa ưu đãi ID: " + id + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            udDAO.xoa(id);
+            fillTable();
+            JOptionPane.showMessageDialog(this, "Xóa thành công");
+        }
+    }
+
+    public void lamMoiUuDai() {
+        lblID.setText("");
+        txtGiatri.setText("");
+        txtMoTa.setText("");
+        cboNgayStart.setSelectedIndex(0);
+        cboThangStart.setSelectedIndex(0);
+        cboNamStart.setSelectedIndex(0);
+        cboNgayEnd.setSelectedIndex(0);
+        cboThangEnd.setSelectedIndex(0);
+        cboNamEnd.setSelectedIndex(0);
+        tblBang.clearSelection();
+    }
+
     public void showDetail() {
-    int i = tblBang.getSelectedRow();
-    if (i < 0) return;
+        int i = tblBang.getSelectedRow();
+        if (i < 0) {
+            return;
+        }
 
-    UuDai ud = new UuDaiDAO().getAll().get(i); // hoặc listUD.get(i) nếu bạn đã lưu
+        UuDai ud = udDAO.getAll().get(i);
 
-    lblID.setText(ud.getIdUD());
-    txtGiatri.setText(ud.getGiaTri());
-    txtMoTa.setText(ud.getMoTa());
+        lblID.setText(ud.getIdUD());
+        txtGiatri.setText(ud.getGiaTri());
+        txtMoTa.setText(ud.getMoTa());
 
-}
+        // Hiển thị ngày bắt đầu
+        Calendar calBD = Calendar.getInstance();
+        calBD.setTime(ud.getNgayBatDau());
+        int namBD = calBD.get(Calendar.YEAR);
+        int thangBD = calBD.get(Calendar.MONTH) + 1; // Tháng bắt đầu từ 0
+        int ngayBD = calBD.get(Calendar.DAY_OF_MONTH);
 
+        cboNamStart.setSelectedItem(String.format("%04d", namBD));
+        cboThangStart.setSelectedItem(String.format("%02d", thangBD));
+        cboNgayStart.setSelectedItem(String.format("%02d", ngayBD));
+
+        // Hiển thị ngày kết thúc
+        Calendar calKT = Calendar.getInstance();
+        calKT.setTime(ud.getNgayKetThuc());
+        int namKT = calKT.get(Calendar.YEAR);
+        int thangKT = calKT.get(Calendar.MONTH) + 1;
+        int ngayKT = calKT.get(Calendar.DAY_OF_MONTH);
+
+        cboNamEnd.setSelectedItem(String.format("%04d", namKT));
+        cboThangEnd.setSelectedItem(String.format("%02d", thangKT));
+        cboNgayEnd.setSelectedItem(String.format("%02d", ngayKT));
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -180,31 +285,26 @@ public class QuanLyUuDai extends javax.swing.JFrame {
         lblKetThuc.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         lblKetThuc.setText("KẾT THÚC");
 
-        cboNgayStart.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cboNgayStart.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cboNgayStartActionPerformed(evt);
-            }
-        });
+        cboNgayStart.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" }));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel7.setText("THÁNG");
 
-        cboThangStart.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboThangStart.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", " " }));
 
         jLabel8.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel8.setText("NGÀY");
 
-        cboNamStart.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboNamStart.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2025" }));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel9.setText("NĂM");
 
-        cboNgayEnd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboNgayEnd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31" }));
 
-        cboThangEnd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboThangEnd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", " " }));
 
-        cboNamEnd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboNamEnd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2025" }));
 
         jLabel10.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel10.setText("NGÀY");
@@ -346,22 +446,22 @@ public class QuanLyUuDai extends javax.swing.JFrame {
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         // TODO add your handling code here:
+        suaUuDai();
     }//GEN-LAST:event_btnSuaActionPerformed
 
     private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
         // TODO add your handling code here:
+        lamMoiUuDai();
     }//GEN-LAST:event_btnLamMoiActionPerformed
 
     private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
         // TODO add your handling code here:
+        xoaUuDai();
     }//GEN-LAST:event_btnXoaActionPerformed
-
-    private void cboNgayStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboNgayStartActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_cboNgayStartActionPerformed
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         // TODO add your handling code here:
+        themUuDai();
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void tblBangMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBangMouseClicked
