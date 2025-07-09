@@ -1,3 +1,4 @@
+
 package view;
 
 import DAO.SanPhamDAO;
@@ -20,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Admin
  */
+
 public class QuanLySanPham extends javax.swing.JFrame {
 
     DefaultTableModel tableModel = new DefaultTableModel();
@@ -246,6 +248,7 @@ private boolean validateSanPham() {
     String id = lblID.getText().trim();
     String ten = txtTensp.getText().trim();
     String giaStr = txtGiatien.getText().trim();
+    String duongDanAnh = lblAnh.getToolTipText(); // hoặc biến bạn dùng để lưu đường dẫn ảnh
 
     if (id.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Vui lòng nhấn nút 'TẠO MÃ' trước.");                   
@@ -795,22 +798,22 @@ private void suaSanPham() {
     }//GEN-LAST:event_tblBangMouseClicked
 
     private void lblAnhMouseClicked(java.awt.event.MouseEvent evt) {
-        // TODO add your handling code here:
-        JFileChooser jFC = new JFileChooser("src\\Images");
-        jFC.showOpenDialog(null);
-        File file = jFC.getSelectedFile();
-        lblAnh.setText("");
-        try {
-            Image img = ImageIO.read(file);
-            strAnh = file.getName();
-            int width = lblAnh.getWidth();
-            int height = lblAnh.getHeight();
-            lblAnh.setIcon(new ImageIcon(img.getScaledInstance(width, height, 0)));
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "ĐÃ XẢY RA LỖI!");
-        }
-
+    // TODO add your handling code here:
+    JFileChooser jFC = new JFileChooser("src\\Images");
+    jFC.showOpenDialog(null);
+    File file = jFC.getSelectedFile();
+    lblAnh.setText("");
+    try {
+        Image img = ImageIO.read(file);
+        strAnh = file.getName();
+        int width = lblAnh.getWidth();
+        int height = lblAnh.getHeight();
+        lblAnh.setIcon(new ImageIcon(img.getScaledInstance(width, height, 0)));
+    } catch (IOException ex) {
+        JOptionPane.showMessageDialog(this, "ĐÃ XẢY RA LỖI!");
     }
+
+}
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
@@ -838,7 +841,7 @@ private void suaSanPham() {
 
     private void btnTaoMaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaoMaActionPerformed
         // TODO add your handling code here:
-                taoMaSanPham();
+        taoMaSanPham();
 
     }//GEN-LAST:event_btnTaoMaActionPerformed
 
@@ -865,37 +868,37 @@ private void suaSanPham() {
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+    /* Set the Nimbus look and feel */
+    //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+    /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
+     */
+    try {
+        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            if ("Nimbus".equals(info.getName())) {
+                javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                break;
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(QuanLySanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(QuanLySanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(QuanLySanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(QuanLySanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new QuanLySanPham().setVisible(true);
-            }
-        });
+    } catch (ClassNotFoundException ex) {
+        java.util.logging.Logger.getLogger(QuanLySanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (InstantiationException ex) {
+        java.util.logging.Logger.getLogger(QuanLySanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (IllegalAccessException ex) {
+        java.util.logging.Logger.getLogger(QuanLySanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        java.util.logging.Logger.getLogger(QuanLySanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
+    //</editor-fold>
+    //</editor-fold>
+
+    /* Create and display the form */
+    java.awt.EventQueue.invokeLater(new Runnable() {
+        public void run() {
+            new QuanLySanPham().setVisible(true);
+        }
+    });
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLamMoiSP;

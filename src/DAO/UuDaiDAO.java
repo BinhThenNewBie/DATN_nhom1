@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class UuDaiDAO {
 
-    public void insert(UuDai uuDai) {
+    public void them(UuDai uuDai) {
         String sql = "INSERT INTO UUDAI (ID_UD, GIATRI, MOTA, NGAYBATDAU, NGAYKETTHUC) VALUES (?, ?, ?, ?, ?)";
         try (Connection con = DBconnect.getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, uuDai.getIdUD());
@@ -37,7 +37,7 @@ public class UuDaiDAO {
     }
 
     // Cập nhật ưu đãi
-    public void update(UuDai uuDai) {
+    public void sua(UuDai uuDai) {
         String sql = "UPDATE UUDAI SET GIATRI = ?, MOTA = ?, NGAYBATDAU = ?, NGAYKETTHUC = ? WHERE ID_UD = ?";
         try (Connection con = DBconnect.getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, uuDai.getGiaTri());
@@ -54,7 +54,7 @@ public class UuDaiDAO {
     }
 
     // Xóa ưu đãi
-    public void delete(String idUd) {
+    public void xoa(String idUd) {
         String sql = "DELETE FROM UUDAI WHERE ID_UD = ?";
         try (Connection con = DBconnect.getConnection(); PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, idUd);
@@ -85,7 +85,7 @@ public class UuDaiDAO {
         return list;
     }
     
-    public Object[] GETROW(UuDai ud) {
+    public Object[] getRow(UuDai ud) {
     String id = ud.getIdUD();
     String giaTri = ud.getGiaTri();
     String moTa = ud.getMoTa();
