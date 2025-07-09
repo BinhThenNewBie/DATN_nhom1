@@ -4,7 +4,7 @@
  */
 package Model;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  *
@@ -13,17 +13,17 @@ import java.sql.Date;
 public class UuDai {
     private String idUD;
     private String giaTri;
-    private int soLuong;
-    private java.sql.Date ngayBatDau;
-    private java.sql.Date ngayKetThuc;
+    private String moTa;
+    private Date ngayBatDau;
+    private Date ngayKetThuc;
 
     public UuDai() {
     }
 
-    public UuDai(String idUD, String giaTri, int soLuong, Date ngayBatDau, Date ngayKetThuc) {
+    public UuDai(String idUD, String giaTri, String moTa, Date ngayBatDau, Date ngayKetThuc) {
         this.idUD = idUD;
         this.giaTri = giaTri;
-        this.soLuong = soLuong;
+        this.moTa = moTa;
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
     }
@@ -44,12 +44,12 @@ public class UuDai {
         this.giaTri = giaTri;
     }
 
-    public int getSoLuong() {
-        return soLuong;
+    public String getMoTa() {
+        return moTa;
     }
 
-    public void setSoLuong(int soLuong) {
-        this.soLuong = soLuong;
+    public void setMoTa(String moTa) {
+        this.moTa = moTa;
     }
 
     public Date getNgayBatDau() {
@@ -67,5 +67,6 @@ public class UuDai {
     public void setNgayKetThuc(Date ngayKetThuc) {
         this.ngayKetThuc = ngayKetThuc;
     }
+    
     
 }

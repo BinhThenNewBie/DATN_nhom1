@@ -4,19 +4,69 @@
  */
 package view;
 
+import DAO.NhanvienDAO;
+import Model.Nhanvien;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author ADMIN
  */
 public class QuanLyNhanVien extends javax.swing.JFrame {
-
+      DefaultTableModel tableModel= new DefaultTableModel();
+      NhanvienDAO nvd = new NhanvienDAO();
+      String strAnh = "";
     /**
      * Creates new form QuanLyNhanVien
      */
     public QuanLyNhanVien() {
         initComponents();
+        initTable();
+        fillTable();
     }
-
+public void initTable(){
+    tableModel = new DefaultTableModel();
+    String[] cols = new String[]{"ID nhân viên", "Họ và tên", "Chức vụ", "Số điện thoại", "IMG"};
+    tableModel.setColumnIdentifiers(cols);
+    tblNhanvien.setModel(tableModel);
+}
+public void fillTable(){
+    tableModel.setRowCount(0);
+    for (Nhanvien nv : nvd.GETALL()) {
+        Object[] rows = nvd.GETROW(nv);
+        tableModel.addRow(rows);
+    }
+}
+public void showdetail(){
+    int chon= tblNhanvien.getSelectedRow();
+    if(chon >=0){
+        Nhanvien nv = nvd.GETALL().get(chon);
+        txtIdnv.setText(nv.getID_NV());
+        txtSdt.setText(nv.getSDT());
+        txtTennv.setText(nv.getHoTen());
+    if(nv.getIMG().equals("NO IMAGE")){
+        lblAnh.setText("NO IMAGE");
+        lblAnh.setIcon(null);
+    }else{
+        try {
+         strAnh = nv.getIMG();
+        ImageIcon imgIcon= new ImageIcon(getClass().getResource("/Images_nhanvien/"+strAnh));
+        lblAnh.setText("");
+        lblAnh.setIcon(imgIcon);   
+        } catch (Exception e) {
+         lblAnh.setText("Không tìm thấy ảnh");
+        lblAnh.setIcon(null);   
+        }   
+    }
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,12 +79,11 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         lblAnh = new javax.swing.JLabel();
-        cboChucvu = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtIdnv = new javax.swing.JTextField();
         txtTennv = new javax.swing.JTextField();
-        txtSdt = new javax.swing.JTextField();
+        txtChucvu = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -43,6 +92,7 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
         btnKhoa = new javax.swing.JButton();
         btnSua = new javax.swing.JButton();
         btnLamMoi = new javax.swing.JButton();
+        txtSdt = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -51,6 +101,11 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(133, 151, 186));
 
         lblAnh.setText("ẢNH NHÂN VIÊN");
+        lblAnh.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblAnhMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -69,9 +124,6 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        cboChucvu.setFont(new java.awt.Font("Segoe UI Light", 1, 12)); // NOI18N
-        cboChucvu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "STAFF" }));
-
         jLabel1.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel1.setText("ID NHÂN VIÊN");
 
@@ -82,7 +134,12 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
 
         txtTennv.setFont(new java.awt.Font("Segoe UI Light", 1, 12)); // NOI18N
 
-        txtSdt.setFont(new java.awt.Font("Segoe UI Light", 1, 12)); // NOI18N
+        txtChucvu.setFont(new java.awt.Font("Segoe UI Light", 1, 12)); // NOI18N
+        txtChucvu.setText("STAFF");
+        txtChucvu.setActionCommand("<Not Set>");
+        txtChucvu.setEnabled(false);
+        txtChucvu.setFocusable(false);
+        txtChucvu.setOpaque(true);
 
         jLabel3.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel3.setText("SỐ ĐIỆN THOẠI");
@@ -101,6 +158,11 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblNhanvien.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblNhanvienMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblNhanvien);
 
         btnThem.setBackground(new java.awt.Color(31, 51, 86));
@@ -142,6 +204,8 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
             }
         });
 
+        txtSdt.setFont(new java.awt.Font("Segoe UI Light", 1, 12)); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -170,12 +234,12 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
                                     .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING))
                                 .addGap(29, 29, 29)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtTennv)
-                                    .addComponent(txtSdt)
-                                    .addComponent(cboChucvu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(txtTennv, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                                    .addComponent(txtChucvu)
+                                    .addComponent(txtSdt, javax.swing.GroupLayout.Alignment.TRAILING)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                                 .addComponent(txtIdnv, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(49, 49, 49)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -195,13 +259,13 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
                             .addComponent(txtTennv, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
                         .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtSdt, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(txtSdt, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(cboChucvu, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtChucvu, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4)))
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -246,6 +310,28 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnLamMoiActionPerformed
 
+    private void lblAnhMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAnhMouseClicked
+        // TODO add your handling code here:
+        JFileChooser jFC = new JFileChooser("src\\Images");
+        jFC.showOpenDialog(null);
+        File file = jFC.getSelectedFile();
+        lblAnh.setText("");
+        try {
+            Image img = ImageIO.read(file);
+            strAnh = file.getName();
+            int width = lblAnh.getWidth();
+            int height = lblAnh.getHeight();
+            lblAnh.setIcon(new ImageIcon(img.getScaledInstance(width, height, 0)));
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "ĐÃ XẢY RA LỖI!");
+        }
+    }//GEN-LAST:event_lblAnhMouseClicked
+
+    private void tblNhanvienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNhanvienMouseClicked
+        // TODO add your handling code here:
+        showdetail();
+    }//GEN-LAST:event_tblNhanvienMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -286,7 +372,6 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
     private javax.swing.JButton btnLamMoi;
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThem;
-    private javax.swing.JComboBox<String> cboChucvu;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -296,6 +381,7 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblAnh;
     private javax.swing.JTable tblNhanvien;
+    private javax.swing.JTextField txtChucvu;
     private javax.swing.JTextField txtIdnv;
     private javax.swing.JTextField txtSdt;
     private javax.swing.JTextField txtTennv;
