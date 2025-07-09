@@ -13,7 +13,9 @@ import Model.Taikhoan;
  * @author PC Của Bình
  */
 public class forgotpass extends javax.swing.JFrame {
+
     Taikhoan tk = new Taikhoan();
+
     /**
      * Creates new form forgotpass
      */
@@ -25,15 +27,15 @@ public class forgotpass extends javax.swing.JFrame {
     public void nhanma() {
         String to = txtemailin.getText();
         String tieude = "Mã xác nhận tài khoản, vui lòng không chia sẻ";
-        
-        if(to.equals("zuka400915@gmail.com")){
-            
-        forgotpass2 fgp2 = new forgotpass2();
-        fgp2.setVisible(true);
-        Email.sendEmail(to, tieude, "Mã ở đây");
-        btnnhanma.addActionListener(e -> this.dispose());
-        
-        this.dispose();
+
+        if (to.equals("zuka400915@gmail.com")) {
+
+            forgotpass2 fgp2 = new forgotpass2();
+            fgp2.setVisible(true);
+            Email.sendEmail(to, tieude, "Mã ở đây");
+            btnnhanma.addActionListener(e -> this.dispose()); 
+
+            this.dispose();
         }
     }
 
@@ -130,7 +132,6 @@ public class forgotpass extends javax.swing.JFrame {
     }//GEN-LAST:event_txtemailinActionPerformed
 
     private void btnnhanmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnhanmaActionPerformed
-
         nhanma();
     }//GEN-LAST:event_btnnhanmaActionPerformed
 

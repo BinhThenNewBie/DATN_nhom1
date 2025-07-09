@@ -4,6 +4,10 @@
  */
 package view;
 
+import DAO.TaikhoanDAO;
+import Model.Taikhoan;
+import java.util.List;
+
 /**
  *
  * @author PC Của Bình
@@ -16,7 +20,33 @@ public class Login extends javax.swing.JFrame {
     public Login() {
         initComponents();
     }
-
+    public void forgotpass(){
+        forgotpass fgp = new forgotpass();
+        fgp.setVisible(true);
+    }    
+    
+    public void checklogin(){
+        String usernamein = txtusername.getText();
+        char[] passwordin = txtpass.getPassword();
+        TaikhoanDAO tkDAO = new TaikhoanDAO();
+        List<Taikhoan> dstk = tkDAO.GETALL();
+        for (Taikhoan tk : dstk ) {
+            if(usernamein.equals(tk.getEmail()) && passwordin.equals(tk.getPass())){
+                if(tk.getVaiTro().equals("ADMIN")){
+                    Admin ad = new Admin();
+                    ad.setVisible(true);
+                }else{
+                    StaffBanHang stff = new StaffBanHang();
+                    stff.setVisible(true);
+                }
+                
+            }
+            
+        }
+    
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -43,11 +73,21 @@ public class Login extends javax.swing.JFrame {
         btnLogin.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         btnLogin.setForeground(new java.awt.Color(255, 255, 255));
         btnLogin.setText("LOGIN");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLoginActionPerformed(evt);
+            }
+        });
 
         btnForgot.setBackground(new java.awt.Color(31, 51, 86));
         btnForgot.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         btnForgot.setForeground(new java.awt.Color(255, 255, 255));
         btnForgot.setText("FORGOT?");
+        btnForgot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnForgotActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Light", 1, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -119,6 +159,14 @@ public class Login extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        checklogin();
+    }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void btnForgotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnForgotActionPerformed
+        forgotpass();
+    }//GEN-LAST:event_btnForgotActionPerformed
 
     /**
      * @param args the command line arguments
