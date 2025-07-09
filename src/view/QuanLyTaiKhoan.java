@@ -26,7 +26,7 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
     }
     public void initTable(){
     tableModel = new DefaultTableModel();
-    String[] cols = new String[]{"ID tài khoản", "Password","Email", "Vai trò"};
+    String[] cols = new String[]{"ID tài khoản", "Password","Email", "Vai trò","Trạng Thái"};
     tableModel.setColumnIdentifiers(cols);
     tblTaikhoan.setModel(tableModel);
 }
@@ -45,6 +45,14 @@ public void showdetail(){
         txtPass.setText(tk.getPass());
         txtEmail.setText(tk.getEmail());
         cboVaitro.setSelectedItem(tk.getVaiTro());
+        String trangThai = tk.getTrangThai();
+        if("LOCKED".equalsIgnoreCase(trangThai)){
+            btnKhoa.setEnabled(false);
+            btnMokhoa.setEnabled(true);
+        }else{
+            btnKhoa.setEnabled(true);
+            btnMokhoa.setEnabled(false);
+        }
 }
     
     }
@@ -67,7 +75,8 @@ public void sua(){
         String Pass= txtPass.getText();
         String Email =txtEmail.getText();
         String vaiTro = (String) cboVaitro.getSelectedItem();
-        Taikhoan tk = new Taikhoan(IDTK, Pass, Email, vaiTro);
+        String trangThai = chontk.getTrangThai();
+        Taikhoan tk = new Taikhoan(IDTK, Pass, Email, vaiTro,trangThai);
     int result = tkd.sua(IDTK, tk);
     if( result==1){
         fillTable();
@@ -78,26 +87,72 @@ public void sua(){
      }
         }
 }
-public void mokhoatk(){
-    
-}
-public void khoatk(){
-    
-}
-//public void them(){
-//    String ID_TK = txtIdnv.getText();
-//        String Pass = txtPass.getText();
-//        String Email = txtEmail.getText();
-//        String vaiTro = (String) cboVaitro.getSelectedItem();
-//        Taikhoan tk = new Taikhoan(ID_TK, Pass, Email, vaiTro);
-//    int result = tkd.Them(tk);
-//    if( result==1){
-//        fillTable();
-//        JOptionPane.showMessageDialog(this, "Thêm tài khoản thành công");
-//    }else{
-//        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra");
-//    }
-//}
+    public void moKhoaTaiKhoan(){
+        int chon = tblTaikhoan.getSelectedRow();
+        if(chon >= 0){
+            Taikhoan chontk = tkd.GETALL().get(chon);
+            
+            // Kiểm tra nếu tài khoản chưa bị khóa
+            if("ACTIVE".equals(chontk.getTrangThai())){
+                JOptionPane.showMessageDialog(this, "Tài khoản đang hoạt động!");
+                return;
+            }
+            
+            int xacNhan = JOptionPane.showConfirmDialog(this, 
+                "Bạn có chắc muốn mở khóa tài khoản: " + chontk.getID_TK() + "?", 
+                "Xác nhận mở khóa", JOptionPane.YES_NO_OPTION);
+                
+            if(xacNhan == JOptionPane.YES_OPTION){
+                int result = tkd.moKhoaTaiKhoan(chontk.getID_TK());
+                if(result == 1){
+                    fillTable();
+                    JOptionPane.showMessageDialog(this, "Mở khóa tài khoản thành công!");
+                    lammoi();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi mở khóa tài khoản!");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần mở khóa!");
+        }
+    }
+  // Hàm khóa tài khoản
+    public void khoaTaiKhoan(){
+        int chon = tblTaikhoan.getSelectedRow();
+        if(chon >= 0){
+            Taikhoan chontk = tkd.GETALL().get(chon);
+            
+            // Kiểm tra nếu tài khoản đã bị khóa
+            if("LOCKED".equals(chontk.getTrangThai())){
+                JOptionPane.showMessageDialog(this, "Tài khoản đã bị khóa!");
+                return;
+            }
+            
+            // Không cho khóa tài khoản ADMIN
+            if("ADMIN".equalsIgnoreCase(chontk.getVaiTro())){
+                JOptionPane.showMessageDialog(this, "Không thể khóa tài khoản ADMIN!");
+                return;
+            }
+            
+            int xacNhan = JOptionPane.showConfirmDialog(this, 
+                "Bạn có chắc muốn khóa tài khoản: " + chontk.getID_TK() + "?", 
+                "Xác nhận khóa", JOptionPane.YES_NO_OPTION);
+                
+            if(xacNhan == JOptionPane.YES_OPTION){
+                int result = tkd.khoaTaiKhoan(chontk.getID_TK());
+                if(result == 1){
+                    fillTable();
+                    JOptionPane.showMessageDialog(this, "Khóa tài khoản thành công!");
+                    lammoi();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi khóa tài khoản!");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần khóa!");
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -274,7 +329,7 @@ public void khoatk(){
 
     private void btnMokhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMokhoaActionPerformed
         // TODO add your handling code here:
-        mokhoatk();
+        moKhoaTaiKhoan();
     }//GEN-LAST:event_btnMokhoaActionPerformed
 
     private void tblTaikhoanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTaikhoanMouseClicked
@@ -289,7 +344,7 @@ public void khoatk(){
 
     private void btnKhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhoaActionPerformed
         // TODO add your handling code here:
-        khoatk();
+        khoaTaiKhoan();
     }//GEN-LAST:event_btnKhoaActionPerformed
 
     /**
