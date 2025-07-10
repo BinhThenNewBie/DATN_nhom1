@@ -1,6 +1,7 @@
 package util;
 
 import java.util.Properties;
+import java.util.Random;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
@@ -15,8 +16,19 @@ public class Email {
 
     static final String from = "binhdath06811@gmail.com";
     static final String password = "seramtljhgugykvk";
-    
-    
+    static Random rdn = new Random();
+
+    public static String ngaunhien(){
+        String result = "";
+        
+        for(int i = 0; i < 5; i++){
+            int number = rdn.nextInt(10);
+            result += number + " ";
+        }
+        
+        return result.trim(); // Loại bỏ dấu cách cuối
+    }
+
     public static boolean sendEmail(String to, String tieuDe, String noiDung) {
         // Properties : khai báo các thuộc tính
         Properties props = new Properties();
@@ -53,8 +65,6 @@ public class Email {
             // Tiêu đề email
             msg.setSubject(tieuDe);
 
-            
-
             // Quy định email nhận phản hồi
             // msg.setReplyTo(InternetAddress.parse(from, false))
             // Nội dung
@@ -73,7 +83,7 @@ public class Email {
 
     public static void main(String[] args) {
 
-        Email.sendEmail("zuka400915@gmail.com", System.currentTimeMillis() + "", "check!");
+        Email.sendEmail("zuka400915@gmail.com", "Mã đổi mật khẩu tài khoản ", ngaunhien());
 
     }
 
