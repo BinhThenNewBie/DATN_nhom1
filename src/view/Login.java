@@ -7,6 +7,7 @@ package view;
 import DAO.TaikhoanDAO;
 import Model.Taikhoan;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -28,10 +29,21 @@ public class Login extends javax.swing.JFrame {
     public void checklogin(){
         String usernamein = txtusername.getText();
         char[] passwordin = txtpass.getPassword();
+        String passwordStr = new String(passwordin);
+        boolean check = false;
         TaikhoanDAO tkDAO = new TaikhoanDAO();
         List<Taikhoan> dstk = tkDAO.GETALL();
+        
+        if(usernamein.isEmpty() || passwordStr.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Xin vui lòng nhập đầy đủ thông tin", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        
+        
+        
         for (Taikhoan tk : dstk ) {
-            if(usernamein.equals(tk.getEmail()) && passwordin.equals(tk.getPass())){
+            if(usernamein.equals(tk.getEmail()) && passwordStr.equals(tk.getPass())){
+                check = true;
                 if(tk.getVaiTro().equals("ADMIN")){
                     Admin ad = new Admin();
                     ad.setVisible(true);
@@ -41,7 +53,11 @@ public class Login extends javax.swing.JFrame {
                 }
                 
             }
-            
+           break;
+           
+        }
+        if(!check){
+            JOptionPane.showMessageDialog(this, "Sai thông tin đăng nhập!!!");
         }
     
     }
