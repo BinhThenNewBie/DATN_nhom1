@@ -1,5 +1,6 @@
 package util;
 
+import java.awt.Frame;
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Authenticator;
@@ -9,6 +10,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import view.forgotpass;
+
 
 public class Email {
     // Email: tungletest1.email@gmail.com
@@ -16,6 +19,9 @@ public class Email {
 
     static final String from = "binhdath06811@gmail.com";
     static final String password = "seramtljhgugykvk";
+    static forgotpass fgp = new forgotpass();
+    static String nguoinhan = fgp.getnguoinhan();
+    
     static Random rdn = new Random();
 
     public static String ngaunhien(){
@@ -29,6 +35,10 @@ public class Email {
         return result.trim(); // Loại bỏ dấu cách cuối
     }
 
+    
+    
+    
+    
     public static boolean sendEmail(String to, String tieuDe, String noiDung) {
         // Properties : khai báo các thuộc tính
         Properties props = new Properties();
@@ -83,7 +93,7 @@ public class Email {
 
     public static void main(String[] args) {
 
-        Email.sendEmail("zuka400915@gmail.com", "Mã đổi mật khẩu tài khoản ", ngaunhien());
+        Email.sendEmail(nguoinhan, "Mã đổi mật khẩu tài khoản ", ngaunhien());
 
     }
 

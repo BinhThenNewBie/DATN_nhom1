@@ -5,16 +5,14 @@
 package view;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import util.Email;
-import Model.Taikhoan;
 
 /**
  *
  * @author PC Của Bình
  */
 public class forgotpass extends javax.swing.JFrame {
-
-    Taikhoan tk = new Taikhoan();
 
     /**
      * Creates new form forgotpass
@@ -24,16 +22,21 @@ public class forgotpass extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
+    public String getnguoinhan() {
+        return txtemailin.getText();
+    }
+
     public void nhanma() {
         String to = txtemailin.getText();
         String tieude = "Mã xác nhận tài khoản, vui lòng không chia sẻ";
-
-        if (to.equals("zuka400915@gmail.com")) {
-
+        String ngaunhien = Email.ngaunhien();
+        if (txtemailin.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập Email để nhận mã xác nhận");
+        } else {
             forgotpass2 fgp2 = new forgotpass2();
             fgp2.setVisible(true);
-            Email.sendEmail(to, tieude, "Mã ở đây");
-            btnnhanma.addActionListener(e -> this.dispose()); 
+            Email.sendEmail(to, tieude, "Mã ở đây: " + ngaunhien);
+            btnnhanma.addActionListener(e -> this.dispose());
 
             this.dispose();
         }
