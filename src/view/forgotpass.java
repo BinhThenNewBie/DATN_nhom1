@@ -13,7 +13,7 @@ import util.Email;
  * @author PC Của Bình
  */
 public class forgotpass extends javax.swing.JFrame {
-
+    String ngaunhien = Email.ngaunhien();
     /**
      * Creates new form forgotpass
      */
@@ -22,6 +22,10 @@ public class forgotpass extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
+    public String macode(){
+        return ngaunhien;
+    }
+    
     public String getnguoinhan() {
         return txtemailin.getText();
     }
@@ -29,7 +33,6 @@ public class forgotpass extends javax.swing.JFrame {
     public void nhanma() {
         String to = txtemailin.getText();
         String tieude = "Mã xác nhận tài khoản, vui lòng không chia sẻ";
-        String ngaunhien = Email.ngaunhien();
         if (txtemailin.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập Email để nhận mã xác nhận");
         } else {

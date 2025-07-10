@@ -23,7 +23,7 @@ public class Email {
     static String nguoinhan = fgp.getnguoinhan();
     
     static Random rdn = new Random();
-
+    
     public static String ngaunhien(){
         String result = "";
         
@@ -31,8 +31,10 @@ public class Email {
             int number = rdn.nextInt(10);
             result += number + " ";
         }
+        // lỗi ở đâu méo bt đang check :))))))))))
         
         return result.trim(); // Loại bỏ dấu cách cuối
+        
     }
 
     

@@ -5,7 +5,7 @@
 package view;
 
 import javax.swing.JFrame;
-
+import javax.swing.JOptionPane;
 /**
  *
  * @author PC Của Bình
@@ -20,6 +20,17 @@ public class forgotpass2 extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
+    
+    public void checkma(){
+        forgotpass fgp = new forgotpass();
+        String macode = fgp.macode();
+        if(txtcode.getText().equals(macode)){
+            
+        }else{
+            JOptionPane.showMessageDialog(this, "Mã không chính xác");
+        }
+    
+    }
     
     
     
@@ -172,6 +183,7 @@ public class forgotpass2 extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new forgotpass2().setVisible(true);
+                
             }
         });
     }
