@@ -76,11 +76,11 @@ public class TaikhoanDAO {
     }
     
     // đổi mật khẩu
-    public int passwordchange(String passin, Taikhoan tk){
+    public int passwordchange(String passin,String ID_TK){
         String sql = "UPDATE TAIKHOAN SET PASS = ? WHERE ID_TK = ?";
         try (Connection con = DBconnect.getConnection();
                PreparedStatement pstm = con.prepareStatement(sql) ) {
-            pstm.setString(1, tk.getEmail());
+            pstm.setString(1, ID_TK);
             pstm.setString(2, passin);
         } catch (Exception e) {
         }
