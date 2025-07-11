@@ -14,6 +14,7 @@ import util.Email;
  */
 public class forgotpass extends javax.swing.JFrame {
     String ngaunhien = Email.ngaunhien();
+    String magui;
     /**
      * Creates new form forgotpass
      */
@@ -22,29 +23,38 @@ public class forgotpass extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
-    public String macode(){
-        return ngaunhien;
-    }
+    
     
     public String getnguoinhan() {
         return txtemailin.getText();
     }
 
     public void nhanma() {
+        
         String to = txtemailin.getText();
         String tieude = "Mã xác nhận tài khoản, vui lòng không chia sẻ";
         if (txtemailin.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập Email để nhận mã xác nhận");
         } else {
-            forgotpass2 fgp2 = new forgotpass2();
-            fgp2.setVisible(true);
             Email.sendEmail(to, tieude, "Mã ở đây: " + ngaunhien);
-            btnnhanma.addActionListener(e -> this.dispose());
-
-            this.dispose();
+            magui = String.valueOf(ngaunhien);
+            
         }
     }
-
+//zuka400915@gmail.com
+    public void checkma(){
+        String codein = txtcodein.getText();
+        if(codein.equals(magui)){
+            forgotpass2 fgp2 = new forgotpass2();
+            fgp2.setVisible(true);
+            dispose();
+        }else{
+            JOptionPane.showMessageDialog(this, "Mã không chính xác");
+        }
+    
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -59,6 +69,9 @@ public class forgotpass extends javax.swing.JFrame {
         txtemailin = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         btnnhanma = new javax.swing.JButton();
+        btnxacnhan = new javax.swing.JButton();
+        txtcodein = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -76,7 +89,7 @@ public class forgotpass extends javax.swing.JFrame {
 
         jLabel2.setBackground(new java.awt.Color(255, 255, 255));
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Vui lòng nhập Email của bạn ");
+        jLabel2.setText("Email liên kết với tài khoản");
 
         btnnhanma.setBackground(new java.awt.Color(31, 50, 84));
         btnnhanma.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -88,6 +101,19 @@ public class forgotpass extends javax.swing.JFrame {
             }
         });
 
+        btnxacnhan.setBackground(new java.awt.Color(30, 49, 81));
+        btnxacnhan.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnxacnhan.setForeground(new java.awt.Color(255, 255, 255));
+        btnxacnhan.setText("Xác nhận");
+        btnxacnhan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnxacnhanActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Mã xác nhận");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -97,13 +123,18 @@ public class forgotpass extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(102, 102, 102)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtemailin, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1)
-                            .addComponent(jLabel2)))
+                            .addComponent(jLabel2)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtcodein, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtemailin, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE))
+                            .addComponent(jLabel3)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(145, 145, 145)
-                        .addComponent(btnnhanma)))
-                .addContainerGap(107, Short.MAX_VALUE))
+                        .addGap(70, 70, 70)
+                        .addComponent(btnnhanma)
+                        .addGap(58, 58, 58)
+                        .addComponent(btnxacnhan)))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -114,9 +145,15 @@ public class forgotpass extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtemailin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45)
-                .addComponent(btnnhanma)
-                .addContainerGap(87, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(txtcodein, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnxacnhan)
+                    .addComponent(btnnhanma, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(50, 50, 50))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -140,6 +177,10 @@ public class forgotpass extends javax.swing.JFrame {
     private void btnnhanmaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnhanmaActionPerformed
         nhanma();
     }//GEN-LAST:event_btnnhanmaActionPerformed
+
+    private void btnxacnhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxacnhanActionPerformed
+        checkma();
+    }//GEN-LAST:event_btnxacnhanActionPerformed
 
     /**
      * @param args the command line arguments
@@ -178,9 +219,12 @@ public class forgotpass extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnnhanma;
+    private javax.swing.JButton btnxacnhan;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField txtcodein;
     private javax.swing.JTextField txtemailin;
     // End of variables declaration//GEN-END:variables
 }
