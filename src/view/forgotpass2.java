@@ -4,6 +4,8 @@
  */
 package view;
 
+import DAO.TaikhoanDAO;
+import java.util.Arrays;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 /**
@@ -11,7 +13,7 @@ import javax.swing.JOptionPane;
  * @author PC Của Bình
  */
 public class forgotpass2 extends javax.swing.JFrame {
-
+    TaikhoanDAO tkDAO = new TaikhoanDAO();
     /**
      * Creates new form forgotpass2
      */
@@ -23,11 +25,29 @@ public class forgotpass2 extends javax.swing.JFrame {
     
     
     
-    
+    public boolean trungpass(){
+        
+        char[] newpass = txtnewpassword.getPassword();
+        char[] cfnewpass = txtcfnewpassword.getPassword();
+        
+        boolean check = Arrays.equals(newpass,cfnewpass);
+        if(!check){
+            JOptionPane.showMessageDialog(this, "Mật khẩu không trùng khớp");
+        }
+        return check;
+    }
     
     public void changepassword(){
+        if(trungpass() == true){
+        String email = forgotpass.ngnhan;
+        String mk = new String(txtcfnewpassword.getPassword());
+        tkDAO.passwordchange(mk, email);
+        JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công");
+        }
         
     }
+    
+    
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -128,7 +148,7 @@ public class forgotpass2 extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnxacnhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxacnhanActionPerformed
-        
+        changepassword();
     }//GEN-LAST:event_btnxacnhanActionPerformed
 
     /**
