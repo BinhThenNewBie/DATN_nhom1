@@ -26,8 +26,7 @@ public class forgotpass2 extends javax.swing.JFrame {
     
     
     public void changepassword(){
-        // check xem mã nhập vào có trùng với mã gửi trong mail không nếu có thì cho đổi mật khẩu, không thì báo mã sai không đổi được
-        // Sử dụng changepassword đã tạo sẵn trong TaikhoanDAO để update password. notengay: 9/7/2025!!!!
+        
     }
     
     /**

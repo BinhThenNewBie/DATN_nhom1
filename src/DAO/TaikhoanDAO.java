@@ -75,8 +75,9 @@ public class TaikhoanDAO {
         return 0;
     }
     
+    // đổi mật khẩu
     public int passwordchange(String passin, Taikhoan tk){
-        String sql = "UPDATE TAIKHOAN SET PASS = ? WHERE EMAIL = ?";
+        String sql = "UPDATE TAIKHOAN SET PASS = ? WHERE ID_TK = ?";
         try (Connection con = DBconnect.getConnection();
                PreparedStatement pstm = con.prepareStatement(sql) ) {
             pstm.setString(1, tk.getEmail());
