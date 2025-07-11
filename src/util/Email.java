@@ -1,6 +1,6 @@
 package util;
 
-import java.awt.Frame;
+
 import java.util.Properties;
 import java.util.Random;
 import javax.mail.Authenticator;
@@ -22,16 +22,17 @@ public class Email {
     static forgotpass fgp = new forgotpass();
     static String nguoinhan = fgp.getnguoinhan();
     
-    static Random rdn = new Random();
+    
     
     public static String ngaunhien(){
+        Random rdn = new Random();
         String result = "";
         
         for(int i = 0; i < 5; i++){
             int number = rdn.nextInt(10);
             result += number + " ";
         }
-        // lỗi ở đâu méo bt đang check :))))))))))
+        
         
         return result.trim(); // Loại bỏ dấu cách cuối
         
