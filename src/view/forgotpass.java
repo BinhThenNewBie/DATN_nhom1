@@ -14,7 +14,7 @@ import util.Email;
  */
 public class forgotpass extends javax.swing.JFrame {
     String ngaunhien = Email.ngaunhien();
-    String magui;
+    String magui; // biến để lưu mã gửi gần nhất 
     /**
      * Creates new form forgotpass
      */
@@ -30,18 +30,17 @@ public class forgotpass extends javax.swing.JFrame {
     }
 
     public void nhanma() {
-        
-        String to = txtemailin.getText();
+        String nguoinhan = txtemailin.getText();
         String tieude = "Mã xác nhận tài khoản, vui lòng không chia sẻ";
         if (txtemailin.getText().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập Email để nhận mã xác nhận");
         } else {
-            Email.sendEmail(to, tieude, "Mã ở đây: " + ngaunhien);
-            magui = String.valueOf(ngaunhien);
+            Email.sendEmail(nguoinhan, tieude, "Mã ở đây: " + ngaunhien);
+            magui = String.valueOf(ngaunhien); 
             
         }
     }
-//zuka400915@gmail.com
+
     public void checkma(){
         String codein = txtcodein.getText();
         if(codein.equals(magui)){
