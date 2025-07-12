@@ -86,10 +86,11 @@ public class HoaDonChoDAO {
     }
 
     // XÓA
-    public int DeleteSP(String ID_SP) {
-        String sql = "DELETE FROM CHITIETHOADON WHERE ID_SP LIKE ?";
+    public int DeleteSP(String ID_SP, String ID_HD) {
+        String sql = "DELETE FROM CHITIETHOADON WHERE ID_SP LIKE ? AND ID_HD LIKE ?";
         try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ID_SP);
+            ps.setString(2, ID_HD);
             if (ps.executeUpdate() > 0) {
                 return 1;
             }
@@ -162,7 +163,7 @@ public class HoaDonChoDAO {
 
     // GET ALL ID HÓA ĐƠN
     public List<ChiTietHoaDon> getAllID_HD(String ID_HD) {
-        List<ChiTietHoaDon> lstHDCT = new ArrayList<>(); // ✅ Tạo mới mỗi lần gọi
+        List<ChiTietHoaDon> lstHDCT = new ArrayList<>(); 
 
         String sql = "SELECT ID_HD, ID_SP, TENSP, GIASP, SOLUONG FROM CHITIETHOADON WHERE ID_HD = ?";
         try (
