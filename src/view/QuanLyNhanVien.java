@@ -7,6 +7,7 @@ package view;
 import DAO.NhanvienDAO;
 import Model.Nhanvien;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -31,6 +32,18 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
         initTable();
         fillTable();
     }
+    private ImageIcon resizeImage(String imagePath, int width, int height) {
+    try {
+        ImageIcon originalIcon = new ImageIcon(getClass().getResource(imagePath));
+        Image originalImage = originalIcon.getImage();
+        
+        // Resize ảnh với kích thước cố định
+        Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+        return new ImageIcon(resizedImage);
+    } catch (Exception e) {
+        return null;
+    }
+}
 public void initTable(){
     tableModel = new DefaultTableModel();
     String[] cols = new String[]{"ID nhân viên", "Họ và tên", "Chức vụ", "Số điện thoại", "IMG"};
@@ -51,21 +64,41 @@ public void showdetail(){
         txtIdnv.setText(nv.getID_NV());
         txtSdt.setText(nv.getSDT());
         txtTennv.setText(nv.getHoTen());
-    if(nv.getIMG().equals("NO IMAGE")){
-        lblAnh.setText("NO IMAGE");
-        lblAnh.setIcon(null);
-    }else{
-        try {
-         strAnh = nv.getIMG();
-        ImageIcon imgIcon= new ImageIcon(getClass().getResource("/Images_nhanvien/"+strAnh));
-        lblAnh.setText("");
-        lblAnh.setIcon(imgIcon);   
-        } catch (Exception e) {
-         lblAnh.setText("Không tìm thấy ảnh");
-        lblAnh.setIcon(null);   
-        }   
+     // Thiết lập kích thước cố định cho ảnh (ví dụ: 200x200 pixels)
+        int IMAGE_WIDTH = 220;
+        int IMAGE_HEIGHT = 240;
+        
+        if(nv.getIMG() == null || nv.getIMG().equals("NO IMAGE") || nv.getIMG().isEmpty()){
+            lblAnh.setText("NO IMAGE");
+            lblAnh.setIcon(null);
+        } else {
+            try {
+                strAnh = nv.getIMG();
+                // Sử dụng method helper để resize ảnh
+                ImageIcon resizedIcon = resizeImage("/Images_nhanvien/" + strAnh, IMAGE_WIDTH, IMAGE_HEIGHT);
+                
+                if(resizedIcon != null) {
+                    lblAnh.setText("");
+                    lblAnh.setIcon(resizedIcon);
+                } else {
+                    lblAnh.setText("Không tìm thấy ảnh");
+                    lblAnh.setIcon(null);
+                }
+            } catch (Exception e) {
+                lblAnh.setText("Lỗi hiển thị ảnh");
+                lblAnh.setIcon(null);
+            }
+        }
     }
-    }
+}
+public void lammoi(){
+   txtIdnv.setText("");
+    txtTennv.setText("");
+    txtSdt.setText("");
+    txtChucvu.setText("STAFF");
+    lblAnh.setText("ẢNH NHÂN VIÊN");
+    lblAnh.setIcon(null);
+    strAnh = "";  
 }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -308,23 +341,50 @@ public void showdetail(){
 
     private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
         // TODO add your handling code here:
+        lammoi();
     }//GEN-LAST:event_btnLamMoiActionPerformed
 
     private void lblAnhMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAnhMouseClicked
         // TODO add your handling code here:
-        JFileChooser jFC = new JFileChooser("src\\Images");
-        jFC.showOpenDialog(null);
+         JFileChooser jFC = new JFileChooser("src\\Images_nhanvien");
+    // Thêm filter để chỉ chọn file ảnh
+    jFC.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+        "Image Files", "jpg", "jpeg", "png", "gif", "bmp"));
+    
+    int result = jFC.showOpenDialog(this);
+    if(result == JFileChooser.APPROVE_OPTION) {
         File file = jFC.getSelectedFile();
-        lblAnh.setText("");
-        try {
-            Image img = ImageIO.read(file);
-            strAnh = file.getName();
-            int width = lblAnh.getWidth();
-            int height = lblAnh.getHeight();
-            lblAnh.setIcon(new ImageIcon(img.getScaledInstance(width, height, 0)));
-        } catch (IOException ex) {
-            JOptionPane.showMessageDialog(this, "ĐÃ XẢY RA LỖI!");
+        
+        // Kiểm tra xem file có tồn tại không
+        if(file != null && file.exists()) {
+            try {
+                // Thiết lập kích thước cố định
+                int IMAGE_WIDTH = 220;
+                int IMAGE_HEIGHT = 240;
+                
+                // Đọc ảnh từ file
+                BufferedImage originalImage = ImageIO.read(file);
+                
+                // Resize ảnh với kích thước cố định
+                Image resizedImage = originalImage.getScaledInstance(
+                    IMAGE_WIDTH, IMAGE_HEIGHT, Image.SCALE_SMOOTH);
+                
+                // Hiển thị ảnh đã resize
+                ImageIcon imageIcon = new ImageIcon(resizedImage);
+                lblAnh.setText("");
+                lblAnh.setIcon(imageIcon);
+                
+                // Lưu tên file để sử dụng sau này
+                strAnh = file.getName();
+                
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Lỗi khi đọc file ảnh: " + ex.getMessage(), 
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+                lblAnh.setText("Lỗi đọc ảnh");
+                lblAnh.setIcon(null);
+            }
         }
+    }
     }//GEN-LAST:event_lblAnhMouseClicked
 
     private void tblNhanvienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNhanvienMouseClicked
