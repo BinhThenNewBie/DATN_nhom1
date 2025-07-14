@@ -49,9 +49,11 @@ public void showdetail(){
         if("LOCKED".equalsIgnoreCase(trangThai)){
             btnKhoa.setEnabled(false);
             btnMokhoa.setEnabled(true);
+            btnSua.setEnabled(true);
         }else{
             btnKhoa.setEnabled(true);
             btnMokhoa.setEnabled(false);
+            btnSua.setEnabled(false);
         }
 }
     
@@ -107,7 +109,6 @@ public void sua(){
                 if(result == 1){
                     fillTable();
                     JOptionPane.showMessageDialog(this, "Mở khóa tài khoản thành công!");
-                    lammoi();
                 } else {
                     JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi mở khóa tài khoản!");
                 }
@@ -128,12 +129,6 @@ public void sua(){
                 return;
             }
             
-            // Không cho khóa tài khoản ADMIN
-            if("ADMIN".equalsIgnoreCase(chontk.getVaiTro())){
-                JOptionPane.showMessageDialog(this, "Không thể khóa tài khoản ADMIN!");
-                return;
-            }
-            
             int xacNhan = JOptionPane.showConfirmDialog(this, 
                 "Bạn có chắc muốn khóa tài khoản: " + chontk.getID_TK() + "?", 
                 "Xác nhận khóa", JOptionPane.YES_NO_OPTION);
@@ -143,7 +138,6 @@ public void sua(){
                 if(result == 1){
                     fillTable();
                     JOptionPane.showMessageDialog(this, "Khóa tài khoản thành công!");
-                    lammoi();
                 } else {
                     JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi khóa tài khoản!");
                 }

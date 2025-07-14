@@ -128,20 +128,5 @@ public class TaikhoanDAO {
         return 0;
     }
     
-    // Phương thức kiểm tra trạng thái tài khoản
-    public String getTrangThaiTaiKhoan(String ID_TK) {
-        String sql = "SELECT TRANGTHAI FROM TAIKHOAN WHERE ID_TK = ?";
-        try (Connection con = DBconnect.getConnection();
-             PreparedStatement pstm = con.prepareStatement(sql)) {
-            pstm.setString(1, ID_TK);
-            ResultSet rs = pstm.executeQuery();
-            if (rs.next()) {
-                return rs.getString("TRANGTHAI");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "ACTIVE"; // Mặc định trả về ACTIVE nếu không tìm thấy
-    }
 }
 
