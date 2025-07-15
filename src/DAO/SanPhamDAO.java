@@ -19,9 +19,59 @@ import java.util.List;
  */
 public class SanPhamDAO {
 
+    // 1. Khóa sản phẩm theo ID
+    public boolean khoaSanPham(String idSP) {
+        String sql = "UPDATE SANPHAM SET TRANGTHAI = 0 WHERE ID_SP = ?";
+        try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idSP);
+            return ps.executeUpdate() > 0;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+    public boolean moKhoaSanPham(String idSP) {
+    String sql = "UPDATE SANPHAM SET TRANGTHAI = 1 WHERE ID_SP = ?";
+    try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+        ps.setString(1, idSP);
+        return ps.executeUpdate() > 0;
+    } catch (Exception ex) {
+        ex.printStackTrace();
+        return false;
+    }
+}
+    
+
+    // 2. Lấy sản phẩm theo ID_SP
+    public List<SanPham> getAllID_SP(String ID_SP) {
+        List<SanPham> listsp = new ArrayList<>();
+        String sql = "SELECT * FROM SANPHAM WHERE ID_SP LIKE ?";
+        Connection con = DBconnect.getConnection();
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, ID_SP);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                SanPham sp = new SanPham();
+                sp.setIDSanPham(rs.getString(1));
+                sp.setTenSanPham(rs.getString(2));
+                sp.setGiaTien(rs.getFloat(3));
+                sp.setLoaiSanPham(rs.getString(4));
+                sp.setIMG(rs.getString(5));
+                sp.setTrangThai(rs.getInt(6));
+                listsp.add(sp);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listsp;
+    }
+
+  
+    // 3. Lấy tất cả sản phẩm
     public List<SanPham> getAll() {
         List<SanPham> listsp = new ArrayList<>();
-        String sql = "SELECT*FROM SANPHAM";
+        String sql = "SELECT * FROM SANPHAM";
         Connection con = DBconnect.getConnection();
         try {
             Statement stm = con.createStatement();
@@ -30,108 +80,142 @@ public class SanPhamDAO {
                 SanPham sp = new SanPham();
                 sp.setIDSanPham(rs.getString(1));
                 sp.setTenSanPham(rs.getString(2));
-                sp.setGiaTien(rs.getString(3));
+                sp.setGiaTien(rs.getFloat(3));
                 sp.setLoaiSanPham(rs.getString(4));
                 sp.setIMG(rs.getString(5));
-
+                sp.setTrangThai(rs.getInt(6));
                 listsp.add(sp);
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
         }
         return listsp;
     }
-    
-public List<SanPham> getSPByTen(String ten) {
-    List<SanPham> listsp = new ArrayList<>();
-    String sql = "SELECT * FROM SANPHAM WHERE TENSP LIKE ?";
-    Connection con = DBconnect.getConnection();
-    try {
-        PreparedStatement pst = con.prepareStatement(sql);
-        pst.setString(1, "%" + ten + "%"); // tìm gần đúng
-        ResultSet rs = pst.executeQuery();
-        while (rs.next()) {
-            SanPham sp = new SanPham();
-            sp.setIDSanPham(rs.getString(1));
-            sp.setTenSanPham(rs.getString(2));
-            sp.setGiaTien(rs.getString(3));
-            sp.setLoaiSanPham(rs.getString(4));
-            sp.setIMG(rs.getString(5));
 
-            listsp.add(sp);
-        }
-    } catch (Exception ex) {
-        ex.printStackTrace();
-    }
-    return listsp;
-}
-
-
-    public Object[] getRow(SanPham sp) {
-        String ID = sp.getIDSanPham();
-        String ten = sp.getTenSanPham();
-        String giaTien = sp.getGiaTien();
-        String loai = sp.getLoaiSanPham();
-        String IMG = sp.getIMG();
-        Object[] row = new Object[]{ID, ten, giaTien, loai, IMG};
-        return row;
-    }
-
-public SanPham timkiem(String tenSanPham) {
-    String sql = "SELECT * FROM SANPHAM WHERE TENSP LIKE ?";
-    try (Connection con = DBconnect.getConnection(); 
-         PreparedStatement pstm = con.prepareStatement(sql)) {
-        pstm.setString(1, "%" + tenSanPham + "%");
-        try (ResultSet rs = pstm.executeQuery()) {  // Đóng ResultSet
-            if (rs.next()) {
-                SanPham sp = new SanPham();
-                sp.setIDSanPham(rs.getString("ID_SP"));
-                sp.setTenSanPham(rs.getString("TENSP"));
-                sp.setGiaTien(rs.getString("GIA"));
-                sp.setLoaiSanPham(rs.getString("LOAI"));
-                sp.setIMG(rs.getString("IMG"));
-                return sp;
-            }
-        }
-    } catch (Exception e) {
-        System.out.println("Lỗi: " + e.getMessage());
-        e.printStackTrace();  // In stack trace để debug
-    }
-    return null;
-}
-
+    // 4. Lọc sản phẩm theo loại
     public List<SanPham> locTheoLoai(String loai) {
         List<SanPham> list = new ArrayList<>();
         String sql = "SELECT * FROM SANPHAM WHERE LOAI = ?";
-
         try (Connection conn = DBconnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setString(1, loai);
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
                 SanPham sp = new SanPham();
                 sp.setIDSanPham(rs.getString(1));
                 sp.setTenSanPham(rs.getString(2));
-                sp.setGiaTien(rs.getString(3));
+                sp.setGiaTien(rs.getFloat(3));
                 sp.setLoaiSanPham(rs.getString(4));
                 sp.setIMG(rs.getString(5));
+                sp.setTrangThai(rs.getInt(6));
                 list.add(sp);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return list;
     }
 
-    // Tạo mã tự động: SP + (max ID + 1)
+    // 5. Tìm theo tên (gần đúng)
+    public List<SanPham> getSPByTen(String ten) {
+        List<SanPham> listsp = new ArrayList<>();
+        String sql = "SELECT * FROM SANPHAM WHERE TENSP LIKE ?";
+        Connection con = DBconnect.getConnection();
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, "%" + ten + "%");
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                SanPham sp = new SanPham();
+                sp.setIDSanPham(rs.getString(1));
+                sp.setTenSanPham(rs.getString(2));
+                sp.setGiaTien(rs.getFloat(3));
+                sp.setLoaiSanPham(rs.getString(4));
+                sp.setIMG(rs.getString(5));
+                sp.setTrangThai(rs.getInt(6));
+                listsp.add(sp);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return listsp;
+    }
+
+    // 6. Tìm kiếm chính xác 1 sản phẩm (đầu tiên theo tên gần đúng)
+    public SanPham timkiem(String tenSanPham) {
+        String sql = "SELECT * FROM SANPHAM WHERE TENSP LIKE ?";
+        try (Connection con = DBconnect.getConnection(); PreparedStatement pstm = con.prepareStatement(sql)) {
+            pstm.setString(1, "%" + tenSanPham + "%");
+            try (ResultSet rs = pstm.executeQuery()) {
+                if (rs.next()) {
+                    SanPham sp = new SanPham();
+                    sp.setIDSanPham(rs.getString("ID_SP"));
+                    sp.setTenSanPham(rs.getString("TENSP"));
+                    sp.setGiaTien(rs.getFloat("GIA"));
+                    sp.setLoaiSanPham(rs.getString("LOAI"));
+                    sp.setIMG(rs.getString("IMG"));
+                    sp.setTrangThai(rs.getInt("TrangThai"));
+                    return sp;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // 7. Lấy từng dòng để hiển thị lên JTable
+    public Object[] getRow(SanPham sp) {
+        return new Object[]{
+            sp.getIDSanPham(),
+            sp.getTenSanPham(),
+            sp.getGiaTien(),
+            sp.getLoaiSanPham(),
+            sp.getIMG(),
+            sp.getTrangThai() == 1 ? "Đang hoạt động" : "Đã khóa"
+        };
+    }
+
+    // 8. Thêm sản phẩm
+    public void them(SanPham sp) {
+        String sql = "INSERT INTO SANPHAM (ID_SP, TENSP, GIA, LOAI, IMG, TrangThai) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, sp.getIDSanPham());
+            ps.setString(2, sp.getTenSanPham());
+            ps.setFloat(3, sp.getGiaTien());
+            ps.setString(4, sp.getLoaiSanPham());
+            ps.setString(5, sp.getIMG());
+            ps.setInt(6, sp.getTrangThai());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 9. Cập nhật sản phẩm
+    public int suaSanPham(SanPham sp, String IDcu) {
+        int result = 0;
+        String sql = "UPDATE SANPHAM SET ID_SP = ?, TENSP = ?, GIA = ?, LOAI = ?, IMG = ?, TrangThai = ? WHERE ID_SP = ?";
+        Connection con = DBconnect.getConnection();
+        try {
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, sp.getIDSanPham());
+            pst.setString(2, sp.getTenSanPham());
+            pst.setFloat(3, sp.getGiaTien());
+            pst.setString(4, sp.getLoaiSanPham());
+            pst.setString(5, sp.getIMG());
+            pst.setInt(6, sp.getTrangThai());
+            pst.setString(7, IDcu);
+            result = pst.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    // 10. Tạo mã tự động
     public String layMaTuDong() {
         String sql = "SELECT MAX(CAST(SUBSTRING(ID_SP, 3, LEN(ID_SP)) AS INT)) AS maxID FROM SANPHAM";
-        try (Connection con = DBconnect.getConnection(); 
-             PreparedStatement ps = con.prepareStatement(sql); 
-             ResultSet rs = ps.executeQuery()) {
-
+        try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 int max = rs.getInt("maxID") + 1;
                 return "SP" + max;
@@ -139,45 +223,7 @@ public SanPham timkiem(String tenSanPham) {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "SP1"; // Mặc định nếu chưa có sản phẩm nào
+        return "SP1";
     }
-
-    // Thêm sản phẩm vào CSDL
-    public void them(SanPham sp) {
-        String sql = "INSERT INTO SANPHAM (ID_SP, TENSP, GIA, LOAI, IMG) VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = DBconnect.getConnection(); 
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, sp.getIDSanPham());
-            ps.setString(2, sp.getTenSanPham());
-            ps.setString(3, sp.getGiaTien());
-            ps.setString(4, sp.getLoaiSanPham());
-            ps.setString(5, sp.getIMG());
-
-            ps.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-public int suaSanPham(SanPham sp, String IDcu) {
-    int result = 0;
-    String sql = "UPDATE SANPHAM SET ID_SP = ?, TENSP = ?, GIA = ?, LOAI = ?, IMG = ? WHERE ID_SP = ?";
-    Connection con = DBconnect.getConnection();
-    try {
-        PreparedStatement pst = con.prepareStatement(sql);
-        pst.setString(1, sp.getIDSanPham());
-        pst.setString(2, sp.getTenSanPham());
-        pst.setString(3, sp.getGiaTien());
-        pst.setString(4, sp.getLoaiSanPham());
-        pst.setString(5, sp.getIMG());
-        pst.setString(6, IDcu); // mã cũ để WHERE
-
-        result = pst.executeUpdate();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-    return result;
-}
 
 }

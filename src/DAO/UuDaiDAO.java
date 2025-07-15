@@ -6,12 +6,14 @@ package DAO;
 
 import DBconnect.DBconnect;
 import Model.UuDai;
-import java.sql.Connection;
+import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,93 +23,89 @@ public class UuDaiDAO {
 
     public List<UuDai> getAll() {
         List<UuDai> list = new ArrayList<>();
-        String sql = "SELECT * FROM UUDAI";
-        Connection con = DBconnect.getConnection();
         try {
-            Statement stm = con.createStatement();
-            ResultSet rs = stm.executeQuery(sql);
+            Connection conn = DBconnect.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM UUDAI");
             while (rs.next()) {
-                UuDai u = new UuDai();
-                u.setIdUD(rs.getString(1));
-                u.setGiaTri(rs.getString(2));
-                u.setSoLuong(rs.getInt(3));
-                u.setNgayBatDau(rs.getDate(4));
-                u.setNgayKetThuc(rs.getDate(5));
-                list.add(u);
+                UuDai ud = new UuDai(
+                        rs.getString("ID_UD"),
+                        rs.getString("GIATRI"),
+                        rs.getString("MOTA"),
+                        rs.getDate("NGAYBATDAU"),
+                        rs.getDate("NGAYKETTHUC"),
+                        rs.getString("TRANGTHAI")
+                );
+                list.add(ud);
             }
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return list;
     }
 
-    public Object[] getRow(UuDai u) {
+    public Object[] getRow(UuDai ud) {
         return new Object[]{
-            u.getIdUD(), u.getGiaTri(), u.getSoLuong(),
-            u.getNgayBatDau(), u.getNgayKetThuc()
+            ud.getIdUD(),
+            ud.getGiaTri(),
+            ud.getMoTa(),
+            ud.getNgayBatDau(),
+            ud.getNgayKetThuc(),
+            ud.getTrangThai()
         };
     }
 
-    public void insert(UuDai u) {
-        String sql = "INSERT INTO UUDAI (ID_UD, GIATRI, SOLUONG, NGAYBATDAU, NGAYKETTHUC) VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, u.getIdUD());
-            ps.setString(2, u.getGiaTri());
-            ps.setInt(3, u.getSoLuong());
-            ps.setDate(4, u.getNgayBatDau());
-            ps.setDate(5, u.getNgayKetThuc());
-            ps.executeUpdate();
-        } catch (Exception e) {
-            System.out.println("Lỗi thêm ưu đãi: " + e.getMessage());
-        }
-    }
-
-    public void update(UuDai u) {
-        String sql = "UPDATE UUDAI SET GIATRI = ?, SOLUONG = ?, NGAYBATDAU = ?, NGAYKETTHUC = ? WHERE ID_UD = ?";
-        try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, u.getGiaTri());
-            ps.setInt(2, u.getSoLuong());
-            ps.setDate(3, u.getNgayBatDau());
-            ps.setDate(4, u.getNgayKetThuc());
-            ps.setString(5, u.getIdUD());
-            ps.executeUpdate();
-        } catch (Exception e) {
-            System.out.println("Lỗi cập nhật ưu đãi: " + e.getMessage());
-        }
-    }
-
-    public void delete(String idUD) {
-        String sql = "DELETE FROM UUDAI WHERE ID_UD = ?";
-        try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, idUD);
-            ps.executeUpdate();
-        } catch (Exception e) {
-            System.out.println("Lỗi xóa ưu đãi: " + e.getMessage());
-        }
-    }
-
-    public List<UuDai> getAll_SL() {
-        List<UuDai> lstSL = new ArrayList<>();
-        String sql = "SELECT GIATRI, SOLUONG FROM UUDAI";
-        Connection con = DBconnect.getConnection();
+    public void them(UuDai ud) {
         try {
-            Statement stm = con.createStatement();
-            ResultSet rs = stm.executeQuery(sql);
-            while (rs.next()) {
-                UuDai u = new UuDai();
-                u.setGiaTri(rs.getString("GIATRI"));
-                u.setSoLuong(rs.getInt("SOLUONG"));
-                lstSL.add(u);
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return lstSL;
-    }
-    
-    public Object[] getRow_SL(UuDai u) {
-    return new Object[] { u.getGiaTri(), u.getSoLuong() };
-}
+            Connection conn = DBconnect.getConnection();
+            String sql = "INSERT INTO UUDAI (ID_UD, GIATRI, MOTA, NGAYBATDAU, NGAYKETTHUC, TRANGTHAI) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, ud.getIdUD());
+            ps.setString(2, ud.getGiaTri());
+            ps.setString(3, ud.getMoTa());
+            ps.setDate(4, new java.sql.Date(ud.getNgayBatDau().getTime()));
+            ps.setDate(5, new java.sql.Date(ud.getNgayKetThuc().getTime()));
+            ps.setString(6, ud.getTrangThai());
 
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Thêm ưu đãi thành công!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Thêm ưu đãi thất bại!");
+        }
+    }
+
+    public void sua(UuDai ud) {
+        try {
+            Connection conn = DBconnect.getConnection();
+            String sql = "UPDATE UUDAI SET GIATRI=?, MOTA=?, NGAYBATDAU=?, NGAYKETTHUC=?, TRANGTHAI=? WHERE ID_UD=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, ud.getGiaTri());
+            ps.setString(2, ud.getMoTa());
+            ps.setDate(3, new java.sql.Date(ud.getNgayBatDau().getTime()));
+            ps.setDate(4, new java.sql.Date(ud.getNgayKetThuc().getTime()));
+            ps.setString(5, ud.getTrangThai());
+            ps.setString(6, ud.getIdUD());
+
+            ps.executeUpdate();
+            JOptionPane.showMessageDialog(null, "Cập nhật ưu đãi thành công!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Cập nhật ưu đãi thất bại!");
+        }
+    }
+
+//    public void xoa(String id) {
+//        String sql = "DELETE FROM UUDAI WHERE ID_UD = ?";
+//        try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+//
+//            ps.setString(1, id);
+//            ps.executeUpdate();
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            JOptionPane.showMessageDialog(null, "Lỗi khi xóa ưu đãi!");
+//        }
+//    }
 
 }
