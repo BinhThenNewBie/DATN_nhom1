@@ -241,29 +241,31 @@ public class QuanLySanPham extends javax.swing.JFrame {
         return false;
     }
 
-    private boolean validateSanPham() {
+    private boolean validateThemSanPham() {
         String id = lblID.getText().trim();
         String ten = txtTensp.getText().trim();
-        String giaStr = txtGiatien.getText().trim();
-        String duongDanAnh = lblAnh.getToolTipText(); // hoặc biến bạn dùng để lưu đường dẫn ảnh
+        String giaStr = txtGiatien.getText().trim().replace(",", "").replace(".", "");
+        String duongDanAnh = lblAnh.getToolTipText();
+        String loai = cboLoai.getSelectedItem().toString();
 
+        // Check mã sản phẩm
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhấn nút 'TẠO MÃ' trước.");
             return false;
         }
 
+        // Check tên sản phẩm
         if (ten.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Tên sản phẩm không được để trống.");
             return false;
         }
-
         if (ten.matches(".*\\d.*")) {
             JOptionPane.showMessageDialog(this, "Tên sản phẩm không được chứa số.");
             return false;
         }
 
-        SanPhamDAO dao = new SanPhamDAO();
-        List<SanPham> danhSach = dao.getAll();
+        // Check tên đã tồn tại
+        List<SanPham> danhSach = new SanPhamDAO().getAll();
         for (SanPham sp : danhSach) {
             if (sp.getTenSanPham().equalsIgnoreCase(ten)) {
                 JOptionPane.showMessageDialog(this, "Tên sản phẩm đã tồn tại. Vui lòng nhập tên khác.");
@@ -271,38 +273,156 @@ public class QuanLySanPham extends javax.swing.JFrame {
             }
         }
 
+// Check giá tiền rỗng
         if (giaStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Giá tiền không được để trống.");
             return false;
         }
 
-        if (!giaStr.matches("\\d+")) {
-            if (giaStr.matches(".*[a-zA-Z].*")) {
-                JOptionPane.showMessageDialog(this, "Giá tiền không được chứa chữ cái.");
-                return false;
+        // Check giá tiền chỉ chứa khoảng trắng
+        if (giaStr.matches("\\s*")) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không được chứa khoảng trắng.");
+            return false;
+        }
+
+        // Check giá tiền có chứa chữ cái
+        if (giaStr.matches(".*[a-zA-ZÀ-ỹ].*")) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không được chứa chữ cái.");
+            return false;
+        }
+
+        // Check giá tiền có chứa ký tự đặc biệt (trừ dấu + và -)
+        if (giaStr.matches(".*[^0-9+\\-].*")) {
+            JOptionPane.showMessageDialog(this, "Giá tiền chỉ được chứa số.");
+            return false;
+        }
+
+        // Check giá tiền có dấu âm
+        if (giaStr.startsWith("-") || giaStr.contains("-")) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không được là số âm.");
+            return false;
+        }
+
+        // Check giá tiền bắt đầu bằng dấu +
+        if (giaStr.startsWith("+")) {
+            giaStr = giaStr.substring(1); // Bỏ dấu + ở đầu
+        }
+
+        // Check giá tiền phải là số nguyên dương
+        if (!giaStr.matches("^[1-9]\\d*$")) {
+            if (giaStr.matches("^0+$")) {
+                JOptionPane.showMessageDialog(this, "Giá tiền phải là số nguyên dương (không được là 0).");
+            } else if (giaStr.matches("^0\\d+$")) {
+                JOptionPane.showMessageDialog(this, "Giá tiền không được có số 0 ở đầu.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Giá tiền phải là số nguyên dương hợp lệ.");
             }
-            if (giaStr.contains("-") || giaStr.matches(".*-.*")) {
-                JOptionPane.showMessageDialog(this, "Giá tiền không được là số âm.");
-                return false;
-            }
-            JOptionPane.showMessageDialog(this, "Giá tiền chỉ được nhập số dương.");
             return false;
         }
 
         try {
-            int gia = Integer.parseInt(giaStr);
+            long giaLong = Long.parseLong(giaStr);
+
+            // Check giá tiền vượt quá giới hạn int
+            if (giaLong > Integer.MAX_VALUE) {
+                JOptionPane.showMessageDialog(this, "Giá tiền quá lớn. Vui lòng nhập giá trị nhỏ hơn.");
+                return false;
+            }
+
+            int gia = (int) giaLong;
+
             if (gia < 10000) {
                 JOptionPane.showMessageDialog(this, "Giá tiền phải từ 10.000 VND trở lên.");
                 return false;
             }
-            if (gia > 100000) {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải nhỏ hơn hoặc bằng 100.000 VND.");
+
+            if (gia > 500000) {
+                JOptionPane.showMessageDialog(this, "Giá tiền phải nhỏ hơn hoặc bằng 500.000 VND.");
                 return false;
             }
+
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Giá tiền phải là số nguyên dương.");
+            JOptionPane.showMessageDialog(this, "Giá tiền không hợp lệ.");
             return false;
         }
+
+        return true;
+    }
+
+    private boolean validateSuaSanPham() {
+        String id = lblID.getText().trim();
+        String ten = txtTensp.getText().trim();
+        String giaStr = txtGiatien.getText().trim();
+
+        // Check mã sản phẩm
+        if (id.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhấn nút 'TẠO MÃ' trước.");
+            return false;
+        }
+
+        // Check tên sản phẩm
+        if (ten.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên sản phẩm không được để trống.");
+            return false;
+        }
+        if (ten.matches(".*\\d.*")) {
+            JOptionPane.showMessageDialog(this, "Tên sản phẩm không được chứa số.");
+            return false;
+        }
+
+        // Check tên đã tồn tại
+        List<SanPham> danhSach = new SanPhamDAO().getAll();
+        for (SanPham sp : danhSach) {
+            if (sp.getTenSanPham().equalsIgnoreCase(ten)) {
+                JOptionPane.showMessageDialog(this, "Tên sản phẩm đã tồn tại. Vui lòng nhập tên khác.");
+                return false;
+            }
+        }
+        // 4. Kiểm tra giá sản phẩm không được để trống
+        if (giaStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Giá sản phẩm không được để trống.");
+            return false;
+        }
+
+        // 5. Kiểm tra giá sản phẩm không được chứa chữ cái
+        if (giaStr.matches(".*[a-zA-ZÀ-ỹ].*")) {
+            JOptionPane.showMessageDialog(this, "Giá sản phẩm không được chứa chữ cái.");
+            return false;
+        }
+
+        // 6. Kiểm tra giá sản phẩm không được chứa ký tự đặc biệt (trừ dấu âm)
+        if (giaStr.matches("[^0-9\\-]")) {
+            JOptionPane.showMessageDialog(this, "Giá sản phẩm chỉ được chứa số.");
+            return false;
+        }
+
+        // 7. Kiểm tra và chuyển đổi giá sản phẩm
+        try {
+            int gia = Integer.parseInt(giaStr);
+
+            // Kiểm tra giá không được âm
+            if (gia < 0) {
+                JOptionPane.showMessageDialog(this, "Giá sản phẩm không được âm.");
+                return false;
+            }
+
+            // Kiểm tra giá phải lớn hơn 10000
+            if (gia <= 10) {
+                JOptionPane.showMessageDialog(this, "Giá sản phẩm phải lớn hơn 10.");
+                return false;
+            }
+
+            // Kiểm tra giá phải nhỏ hơn 500000
+            if (gia >= 500000) {
+                JOptionPane.showMessageDialog(this, "Giá sản phẩm phải nhỏ hơn 500.");
+                return false;
+            }
+
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Giá sản phẩm phải là số nguyên hợp lệ.");
+            return false;
+        }
+
         return true;
     }
 
@@ -316,7 +436,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
         if (kiemTraSanPhamBiKhoa()) {
             return;
         }
-        if (!validateSanPham()) {
+        if (!validateThemSanPham()) {
             return;
         }
 
@@ -357,7 +477,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
             return;
         }
 
-        if (!validateSanPham()) {
+        if (!validateSuaSanPham()) {
             return;
         }
 

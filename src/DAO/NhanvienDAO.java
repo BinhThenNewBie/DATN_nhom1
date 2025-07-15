@@ -33,6 +33,8 @@ public class NhanvienDAO {
                 nv.setChucVu(rs.getString(3));
                 nv.setSDT(rs.getString(4));
                 nv.setIMG(rs.getString(5));
+                String trangThai = rs.getString("TRANGTHAI");
+                nv.setTrangThai(trangThai != null ? trangThai : "ACTIVE");
                 Listnv.add(nv);
             }
         } catch (Exception e) {
@@ -47,5 +49,77 @@ public class NhanvienDAO {
         String IMG = nv.getIMG();
         Object[] rows = new Object[]{ID_NV,hoTen,chucVu,SDT,IMG};
         return rows;
+    }
+    public int Themnv(Nhanvien nv){
+        String sql="INSERT INTO NHANVIEN (ID_NV, HOTEN, VAITRO, SDT, IMG)VALUES	(?, ?, ?, ?, ?)";
+        Connection conn = DBconnect.getConnection();
+        PreparedStatement pstm = null;
+        try {
+        pstm = conn.prepareStatement(sql);
+        pstm.setString(1, nv.getID_NV());
+        pstm.setString(2, nv.getHoTen());
+        pstm.setString(3, nv.getChucVu());
+        pstm.setString(4, nv.getSDT());
+        pstm.setString(5, nv.getSDT());
+        pstm.setString(6, nv.getTrangThai());
+        if(pstm.executeLargeUpdate()>0){
+            System.out.println("Thêm nhân viên mới thành công!");
+                return 1;
+        }
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+    public int suanv(Nhanvien nv, String idnv){
+        String sql="UPDATE NHANVIEN SET ID_NV= ?, HOTEN=?, VAITRO=?, SDT=?, IMG=? WHERE ID_NV = ?";
+        Connection conn = DBconnect.getConnection();
+        PreparedStatement pstm = null;
+        try {
+        pstm = conn.prepareStatement(sql);
+        pstm.setString(1, nv.getID_NV());
+        pstm.setString(2, nv.getHoTen());
+        pstm.setString(3, nv.getChucVu());
+        pstm.setString(4, nv.getSDT());
+        pstm.setString(5, nv.getSDT());
+        pstm.setString(6, nv.getTrangThai());
+        pstm.setString(7,idnv);
+        if(pstm.executeLargeUpdate()>0){
+            System.out.println("Sửa nhân viên mới thành công!");
+                return 1;
+        }
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+    // Phương thức khóa tài khoản
+    public int khoaTaiKhoan(String ID_NV) {
+        String sql = "UPDATE NHANVIEN SET TRANGTHAI = 'LOCKED' WHERE ID_NV = ?";
+        try (Connection con = DBconnect.getConnection();
+             PreparedStatement pstm = con.prepareStatement(sql)) {
+            pstm.setString(1, ID_NV);
+            if (pstm.executeUpdate() > 0) {
+                System.out.println("Khóa nhân viên thành công!");
+                return 1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+    
+    // Phương thức mở khóa tài khoản
+    public int moKhoaTaiKhoan(String ID_NV) {
+        String sql = "UPDATE NHANVIEN SET TRANGTHAI = 'ACTIVE' WHERE ID_NV = ?";
+        try (Connection con = DBconnect.getConnection();
+             PreparedStatement pstm = con.prepareStatement(sql)) {
+            pstm.setString(1, ID_NV);
+            if (pstm.executeUpdate() > 0) {
+                System.out.println("Mở khóa nhân viên thành công!");
+                return 1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
