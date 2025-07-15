@@ -26,7 +26,7 @@ public class QuanLyTaiKhoan extends javax.swing.JFrame {
     }
     public void initTable(){
     tableModel = new DefaultTableModel();
-    String[] cols = new String[]{"ID tài khoản", "Password","Email", "Vai trò"};
+    String[] cols = new String[]{"ID tài khoản", "Password","Email", "Vai trò","Trạng Thái"};
     tableModel.setColumnIdentifiers(cols);
     tblTaikhoan.setModel(tableModel);
 }
@@ -45,6 +45,16 @@ public void showdetail(){
         txtPass.setText(tk.getPass());
         txtEmail.setText(tk.getEmail());
         cboVaitro.setSelectedItem(tk.getVaiTro());
+        String trangThai = tk.getTrangThai();
+        if("LOCKED".equalsIgnoreCase(trangThai)){
+            btnKhoa.setEnabled(false);
+            btnMokhoa.setEnabled(true);
+            btnSua.setEnabled(true);
+        }else{
+            btnKhoa.setEnabled(true);
+            btnMokhoa.setEnabled(false);
+            btnSua.setEnabled(false);
+        }
 }
     
     }
@@ -56,13 +66,19 @@ public void lammoi(){
 public void sua(){
    int chon = tblTaikhoan.getSelectedRow();
         if(chon>=0){
+            Taikhoan chontk = tkd.GETALL().get(chon);
+            if("STAFF".equalsIgnoreCase(chontk.getVaiTro())){
+            JOptionPane.showMessageDialog(this, "Không đổi được mật khẩu với vai trò là STAFF");
+            return;
+            }
             int sua = JOptionPane.showConfirmDialog(this, "Bạn muốn sửa không", "Xác nhận", JOptionPane.YES_NO_OPTION);
      if(sua==JOptionPane.YES_OPTION){
         String IDTK = txtIdnv.getText();
         String Pass= txtPass.getText();
         String Email =txtEmail.getText();
         String vaiTro = (String) cboVaitro.getSelectedItem();
-        Taikhoan tk = new Taikhoan(IDTK, Pass, Email, vaiTro);
+        String trangThai = chontk.getTrangThai();
+        Taikhoan tk = new Taikhoan(IDTK, Pass, Email, vaiTro,trangThai);
     int result = tkd.sua(IDTK, tk);
     if( result==1){
         fillTable();
@@ -73,20 +89,64 @@ public void sua(){
      }
         }
 }
-public void them(){
-    String ID_TK = txtIdnv.getText();
-        String Pass = txtPass.getText();
-        String Email = txtEmail.getText();
-        String vaiTro = (String) cboVaitro.getSelectedItem();
-        Taikhoan tk = new Taikhoan(ID_TK, Pass, Email, vaiTro);
-    int result = tkd.Them(tk);
-    if( result==1){
-        fillTable();
-        JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công");
-    }else{
-        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra");
+    public void moKhoaTaiKhoan(){
+        int chon = tblTaikhoan.getSelectedRow();
+        if(chon >= 0){
+            Taikhoan chontk = tkd.GETALL().get(chon);
+            
+            // Kiểm tra nếu tài khoản chưa bị khóa
+            if("ACTIVE".equals(chontk.getTrangThai())){
+                JOptionPane.showMessageDialog(this, "Tài khoản đang hoạt động!");
+                return;
+            }
+            
+            int xacNhan = JOptionPane.showConfirmDialog(this, 
+                "Bạn có chắc muốn mở khóa tài khoản: " + chontk.getID_TK() + "?", 
+                "Xác nhận mở khóa", JOptionPane.YES_NO_OPTION);
+                
+            if(xacNhan == JOptionPane.YES_OPTION){
+                int result = tkd.moKhoaTaiKhoan(chontk.getID_TK());
+                if(result == 1){
+                    fillTable();
+                    JOptionPane.showMessageDialog(this, "Mở khóa tài khoản thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi mở khóa tài khoản!");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần mở khóa!");
+        }
     }
-}
+  // Hàm khóa tài khoản
+    public void khoaTaiKhoan(){
+        int chon = tblTaikhoan.getSelectedRow();
+        if(chon >= 0){
+            Taikhoan chontk = tkd.GETALL().get(chon);
+            
+            // Kiểm tra nếu tài khoản đã bị khóa
+            if("LOCKED".equals(chontk.getTrangThai())){
+                JOptionPane.showMessageDialog(this, "Tài khoản đã bị khóa!");
+                return;
+            }
+            
+            int xacNhan = JOptionPane.showConfirmDialog(this, 
+                "Bạn có chắc muốn khóa tài khoản: " + chontk.getID_TK() + "?", 
+                "Xác nhận khóa", JOptionPane.YES_NO_OPTION);
+                
+            if(xacNhan == JOptionPane.YES_OPTION){
+                int result = tkd.khoaTaiKhoan(chontk.getID_TK());
+                if(result == 1){
+                    fillTable();
+                    JOptionPane.showMessageDialog(this, "Khóa tài khoản thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi khóa tài khoản!");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần khóa!");
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -96,7 +156,7 @@ public void them(){
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        btnThem = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
         btnSua = new javax.swing.JButton();
         btnKhoa = new javax.swing.JButton();
         btnLammoi = new javax.swing.JButton();
@@ -114,17 +174,6 @@ public void them(){
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        btnThem.setBackground(new java.awt.Color(31, 51, 86));
-        btnThem.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
-        btnThem.setForeground(new java.awt.Color(255, 255, 255));
-        btnThem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainForm_Admin/image/Them.png"))); // NOI18N
-        btnThem.setText("THÊM TÀI KHOẢN");
-        btnThem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnThemActionPerformed(evt);
-            }
-        });
-
         btnSua.setBackground(new java.awt.Color(31, 51, 86));
         btnSua.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         btnSua.setForeground(new java.awt.Color(255, 255, 255));
@@ -141,6 +190,11 @@ public void them(){
         btnKhoa.setForeground(new java.awt.Color(255, 255, 255));
         btnKhoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainForm_Admin/image/Xoa.png"))); // NOI18N
         btnKhoa.setText("KHÓA TÀI KHOẢN");
+        btnKhoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKhoaActionPerformed(evt);
+            }
+        });
 
         btnLammoi.setBackground(new java.awt.Color(31, 51, 86));
         btnLammoi.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
@@ -212,7 +266,6 @@ public void them(){
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSua, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnKhoa)
                     .addComponent(btnLammoi, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(64, 64, 64))
@@ -223,49 +276,41 @@ public void them(){
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnMokhoa)
-                .addGap(22, 22, 22))
+                .addGap(20, 20, 20))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(76, 76, 76)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(68, 68, 68)
-                        .addComponent(btnThem)
-                        .addGap(28, 28, 28))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(txtIdnv, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel1))
-                        .addGap(23, 23, 23)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSua)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
+                        .addGap(39, 39, 39)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
-                            .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtPass, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(38, 38, 38))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
+                        .addComponent(btnSua)
+                        .addGap(39, 39, 39)
                         .addComponent(btnKhoa)
-                        .addGap(40, 40, 40))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))
-                        .addGap(29, 29, 29)))
+                        .addGap(5, 5, 5)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLammoi)
+                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnLammoi)
+                .addGap(4, 4, 4)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cboVaitro, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addGap(45, 45, 45)
                 .addComponent(btnMokhoa)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         pack();
@@ -278,6 +323,7 @@ public void them(){
 
     private void btnMokhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMokhoaActionPerformed
         // TODO add your handling code here:
+        moKhoaTaiKhoan();
     }//GEN-LAST:event_btnMokhoaActionPerformed
 
     private void tblTaikhoanMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblTaikhoanMouseClicked
@@ -290,10 +336,10 @@ public void them(){
         lammoi();
     }//GEN-LAST:event_btnLammoiActionPerformed
 
-    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+    private void btnKhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhoaActionPerformed
         // TODO add your handling code here:
-        them();
-    }//GEN-LAST:event_btnThemActionPerformed
+        khoaTaiKhoan();
+    }//GEN-LAST:event_btnKhoaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -335,13 +381,13 @@ public void them(){
     private javax.swing.JButton btnLammoi;
     private javax.swing.JButton btnMokhoa;
     private javax.swing.JButton btnSua;
-    private javax.swing.JButton btnThem;
     private javax.swing.JComboBox<String> cboVaitro;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTable tblTaikhoan;
     private javax.swing.JTextField txtEmail;
     private javax.swing.JTextField txtIdnv;

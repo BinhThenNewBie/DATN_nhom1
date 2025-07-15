@@ -1,6 +1,8 @@
 package util;
 
+
 import java.util.Properties;
+import java.util.Random;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.PasswordAuthentication;
@@ -8,6 +10,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import view.forgotpass;
+
 
 public class Email {
     // Email: tungletest1.email@gmail.com
@@ -15,6 +19,27 @@ public class Email {
 
     static final String from = "binhdath06811@gmail.com";
     static final String password = "seramtljhgugykvk";
+    static forgotpass fgp = new forgotpass();
+    static String nguoinhan = forgotpass.ngnhan;
+    
+    
+    
+    public static String ngaunhien(){
+        Random rdn = new Random();
+        String result = "";
+        
+        for(int i = 0; i < 5; i++){
+            int number = rdn.nextInt(10);
+            result += number + " ";
+        }
+        
+        
+        return result.trim(); // Loại bỏ dấu cách cuối
+        
+    }
+
+    
+    
     
     
     public static boolean sendEmail(String to, String tieuDe, String noiDung) {
@@ -53,8 +78,6 @@ public class Email {
             // Tiêu đề email
             msg.setSubject(tieuDe);
 
-            
-
             // Quy định email nhận phản hồi
             // msg.setReplyTo(InternetAddress.parse(from, false))
             // Nội dung
@@ -73,7 +96,7 @@ public class Email {
 
     public static void main(String[] args) {
 
-        Email.sendEmail("zuka400915@gmail.com", System.currentTimeMillis() + "", "check!");
+        Email.sendEmail(nguoinhan, "Mã đổi mật khẩu tài khoản ", ngaunhien());
 
     }
 

@@ -16,16 +16,18 @@ public class UuDai {
     private String moTa;
     private Date ngayBatDau;
     private Date ngayKetThuc;
+    private String trangThai;
 
     public UuDai() {
     }
 
-    public UuDai(String idUD, String giaTri, String moTa, Date ngayBatDau, Date ngayKetThuc) {
+    public UuDai(String idUD, String giaTri, String moTa, Date ngayBatDau, Date ngayKetThuc, String trangThai) {
         this.idUD = idUD;
         this.giaTri = giaTri;
         this.moTa = moTa;
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
+        this.trangThai = trangThai;
     }
 
     public String getIdUD() {
@@ -66,6 +68,14 @@ public class UuDai {
 
     public void setNgayKetThuc(Date ngayKetThuc) {
         this.ngayKetThuc = ngayKetThuc;
+    }
+
+    public String getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(String trangThai) {
+        this.trangThai = trangThai;
     }
     
     

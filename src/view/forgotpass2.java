@@ -4,14 +4,16 @@
  */
 package view;
 
+import DAO.TaikhoanDAO;
+import java.util.Arrays;
 import javax.swing.JFrame;
-
+import javax.swing.JOptionPane;
 /**
  *
  * @author PC Của Bình
  */
 public class forgotpass2 extends javax.swing.JFrame {
-
+    TaikhoanDAO tkDAO = new TaikhoanDAO();
     /**
      * Creates new form forgotpass2
      */
@@ -20,6 +22,33 @@ public class forgotpass2 extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 
+    
+    
+    
+    public boolean trungpass(){
+        
+        char[] newpass = txtnewpassword.getPassword();
+        char[] cfnewpass = txtcfnewpassword.getPassword();
+        
+        boolean check = Arrays.equals(newpass,cfnewpass);
+        if(!check){
+            JOptionPane.showMessageDialog(this, "Mật khẩu không trùng khớp");
+        }
+        return check;
+    }
+    
+    public void changepassword(){
+        if(trungpass() == true){
+        String email = forgotpass.ngnhan;
+        String mk = new String(txtcfnewpassword.getPassword());
+        tkDAO.passwordchange(mk, email);
+        JOptionPane.showMessageDialog(this, "Đổi mật khẩu thành công");
+        }
+        
+    }
+    
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -31,14 +60,11 @@ public class forgotpass2 extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        txtcode = new javax.swing.JTextField();
-        txtnewpassword = new javax.swing.JPasswordField();
-        txtcfnewpassword = new javax.swing.JPasswordField();
-        jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        btnresendmail = new javax.swing.JButton();
         btnxacnhan = new javax.swing.JButton();
+        jLabel4 = new javax.swing.JLabel();
+        txtcfnewpassword = new javax.swing.JPasswordField();
+        txtnewpassword = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -49,27 +75,23 @@ public class forgotpass2 extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Change Password");
 
-        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Xác nhận mật khẩu mới");
-
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Nhập mã");
-
-        jLabel4.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Nhập mật khẩu mới");
-
-        btnresendmail.setBackground(new java.awt.Color(31, 50, 84));
-        btnresendmail.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnresendmail.setForeground(new java.awt.Color(255, 255, 255));
-        btnresendmail.setText("Gửi lại mail");
+        jLabel3.setText("Mật khẩu mới");
 
         btnxacnhan.setBackground(new java.awt.Color(31, 50, 84));
         btnxacnhan.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnxacnhan.setForeground(new java.awt.Color(255, 255, 255));
         btnxacnhan.setText("Xác nhận");
+        btnxacnhan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnxacnhanActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setText("Xác nhận mật khẩu mới");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -80,20 +102,16 @@ public class forgotpass2 extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(102, 102, 102)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel2)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabel3)
-                                .addComponent(txtnewpassword)
-                                .addComponent(txtcfnewpassword)
-                                .addComponent(txtcode, javax.swing.GroupLayout.Alignment.TRAILING))))
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(txtnewpassword, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(txtcfnewpassword, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE))
+                            .addComponent(jLabel4)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(72, 72, 72)
-                        .addComponent(btnresendmail)
-                        .addGap(26, 26, 26)
+                        .addGap(126, 126, 126)
                         .addComponent(btnxacnhan, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap(95, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -102,28 +120,24 @@ public class forgotpass2 extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel3)
-                .addGap(2, 2, 2)
-                .addComponent(txtcode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4)
-                .addGap(3, 3, 3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtnewpassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel2)
-                .addGap(2, 2, 2)
+                .addGap(47, 47, 47)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtcfnewpassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnresendmail)
-                    .addComponent(btnxacnhan))
-                .addGap(31, 31, 31))
+                .addGap(27, 27, 27)
+                .addComponent(btnxacnhan)
+                .addContainerGap(49, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,6 +146,10 @@ public class forgotpass2 extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnxacnhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnxacnhanActionPerformed
+        changepassword();
+    }//GEN-LAST:event_btnxacnhanActionPerformed
 
     /**
      * @param args the command line arguments
@@ -164,20 +182,18 @@ public class forgotpass2 extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new forgotpass2().setVisible(true);
+                
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnresendmail;
     private javax.swing.JButton btnxacnhan;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField txtcfnewpassword;
-    private javax.swing.JTextField txtcode;
     private javax.swing.JPasswordField txtnewpassword;
     // End of variables declaration//GEN-END:variables
 }

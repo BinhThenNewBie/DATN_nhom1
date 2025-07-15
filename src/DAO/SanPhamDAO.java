@@ -67,6 +67,7 @@ public class SanPhamDAO {
         return listsp;
     }
 
+  
     // 3. Lấy tất cả sản phẩm
     public List<SanPham> getAll() {
         List<SanPham> listsp = new ArrayList<>();
