@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Connection;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,10 +166,12 @@ public class SanPhamDAO {
 
     // 7. Lấy từng dòng để hiển thị lên JTable
     public Object[] getRow(SanPham sp) {
+        DecimalFormat df = new DecimalFormat("#,###");
+        String tienVND = df.format(sp.getGiaTien()) + " VND";
         return new Object[]{
             sp.getIDSanPham(),
             sp.getTenSanPham(),
-            sp.getGiaTien(),
+            tienVND,
             sp.getLoaiSanPham(),
             sp.getIMG(),
             sp.getTrangThai() == 1 ? "Đang hoạt động" : "Đã khóa"
