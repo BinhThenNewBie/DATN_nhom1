@@ -33,7 +33,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
     }
 
     public void initTable() {
-        String[] cols = {"ID ƯU ĐÃI", "GIÁ TRỊ", "MÔ TẢ", "NGÀY BẮT ĐẦU", "NGÀY KẾT THÚC", "TRẠNG THÁI"};
+        String[] cols = {"ID ƯU ĐÃI", "GIÁ TRỊ", "ÁP DỤNG VỚI", "NGÀY BẮT ĐẦU", "NGÀY KẾT THÚC", "TRẠNG THÁI"};
         tableModel.setColumnIdentifiers(cols);
         tblBang.setModel(tableModel);
     }
@@ -75,7 +75,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
         UuDai ud = new UuDai();
         ud.setIdUD(sinhMaUuDai());
         ud.setGiaTri(txtGiatri.getText());
-//        ud.setApDungVoi(txtApDung.getText());
+        ud.setApDungVoi(Float.parseFloat(txtApDung.getText()));
         ud.setNgayBatDau(getDateFromComboBox(cboNgayStart, cboThangStart, cboNamStart));
         ud.setNgayKetThuc(getDateFromComboBox(cboNgayEnd, cboThangEnd, cboNamEnd));
         ud.setTrangThai(rdoCon.isSelected() ? "Còn hạn" : "Hết hạn");
@@ -99,7 +99,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
         UuDai ud = new UuDai();
         ud.setIdUD(lblID.getText());
         ud.setGiaTri(txtGiatri.getText());
-//        ud.setMoTa(txtApDung.getText());
+        ud.setApDungVoi(Float.parseFloat(txtApDung.getText()));
         ud.setNgayBatDau(getDateFromComboBox(cboNgayStart, cboThangStart, cboNamStart));
         ud.setNgayKetThuc(getDateFromComboBox(cboNgayEnd, cboThangEnd, cboNamEnd));
         ud.setTrangThai(rdoCon.isSelected() ? "Còn hạn" : "Hết hạn");
@@ -137,7 +137,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
 
         lblID.setText(ud.getIdUD());
         txtGiatri.setText(ud.getGiaTri());
-//        txtApDung.setText(ud.getMoTa());
+//        txtApDung.setText((ud.getApDungVoi()));
 
         // Hiển thị ngày bắt đầu
         Calendar calBD = Calendar.getInstance();

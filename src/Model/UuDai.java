@@ -13,7 +13,7 @@ import java.util.Date;
 public class UuDai {
     private String idUD;
     private String giaTri;
-    private Float apDungVoi;
+    private float apDungVoi;
     private Date ngayBatDau;
     private Date ngayKetThuc;
     private String trangThai;
