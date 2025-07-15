@@ -9,7 +9,12 @@ import Model.UuDai;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+<<<<<<< Updated upstream
 import java.sql.Statement;
+=======
+import java.sql.Connection;
+import java.text.DecimalFormat;
+>>>>>>> Stashed changes
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +27,7 @@ public class UuDaiDAO {
     public List<UuDai> getAll() {
         List<UuDai> list = new ArrayList<>();
         String sql = "SELECT * FROM UUDAI";
+<<<<<<< Updated upstream
         Connection con = DBconnect.getConnection();
         try {
             Statement stm = con.createStatement();
@@ -37,10 +43,33 @@ public class UuDaiDAO {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+=======
+
+        try (Connection conn = DBconnect.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                UuDai ud = new UuDai();
+                ud.setIdUD(rs.getString("ID_UD"));
+                ud.setGiaTri(rs.getString("GIATRI"));
+
+                // Nếu APDUNGVOI không tồn tại, comment dòng này lại:
+                ud.setApDungVoi(rs.getFloat("APDUNGVOI"));
+
+                ud.setNgayBatDau(rs.getDate("NGAYBATDAU"));
+                ud.setNgayKetThuc(rs.getDate("NGAYKETTHUC"));
+                ud.setTrangThai(rs.getString("TRANGTHAI"));
+                list.add(ud);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+>>>>>>> Stashed changes
         }
+
         return list;
     }
 
+<<<<<<< Updated upstream
     public Object[] getRow(UuDai u) {
         return new Object[]{
             u.getIdUD(), u.getGiaTri(), u.getSoLuong(),
@@ -56,12 +85,39 @@ public class UuDaiDAO {
             ps.setInt(3, u.getSoLuong());
             ps.setDate(4, u.getNgayBatDau());
             ps.setDate(5, u.getNgayKetThuc());
+=======
+    public Object[] getRow(UuDai ud) {
+        DecimalFormat df = new DecimalFormat("#,###");
+        String tienVND = df.format(ud.getApDungVoi()) + " VND";
+        return new Object[]{
+            ud.getIdUD(),
+            ud.getGiaTri(),
+            tienVND,
+            ud.getNgayBatDau(),
+            ud.getNgayKetThuc(),
+            ud.getTrangThai()
+        };
+    }
+
+    public void them(UuDai ud) {
+        try {
+            Connection conn = DBconnect.getConnection();
+            String sql = "INSERT INTO UUDAI (ID_UD, GIATRI, APDUNGVOI, NGAYBATDAU, NGAYKETTHUC, TRANGTHAI) VALUES (?, ?, ?, ?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, ud.getIdUD());
+            ps.setString(2, ud.getGiaTri());
+            ps.setFloat(3, ud.getApDungVoi());
+            ps.setDate(4, new java.sql.Date(ud.getNgayBatDau().getTime()));
+            ps.setDate(5, new java.sql.Date(ud.getNgayKetThuc().getTime()));
+            ps.setString(6, ud.getTrangThai());
+>>>>>>> Stashed changes
             ps.executeUpdate();
         } catch (Exception e) {
             System.out.println("Lỗi thêm ưu đãi: " + e.getMessage());
         }
     }
 
+<<<<<<< Updated upstream
     public void update(UuDai u) {
         String sql = "UPDATE UUDAI SET GIATRI = ?, SOLUONG = ?, NGAYBATDAU = ?, NGAYKETTHUC = ? WHERE ID_UD = ?";
         try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
@@ -70,11 +126,25 @@ public class UuDaiDAO {
             ps.setDate(3, u.getNgayBatDau());
             ps.setDate(4, u.getNgayKetThuc());
             ps.setString(5, u.getIdUD());
+=======
+    public void sua(UuDai ud) {
+        try {
+            Connection conn = DBconnect.getConnection();
+            String sql = "UPDATE UUDAI SET GIATRI=?, APDUNGVOI=?, NGAYBATDAU=?, NGAYKETTHUC=?, TRANGTHAI=? WHERE ID_UD=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, ud.getGiaTri());
+            ps.setFloat(2, ud.getApDungVoi());
+            ps.setDate(3, new java.sql.Date(ud.getNgayBatDau().getTime()));
+            ps.setDate(4, new java.sql.Date(ud.getNgayKetThuc().getTime()));
+            ps.setString(5, ud.getTrangThai());
+            ps.setString(6, ud.getIdUD());
+>>>>>>> Stashed changes
             ps.executeUpdate();
         } catch (Exception e) {
             System.out.println("Lỗi cập nhật ưu đãi: " + e.getMessage());
         }
     }
+<<<<<<< Updated upstream
 
     public void delete(String idUD) {
         String sql = "DELETE FROM UUDAI WHERE ID_UD = ?";
@@ -110,4 +180,6 @@ public class UuDaiDAO {
 }
 
 
+=======
+>>>>>>> Stashed changes
 }
