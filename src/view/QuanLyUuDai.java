@@ -27,8 +27,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
      */
     public QuanLyUuDai() {
         initComponents();
-        setLocationRelativeTo(null); // Đưa ra giữa màn hình
-        setResizable(false);         // Không cho resize (tùy chọn)        
+        setLocationRelativeTo(null); 
         initTable();
         fillTable();
     }
@@ -74,9 +73,9 @@ public class QuanLyUuDai extends javax.swing.JFrame {
 
     public void themUuDai() {
         UuDai ud = new UuDai();
-        ud.setIdUD(sinhMaUuDai()); // Gán mã tự động
+        ud.setIdUD(sinhMaUuDai());
         ud.setGiaTri(txtGiatri.getText());
-        ud.setMoTa(txtMoTa.getText());
+//        ud.setApDungVoi(txtApDung.getText());
         ud.setNgayBatDau(getDateFromComboBox(cboNgayStart, cboThangStart, cboNamStart));
         ud.setNgayKetThuc(getDateFromComboBox(cboNgayEnd, cboThangEnd, cboNamEnd));
         ud.setTrangThai(rdoCon.isSelected() ? "Còn hạn" : "Hết hạn");
@@ -100,7 +99,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
         UuDai ud = new UuDai();
         ud.setIdUD(lblID.getText());
         ud.setGiaTri(txtGiatri.getText());
-        ud.setMoTa(txtMoTa.getText());
+//        ud.setMoTa(txtApDung.getText());
         ud.setNgayBatDau(getDateFromComboBox(cboNgayStart, cboThangStart, cboNamStart));
         ud.setNgayKetThuc(getDateFromComboBox(cboNgayEnd, cboThangEnd, cboNamEnd));
         ud.setTrangThai(rdoCon.isSelected() ? "Còn hạn" : "Hết hạn");
@@ -117,7 +116,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
     public void lamMoiUuDai() {
         lblID.setText("");
         txtGiatri.setText("");
-        txtMoTa.setText("");
+        txtApDung.setText("");
         cboNgayStart.setSelectedIndex(0);
         cboThangStart.setSelectedIndex(0);
         cboNamStart.setSelectedIndex(0);
@@ -138,7 +137,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
 
         lblID.setText(ud.getIdUD());
         txtGiatri.setText(ud.getGiaTri());
-        txtMoTa.setText(ud.getMoTa());
+//        txtApDung.setText(ud.getMoTa());
 
         // Hiển thị ngày bắt đầu
         Calendar calBD = Calendar.getInstance();
@@ -193,7 +192,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         txtGiatri = new javax.swing.JTextField();
-        txtMoTa = new javax.swing.JTextField();
+        txtApDung = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBang = new javax.swing.JTable();
@@ -237,10 +236,10 @@ public class QuanLyUuDai extends javax.swing.JFrame {
 
         txtGiatri.setFont(new java.awt.Font("Segoe UI Light", 1, 12)); // NOI18N
 
-        txtMoTa.setFont(new java.awt.Font("Segoe UI Light", 1, 12)); // NOI18N
+        txtApDung.setFont(new java.awt.Font("Segoe UI Light", 1, 12)); // NOI18N
 
         jLabel3.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
-        jLabel3.setText("MÔ TẢ");
+        jLabel3.setText("ÁP DỤNG VỚI");
 
         tblBang.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -401,7 +400,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
                                         .addComponent(btnLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))))
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                 .addComponent(txtGiatri)
-                                .addComponent(txtMoTa, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(txtApDung, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -417,7 +416,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtMoTa, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtApDung, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addGap(32, 32, 32)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -560,7 +559,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
     private javax.swing.JRadioButton rdoCon;
     private javax.swing.JRadioButton rdoHet;
     private javax.swing.JTable tblBang;
+    private javax.swing.JTextField txtApDung;
     private javax.swing.JTextField txtGiatri;
-    private javax.swing.JTextField txtMoTa;
     // End of variables declaration//GEN-END:variables
 }

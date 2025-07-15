@@ -31,7 +31,7 @@ public class UuDaiDAO {
                 UuDai ud = new UuDai(
                         rs.getString("ID_UD"),
                         rs.getString("GIATRI"),
-                        rs.getString("MOTA"),
+                        rs.getFloat("APDUNGVOI"),
                         rs.getDate("NGAYBATDAU"),
                         rs.getDate("NGAYKETTHUC"),
                         rs.getString("TRANGTHAI")
@@ -48,7 +48,7 @@ public class UuDaiDAO {
         return new Object[]{
             ud.getIdUD(),
             ud.getGiaTri(),
-            ud.getMoTa(),
+            ud.getApDungVoi(),
             ud.getNgayBatDau(),
             ud.getNgayKetThuc(),
             ud.getTrangThai()
@@ -62,7 +62,7 @@ public class UuDaiDAO {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, ud.getIdUD());
             ps.setString(2, ud.getGiaTri());
-            ps.setString(3, ud.getMoTa());
+            ps.setFloat(3, ud.getApDungVoi());
             ps.setDate(4, new java.sql.Date(ud.getNgayBatDau().getTime()));
             ps.setDate(5, new java.sql.Date(ud.getNgayKetThuc().getTime()));
             ps.setString(6, ud.getTrangThai());
@@ -81,7 +81,7 @@ public class UuDaiDAO {
             String sql = "UPDATE UUDAI SET GIATRI=?, MOTA=?, NGAYBATDAU=?, NGAYKETTHUC=?, TRANGTHAI=? WHERE ID_UD=?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, ud.getGiaTri());
-            ps.setString(2, ud.getMoTa());
+            ps.setFloat(2, ud.getApDungVoi());
             ps.setDate(3, new java.sql.Date(ud.getNgayBatDau().getTime()));
             ps.setDate(4, new java.sql.Date(ud.getNgayKetThuc().getTime()));
             ps.setString(5, ud.getTrangThai());

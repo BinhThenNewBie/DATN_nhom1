@@ -13,7 +13,7 @@ import java.util.Date;
 public class UuDai {
     private String idUD;
     private String giaTri;
-    private String moTa;
+    private Float apDungVoi;
     private Date ngayBatDau;
     private Date ngayKetThuc;
     private String trangThai;
@@ -21,10 +21,10 @@ public class UuDai {
     public UuDai() {
     }
 
-    public UuDai(String idUD, String giaTri, String moTa, Date ngayBatDau, Date ngayKetThuc, String trangThai) {
+    public UuDai(String idUD, String giaTri, Float apDungVoi, Date ngayBatDau, Date ngayKetThuc, String trangThai) {
         this.idUD = idUD;
         this.giaTri = giaTri;
-        this.moTa = moTa;
+        this.apDungVoi = apDungVoi;
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
         this.trangThai = trangThai;
@@ -46,12 +46,12 @@ public class UuDai {
         this.giaTri = giaTri;
     }
 
-    public String getMoTa() {
-        return moTa;
+    public Float getApDungVoi() {
+        return apDungVoi;
     }
 
-    public void setMoTa(String moTa) {
-        this.moTa = moTa;
+    public void setApDungVoi(Float apDungVoi) {
+        this.apDungVoi = apDungVoi;
     }
 
     public Date getNgayBatDau() {
@@ -77,6 +77,6 @@ public class UuDai {
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
-    
+
     
 }
