@@ -371,7 +371,6 @@ public class QuanLySanPham extends javax.swing.JFrame {
             tong += ct.getGiaSP() * ct.getSoLuong();
         }
         hdd.updateTongTien(id, tong);
-
         // Check mã sản phẩm
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần sửa!");
