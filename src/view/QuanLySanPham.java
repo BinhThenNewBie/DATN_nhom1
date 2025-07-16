@@ -1,6 +1,5 @@
 package view;
 
-import view.StaffBanHang;
 import DAO.HoaDonChoDAO;
 import DAO.SanPhamDAO;
 import Model.ChiTietHoaDon;
@@ -31,6 +30,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
     SanPhamDAO spDao = new SanPhamDAO();
     String strAnh = "";
     HoaDonChoDAO hdd = new HoaDonChoDAO();
+
     /**
      * Creates new form QuanLySanPham
      */
@@ -41,7 +41,6 @@ public class QuanLySanPham extends javax.swing.JFrame {
         initTable();
         fillTable();
     }
-    
 
     public void initTable() {
         String[] cols = new String[]{"ID SẢN PHẨM", "TÊN SẢN PHẨM", "GIÁ TIỀN", "LOẠI SẢN PHẨM", "Ảnh", "TRẠNG THÁI"};
@@ -55,7 +54,6 @@ public class QuanLySanPham extends javax.swing.JFrame {
             tableModel.addRow(spDao.getRow(sp));
         }
     }
-    
 
     public void showdetail() {
         int i = tblBang.getSelectedRow();
@@ -373,8 +371,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
             tong += ct.getGiaSP() * ct.getSoLuong();
         }
         hdd.updateTongTien(id, tong);
-        
-        
+
         // Check mã sản phẩm
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần sửa!");
