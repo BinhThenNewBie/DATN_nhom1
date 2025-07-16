@@ -22,6 +22,7 @@ public class HoaDonChoDAO {
 
     List<HoaDonCho> lstHDC = new ArrayList<>();
     List<ChiTietHoaDon> lstHDCT = new ArrayList<>();
+    
 
     public ChiTietHoaDon selectCTHD(String ID_HD, String ID_SP) {
         String sql = "SELECT * FROM CHITIETHOADON WHERE ID_HD = ? AND ID_SP = ?";
@@ -83,6 +84,21 @@ public class HoaDonChoDAO {
             e.printStackTrace();
             return 0;                     
         }
+    }
+    
+    public int UpdateGia(String ID_SP) {
+        String sql = "UPDATE CHITIETHOADON SET GIA = ? WHERE ID_SP = ?";
+        try (Connection con = DBconnect.getConnection(); PreparedStatement pstm = con.prepareStatement(sql)) {
+            pstm.setString(1, ID_SP);
+
+            int row = pstm.executeUpdate();
+            if (row > 0) {
+                return 1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     // XÓA
