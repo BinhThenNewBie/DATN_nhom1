@@ -39,6 +39,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -62,6 +63,7 @@ public class StaffBanHang extends javax.swing.JFrame {
     public StaffBanHang() {
         initComponents();
         initTable();
+        fillTableUuDai();
         fillTableHDCho();
         fillTableCTHD();
         fillTableMenu();
@@ -78,7 +80,7 @@ public class StaffBanHang extends javax.swing.JFrame {
 
     private String formatVND(float amount) {
         DecimalFormat formatter = new DecimalFormat("#,###");
-        return formatter.format(amount) + " VND";
+        return formatter.format(amount) + " ₫";
     }
 
     public void initTable() {
@@ -110,6 +112,19 @@ public class StaffBanHang extends javax.swing.JFrame {
         }
     }
 
+    public void fillTableUuDai() {
+        modelUuDai.setRowCount(0);
+        for (UuDai ud : udd.getAll()) {
+            modelUuDai.addRow(new Object[]{
+                ud.getGiaTri(),
+                formatVND(ud.getApDungVoi())
+            });
+        }
+        TableColumnModel columnModel = tblUuDai.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(100); // Cột 1
+        columnModel.getColumn(1).setPreferredWidth(200); // Cột 2 (to gấp đôi)
+    }
+
     public void fillTableCTHD() {
         DefaultTableModel model = (DefaultTableModel) tblChiTietHoaDon.getModel();
         model.setRowCount(0);
@@ -119,7 +134,7 @@ public class StaffBanHang extends javax.swing.JFrame {
             model.addRow(new Object[]{
                 cthd.getID_SP(),
                 cthd.getTenSP(),
-                cthd.getGiaSP(),
+                formatVND(cthd.getGiaSP()),
                 cthd.getSoLuong()
             });
         }
@@ -128,18 +143,18 @@ public class StaffBanHang extends javax.swing.JFrame {
     public void fillTableMenu() {
         // Xoá tất cả các component con khỏi panel menu để cbi làm mới
         pnlMenu.removeAll();
-        
+
         // Kích thước của một sản phẩm
         int itemWidth = 140;
         int itemHeight = 200;
-        
+
         // ContentPanel: Panel chúa tất cả item sản phẩm
         // GridBagLayout: Layout cho phép xếp itém theo dạng linh hoạt
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setBackground(Color.WHITE);
         //Tạo khoảng cách 10px ở 4 phía
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        
+
         // GridBagConstraints: Đối tượng điều khiển cách các component được đặt trong GridBagLayout
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -154,7 +169,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                     .collect(Collectors.toList());
         }
         //filter để lọc, collect để thu thập kết quả
-        
+
         int col = 0;
         int row = 0;
         for (SanPham sp : list) {
@@ -173,7 +188,6 @@ public class StaffBanHang extends javax.swing.JFrame {
             // Khoảng trống 5px phía trên
             panel.add(Box.createVerticalStrut(5));
 
-            
             // SwingConstants.CENTER: Căn giữa text
             JLabel lblMa = new JLabel(sp.getIDSanPham(), SwingConstants.CENTER);
             lblMa.setFont(new Font("Segoe UI", Font.BOLD, 16));
@@ -196,7 +210,6 @@ public class StaffBanHang extends javax.swing.JFrame {
                 lblImage.setFont(new Font("Segoe UI", Font.PLAIN, 10));
             }
 
-            
             JPanel bottom = new JPanel();
             bottom.setLayout(new BoxLayout(bottom, BoxLayout.Y_AXIS));
             bottom.setBackground(Color.WHITE);
@@ -232,12 +245,14 @@ public class StaffBanHang extends javax.swing.JFrame {
                     panel.setBackground(new Color(240, 240, 240));
                     panel.setBorder(BorderFactory.createLineBorder(new Color(0, 120, 150), 2));
                 }
+
                 // khi di chuột ra nền trắng viền đen
                 @Override
                 public void mouseExited(MouseEvent e) {
                     panel.setBackground(Color.WHITE);
                     panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 }
+
                 // showdetail khi ấn vào sản phẩm
                 @Override
                 public void mouseClicked(MouseEvent e) {
@@ -359,7 +374,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                 modelCTHD.addRow(new Object[]{
                     cthd.getID_SP(),
                     cthd.getTenSP(),
-                    cthd.getGiaSP(),
+                    formatVND(cthd.getGiaSP()),
                     cthd.getSoLuong()
                 });
             }
