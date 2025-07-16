@@ -222,7 +222,7 @@ public class StaffBanHang extends javax.swing.JFrame {
             lblTen.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
             // Nếu tên > 15 ký tự, cắt còn 20 ký tự + "..." 
             if (sp.getTenSanPham().length() > 15) {
-                lblTen.setText(sp.getTenSanPham().substring(0, 20) + "...");
+                lblTen.setText(sp.getTenSanPham().substring(0, 16) + "...");
             }
 
             JLabel lblGia = new JLabel(formatVND(sp.getGiaTien()), SwingConstants.CENTER);
