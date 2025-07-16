@@ -47,7 +47,8 @@ public class NhanvienDAO {
         String chucVu = nv.getChucVu();
         String SDT = nv.getSDT();
         String IMG = nv.getIMG();
-        Object[] rows = new Object[]{ID_NV,hoTen,chucVu,SDT,IMG};
+        String trangThai = nv.getTrangThai();
+        Object[] rows = new Object[]{ID_NV,hoTen,chucVu,SDT,IMG,trangThai};
         return rows;
     }
     public int Themnv(Nhanvien nv){
@@ -60,7 +61,7 @@ public class NhanvienDAO {
         pstm.setString(2, nv.getHoTen());
         pstm.setString(3, nv.getChucVu());
         pstm.setString(4, nv.getSDT());
-        pstm.setString(5, nv.getSDT());
+        pstm.setString(5, nv.getIMG());
         pstm.setString(6, nv.getTrangThai());
         if(pstm.executeLargeUpdate()>0){
             System.out.println("Thêm nhân viên mới thành công!");
@@ -80,7 +81,7 @@ public class NhanvienDAO {
         pstm.setString(2, nv.getHoTen());
         pstm.setString(3, nv.getChucVu());
         pstm.setString(4, nv.getSDT());
-        pstm.setString(5, nv.getSDT());
+        pstm.setString(5, nv.getIMG());
         pstm.setString(6, nv.getTrangThai());
         pstm.setString(7,idnv);
         if(pstm.executeLargeUpdate()>0){

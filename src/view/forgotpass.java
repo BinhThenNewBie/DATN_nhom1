@@ -22,6 +22,7 @@ public class forgotpass extends javax.swing.JFrame {
      */
     public forgotpass() {
         initComponents();
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 

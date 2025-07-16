@@ -17,9 +17,14 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -28,18 +33,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 /**
  *
@@ -63,10 +63,12 @@ public class StaffBanHang extends javax.swing.JFrame {
     public StaffBanHang() {
         initComponents();
         initTable();
+        fillTableUuDai();
         fillTableHDCho();
         fillTableCTHD();
         fillTableMenu();
         setLocationRelativeTo(null);
+
         Timer timer = new Timer(0, (e) -> {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss");
             String time = sdf.format(new Date());
@@ -78,12 +80,12 @@ public class StaffBanHang extends javax.swing.JFrame {
 
     private String formatVND(float amount) {
         DecimalFormat formatter = new DecimalFormat("#,###");
-        return formatter.format(amount) + " VND";
+        return formatter.format(amount) + " ₫";
     }
 
     public void initTable() {
         modelUuDai = new DefaultTableModel();
-        String[] colsUuDai = new String[]{"Giá trị", "Số lượng"};
+        String[] colsUuDai = new String[]{"Giá trị", "Áp dụng HD trên"};
         modelUuDai.setColumnIdentifiers(colsUuDai);
         tblUuDai.setModel(modelUuDai);
 
@@ -110,6 +112,19 @@ public class StaffBanHang extends javax.swing.JFrame {
         }
     }
 
+    public void fillTableUuDai() {
+        modelUuDai.setRowCount(0);
+        for (UuDai ud : udd.getAll()) {
+            modelUuDai.addRow(new Object[]{
+                ud.getGiaTri(),
+                formatVND(ud.getApDungVoi())
+            });
+        }
+        TableColumnModel columnModel = tblUuDai.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(100); // Cột 1
+        columnModel.getColumn(1).setPreferredWidth(200); // Cột 2 (to gấp đôi)
+    }
+
     public void fillTableCTHD() {
         DefaultTableModel model = (DefaultTableModel) tblChiTietHoaDon.getModel();
         model.setRowCount(0);
@@ -119,72 +134,93 @@ public class StaffBanHang extends javax.swing.JFrame {
             model.addRow(new Object[]{
                 cthd.getID_SP(),
                 cthd.getTenSP(),
-                cthd.getGiaSP(),
+                formatVND(cthd.getGiaSP()),
                 cthd.getSoLuong()
             });
         }
     }
 
     public void fillTableMenu() {
-        // Xóa tất cả component cũ
+        // Xoá tất cả các component con khỏi panel menu để cbi làm mới
         pnlMenu.removeAll();
 
-        // Tạo panel chứa để có thể cuộn
-        JPanel contentPanel = new JPanel();
-        contentPanel.setLayout(new GridLayout(0, 5, 10, 10)); // 0 rows, 5 columns, với khoảng cách 10px
-        contentPanel.setBackground(Color.WHITE);
-
-        // Thêm padding cho content panel
-        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-        List<SanPham> list = spd.getAll();
+        // Kích thước của một sản phẩm
         int itemWidth = 140;
         int itemHeight = 200;
 
+        // ContentPanel: Panel chúa tất cả item sản phẩm
+        // GridBagLayout: Layout cho phép xếp itém theo dạng linh hoạt
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setBackground(Color.WHITE);
+        //Tạo khoảng cách 10px ở 4 phía
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // GridBagConstraints: Đối tượng điều khiển cách các component được đặt trong GridBagLayout
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        // Căn itém về phía trên-trái
+        gbc.anchor = GridBagConstraints.NORTHWEST;
+
+        String loai = cbxLoc.getSelectedItem().toString().trim();
+        List<SanPham> list = spd.getAll();
+        if (!loai.equalsIgnoreCase("TẤT CẢ")) {
+            list = list.stream()
+                    .filter(sp -> sp.getLoaiSanPham().equalsIgnoreCase(loai))
+                    .collect(Collectors.toList());
+        }
+        //filter để lọc, collect để thu thập kết quả
+
+        int col = 0;
+        int row = 0;
         for (SanPham sp : list) {
             if (sp.getTrangThai() != 1) {
-                continue; // ❗️Chỉ hiển thị sản phẩm đang hoạt động
+                continue;
             }
 
-            JPanel panel = new JPanel(new BorderLayout());
+            JPanel panel = new JPanel();
+            // Xếp các thành phần theo chiều dọc
+            panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+            // Đặt kích thước 140x200px
             panel.setPreferredSize(new Dimension(itemWidth, itemHeight));
-            panel.setMinimumSize(new Dimension(itemWidth, itemHeight));
-            panel.setMaximumSize(new Dimension(itemWidth, itemHeight));
             panel.setBackground(Color.WHITE);
+            // Viền đen
             panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            // Khoảng trống 5px phía trên
+            panel.add(Box.createVerticalStrut(5));
 
-            // Tạo label mã sản phẩm
+            // SwingConstants.CENTER: Căn giữa text
             JLabel lblMa = new JLabel(sp.getIDSanPham(), SwingConstants.CENTER);
-            lblMa.setFont(new Font("Segoe UI", Font.BOLD, 15));
-            lblMa.setPreferredSize(new Dimension(itemWidth, 30));
+            lblMa.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            // CENTER_ALIGMENT: Căn giữa trong BoxLayout
+            lblMa.setAlignmentX(Component.CENTER_ALIGNMENT);
+            lblMa.setPreferredSize(new Dimension(itemWidth, 35));
 
-            // Tạo label hình ảnh
             JLabel lblImage = new JLabel("", SwingConstants.CENTER);
-            lblImage.setPreferredSize(new Dimension(80, 90));
+            lblImage.setAlignmentX(Component.CENTER_ALIGNMENT);
+            lblImage.setMaximumSize(new Dimension(100, 100));
+            lblImage.setPreferredSize(new Dimension(100, 100));
             try {
                 ImageIcon icon = new ImageIcon("src/Images_SanPham/" + sp.getIMG());
-                if (icon.getIconWidth() > 0) {
-                    lblImage.setIcon(new ImageIcon(icon.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH)));
-                } else {
-                    lblImage.setText("Không có ảnh");
-                    lblImage.setFont(new Font("Segoe UI", Font.PLAIN, 10));
-                }
+                Image img = icon.getImage();
+                // SCALE_SMOOTH: resize ảnh mượt mà
+                Image scaledImg = img.getScaledInstance(95, 95, Image.SCALE_SMOOTH);
+                lblImage.setIcon(new ImageIcon(scaledImg));
             } catch (Exception e) {
                 lblImage.setText("Không có ảnh");
                 lblImage.setFont(new Font("Segoe UI", Font.PLAIN, 10));
             }
 
-            // Tạo panel chứa thông tin dưới
             JPanel bottom = new JPanel();
             bottom.setLayout(new BoxLayout(bottom, BoxLayout.Y_AXIS));
             bottom.setBackground(Color.WHITE);
-            bottom.setPreferredSize(new Dimension(itemWidth, 45));
+            bottom.setPreferredSize(new Dimension(itemWidth, 20));
 
             JLabel lblTen = new JLabel(sp.getTenSanPham(), SwingConstants.CENTER);
-            lblTen.setFont(new Font("Segoe UI", Font.PLAIN, 10));
+            lblTen.setFont(new Font("Segoe UI", Font.BOLD, 12));
             lblTen.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-            // Cắt ngắn tên sản phẩm nếu quá dài
+            lblTen.setForeground(Color.red);
+            lblTen.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+            // Nếu tên > 15 ký tự, cắt còn 20 ký tự + "..." 
             if (sp.getTenSanPham().length() > 15) {
                 lblTen.setText(sp.getTenSanPham().substring(0, 20) + "...");
             }
@@ -196,53 +232,100 @@ public class StaffBanHang extends javax.swing.JFrame {
             bottom.add(lblTen);
             bottom.add(lblGia);
 
-            // Thêm các component vào panel
-            panel.add(lblMa, BorderLayout.NORTH);
-            panel.add(lblImage, BorderLayout.CENTER);
-            panel.add(bottom, BorderLayout.SOUTH);
+            panel.add(lblMa);
+            panel.add(Box.createVerticalStrut(5));
+            panel.add(lblImage);
+            panel.add(Box.createVerticalStrut(5));
+            panel.add(bottom);
 
-            // Thêm sự kiện mouse
             panel.addMouseListener(new MouseAdapter() {
+                // Di chuột vào nền xám nhạt viền xanh
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     panel.setBackground(new Color(240, 240, 240));
-                    panel.setBorder(BorderFactory.createLineBorder(new Color(0, 120, 200), 2));
+                    panel.setBorder(BorderFactory.createLineBorder(new Color(0, 120, 150), 2));
                 }
 
+                // khi di chuột ra nền trắng viền đen
                 @Override
                 public void mouseExited(MouseEvent e) {
                     panel.setBackground(Color.WHITE);
                     panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 }
 
+                // showdetail khi ấn vào sản phẩm
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     showDetail(sp);
                 }
             });
-
+            // Đổi con trỏ thành hình bàn tay
             panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            contentPanel.add(panel);
+
+            // Vị trí trên grid
+            gbc.gridx = col;
+            gbc.gridy = row;
+            contentPanel.add(panel, gbc);
+
+            col++;
+            if (col >= 5) {
+                col = 0;
+                row++;
+            }
+        }
+        // Thêm panel trắng để đủ dòng cuối
+        if (col != 0) {
+            for (int i = col; i < 5; i++) {
+                JPanel panelTrang = new JPanel();
+                panelTrang.setPreferredSize(new Dimension(itemWidth, itemHeight));
+                panelTrang.setMinimumSize(new Dimension(itemWidth, itemHeight));
+                panelTrang.setMaximumSize(new Dimension(itemWidth, itemHeight));
+                panelTrang.setBackground(Color.WHITE);
+
+                gbc.gridx = i;
+                gbc.gridy = row;
+                gbc.fill = GridBagConstraints.HORIZONTAL;
+                gbc.weightx = 1.0;
+
+                contentPanel.add(panelTrang, gbc);
+            }
         }
 
-        // Tạo JScrollPane cho content panel
+        // LƯU KÍCH THƯỚC GỐC CỦA PANEL
+        Dimension originalSize = pnlMenu.getSize();
+        Point originalLocation = pnlMenu.getLocation();
+
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER); // Không cho cuộn ngang
-        scrollPane.getVerticalScrollBar().setUnitIncrement(16); // Tăng tốc độ cuộn
-        scrollPane.setBorder(null); // Bỏ border của scroll pane
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setBorder(null);
 
-        // Thiết lập viewport để không thay đổi kích thước
-        scrollPane.setPreferredSize(pnlMenu.getSize());
-        scrollPane.setMinimumSize(pnlMenu.getSize());
+        // CỐ ĐỊNH KÍCH THƯỚC SCROLLPANE
+        scrollPane.setPreferredSize(originalSize);
+        scrollPane.setMinimumSize(originalSize);
+        scrollPane.setMaximumSize(originalSize);
 
-        // Đặt layout cho pnlMenu và thêm scrollPane
+        // CỐ ĐỊNH LAYOUT VÀ KÍCH THƯỚC PANEL
         pnlMenu.setLayout(new BorderLayout());
+        pnlMenu.setPreferredSize(originalSize);
+        pnlMenu.setMinimumSize(originalSize);
+        pnlMenu.setMaximumSize(originalSize);
+        pnlMenu.setSize(originalSize);
+        pnlMenu.setBounds(originalLocation.x, originalLocation.y, originalSize.width, originalSize.height);
+
         pnlMenu.add(scrollPane, BorderLayout.CENTER);
 
-        // Refresh panel
+        // CỐ ĐỊNH VỊ TRÍ VÀ CUỘN VỀ ĐẦU
+        SwingUtilities.invokeLater(() -> {
+            pnlMenu.setBounds(originalLocation.x, originalLocation.y, originalSize.width, originalSize.height);
+            scrollPane.getVerticalScrollBar().setValue(0);
+            scrollPane.getHorizontalScrollBar().setValue(0);
+        });
+
         pnlMenu.revalidate();
         pnlMenu.repaint();
+
     }
 
     private void showDetail(SanPham sp) {
@@ -291,7 +374,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                 modelCTHD.addRow(new Object[]{
                     cthd.getID_SP(),
                     cthd.getTenSP(),
-                    cthd.getGiaSP(),
+                    formatVND(cthd.getGiaSP()),
                     cthd.getSoLuong()
                 });
             }
@@ -453,7 +536,6 @@ public class StaffBanHang extends javax.swing.JFrame {
     public void deleteSP() {
         String ID_HD = lblMaHD.getText();
         float tong = 0;
-        float tru = 0;
         int i = tblChiTietHoaDon.getSelectedRow();
         if (i >= 0) {
             int choose = JOptionPane.showConfirmDialog(this, "XÁC NHẬN", "BẠN MUỐN XÓA", JOptionPane.YES_NO_OPTION);
@@ -535,54 +617,7 @@ public class StaffBanHang extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Số lượng phải là số nguyên!");
             return false;
         }
-
-        return true; // Hợp lệ
-    }
-
-    public void payment() {
-        if (lblMaHD.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn Hóa Đơn cần thanh toán");
-            return;
-        }
-        if (tblHoaDon.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "Hóa đơn chưa có món nào!");
-            return;
-        }
-
-        StringBuilder bill = new StringBuilder();
-        String maHD = lblMaHD.getText();
-
-        bill.append("======= HÓA ĐƠN: ").append(maHD).append(" =======\n");
-        bill.append(String.format("%-20s %-10s %-10s\n", "Tên SP", "Số lượng", "Đơn giá"));
-        bill.append("----------------------------------------\n");
-
-        double tongTien = 0;
-
-        for (int i = 0; i < tblHoaDon.getRowCount(); i++) {
-            String tenSP = tblHoaDon.getValueAt(i, 1).toString();
-            int soLuong = Integer.parseInt(tblHoaDon.getValueAt(i, 2).toString());
-            double donGia = Double.parseDouble(tblHoaDon.getValueAt(i, 3).toString());
-
-            tongTien += soLuong * donGia;
-
-            bill.append(String.format("%-20s %-10d %-10.0f\n", tenSP, soLuong, donGia));
-        }
-
-        bill.append("----------------------------------------\n");
-
-        
-
-        bill.append(String.format("TỔNG TIỀN: %.0f VNĐ\n", tongTien));
-        bill.append("========================================\n");
-
-        JTextArea txtBill = new JTextArea(bill.toString());
-        txtBill.setEditable(false);
-        txtBill.setFont(new Font("Monospaced", Font.PLAIN, 14));
-
-        JScrollPane scroll = new JScrollPane(txtBill);
-        scroll.setPreferredSize(new Dimension(400, 300));
-
-        JOptionPane.showMessageDialog(this, scroll, "Chi tiết thanh toán", JOptionPane.INFORMATION_MESSAGE);
+        return true;
     }
 
     @SuppressWarnings("unchecked")
@@ -610,7 +645,7 @@ public class StaffBanHang extends javax.swing.JFrame {
         jSeparator3 = new javax.swing.JSeparator();
         jScrollPane3 = new javax.swing.JScrollPane();
         tblUuDai = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        btnApDung = new javax.swing.JButton();
         pnlMenu = new javax.swing.JPanel();
         lblTittlePnlMenu = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
@@ -627,6 +662,12 @@ public class StaffBanHang extends javax.swing.JFrame {
         btnThanhToan = new javax.swing.JButton();
         btnHuyDon = new javax.swing.JButton();
         lblTime = new javax.swing.JLabel();
+        btnLogOut = new javax.swing.JButton();
+        cbxLoc = new javax.swing.JComboBox<>();
+        btnLoc = new javax.swing.JButton();
+        lblexit = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jSeparator6 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -654,6 +695,7 @@ public class StaffBanHang extends javax.swing.JFrame {
         txtSoLuong.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         btnThem.setBackground(new java.awt.Color(31, 51, 86));
+        btnThem.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnThem.setForeground(new java.awt.Color(255, 255, 255));
         btnThem.setText("THÊM");
         btnThem.addActionListener(new java.awt.event.ActionListener() {
@@ -663,6 +705,7 @@ public class StaffBanHang extends javax.swing.JFrame {
         });
 
         btnSua.setBackground(new java.awt.Color(31, 51, 86));
+        btnSua.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnSua.setForeground(new java.awt.Color(255, 255, 255));
         btnSua.setText("SỬA");
         btnSua.addActionListener(new java.awt.event.ActionListener() {
@@ -672,6 +715,7 @@ public class StaffBanHang extends javax.swing.JFrame {
         });
 
         btnXoa.setBackground(new java.awt.Color(31, 51, 86));
+        btnXoa.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btnXoa.setForeground(new java.awt.Color(255, 255, 255));
         btnXoa.setText("XÓA");
         btnXoa.addActionListener(new java.awt.event.ActionListener() {
@@ -768,7 +812,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                         .addComponent(lblTittleSoLuong))
                     .addGroup(pnlThongTinLayout.createSequentialGroup()
                         .addComponent(lblAnhSanPham, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 16, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtSoLuong, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -783,7 +827,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(lblUuDai, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnTaoHoaDon))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnlUuDai.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -811,10 +855,15 @@ public class StaffBanHang extends javax.swing.JFrame {
         });
         jScrollPane3.setViewportView(tblUuDai);
 
-        jButton1.setBackground(new java.awt.Color(31, 51, 86));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("ÁP DỤNG");
+        btnApDung.setBackground(new java.awt.Color(31, 51, 86));
+        btnApDung.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnApDung.setForeground(new java.awt.Color(255, 255, 255));
+        btnApDung.setText("ÁP DỤNG");
+        btnApDung.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnApDungActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout pnlUuDaiLayout = new javax.swing.GroupLayout(pnlUuDai);
         pnlUuDai.setLayout(pnlUuDaiLayout);
@@ -830,8 +879,8 @@ public class StaffBanHang extends javax.swing.JFrame {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(pnlUuDaiLayout.createSequentialGroup()
-                .addGap(52, 52, 52)
-                .addComponent(jButton1)
+                .addGap(53, 53, 53)
+                .addComponent(btnApDung)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pnlUuDaiLayout.setVerticalGroup(
@@ -842,10 +891,10 @@ public class StaffBanHang extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 202, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnApDung)
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         pnlMenu.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -864,7 +913,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                     .addComponent(jSeparator2)
                     .addGroup(pnlMenuLayout.createSequentialGroup()
                         .addComponent(lblTittlePnlMenu)
-                        .addGap(0, 822, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         pnlMenuLayout.setVerticalGroup(
@@ -874,7 +923,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                 .addComponent(lblTittlePnlMenu)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(350, Short.MAX_VALUE))
         );
 
         pnlChiTietHoaDon.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -913,7 +962,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                         .addComponent(lblTittlePnlChiTietHoaDon)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jSeparator4)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 746, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2))
                 .addContainerGap())
         );
         pnlChiTietHoaDonLayout.setVerticalGroup(
@@ -924,8 +973,8 @@ public class StaffBanHang extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pnlHoaDon.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -991,9 +1040,9 @@ public class StaffBanHang extends javax.swing.JFrame {
                     .addGroup(pnlHoaDonLayout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(btnThanhToan)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 15, Short.MAX_VALUE)
                         .addComponent(btnHuyDon)
-                        .addGap(18, 18, 18))))
+                        .addGap(24, 24, 24))))
         );
         pnlHoaDonLayout.setVerticalGroup(
             pnlHoaDonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1003,55 +1052,121 @@ public class StaffBanHang extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator5, javax.swing.GroupLayout.PREFERRED_SIZE, 4, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(pnlHoaDonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnThanhToan)
                     .addComponent(btnHuyDon))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         lblTime.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblTime.setForeground(new java.awt.Color(0, 51, 102));
+
+        btnLogOut.setBackground(new java.awt.Color(31, 51, 86));
+        btnLogOut.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnLogOut.setForeground(new java.awt.Color(255, 255, 255));
+        btnLogOut.setText("LOG OUT");
+        btnLogOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLogOutActionPerformed(evt);
+            }
+        });
+
+        cbxLoc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TẤT CẢ", "CAFE", "BÁNH NGỌT", "NƯỚC ÉP" }));
+
+        btnLoc.setBackground(new java.awt.Color(31, 51, 86));
+        btnLoc.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnLoc.setForeground(new java.awt.Color(255, 255, 255));
+        btnLoc.setText("LỌC");
+        btnLoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLocActionPerformed(evt);
+            }
+        });
+
+        lblexit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainForm_Admin/image/dangxuat.png"))); // NOI18N
+        lblexit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lblexitMouseClicked(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI Semibold", 1, 24)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 51, 102));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainForm_Admin/image/trangchu.png"))); // NOI18N
+        jLabel1.setText("STAFF");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGap(24, 24, 24)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlThongTin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(pnlMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jSeparator6)
+                        .addGap(52, 52, 52))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(pnlUuDai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(pnlChiTietHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(pnlHoaDon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap(28, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(pnlThongTin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel1))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(40, 40, 40)
+                                        .addComponent(cbxLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(btnLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 203, Short.MAX_VALUE)
+                                        .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(18, 18, 18)
+                                        .addComponent(pnlMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblexit)
+                                .addGap(31, 31, 31)
+                                .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(pnlUuDai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(pnlChiTietHoaDon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(pnlHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(30, 30, 30))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pnlMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlThongTin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(cbxLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnLoc))))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pnlUuDai, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlChiTietHoaDon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pnlHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18))
+                    .addComponent(pnlThongTin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(pnlMenu, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(34, 34, 34)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(pnlChiTietHoaDon, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(pnlUuDai, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(32, 32, 32)
+                .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblexit, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(btnLogOut))
+                .addGap(32, 32, 32))
         );
 
         pack();
@@ -1073,7 +1188,7 @@ public class StaffBanHang extends javax.swing.JFrame {
 
     private void btnThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThanhToanActionPerformed
         // TODO add your handling code here:
-        payment();
+
     }//GEN-LAST:event_btnThanhToanActionPerformed
 
     private void tblHoaDonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHoaDonMouseClicked
@@ -1114,6 +1229,27 @@ public class StaffBanHang extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSuaActionPerformed
 
+    private void btnApDungActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnApDungActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnApDungActionPerformed
+
+    private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
+        // TODO add your handling code here:
+        Login lg = new Login();
+        lg.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnLogOutActionPerformed
+
+    private void lblexitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblexitMouseClicked
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_lblexitMouseClicked
+
+    private void btnLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocActionPerformed
+        // TODO add your handling code here:
+        fillTableMenu();
+    }//GEN-LAST:event_btnLocActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1150,13 +1286,17 @@ public class StaffBanHang extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnApDung;
     private javax.swing.JButton btnHuyDon;
+    private javax.swing.JButton btnLoc;
+    private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnTaoHoaDon;
     private javax.swing.JButton btnThanhToan;
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnXoa;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JComboBox<String> cbxLoc;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1165,6 +1305,7 @@ public class StaffBanHang extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
+    private javax.swing.JSeparator jSeparator6;
     private javax.swing.JLabel lblAnhSanPham;
     private javax.swing.JLabel lblMaHD;
     private javax.swing.JLabel lblMaSP;
@@ -1179,6 +1320,7 @@ public class StaffBanHang extends javax.swing.JFrame {
     private javax.swing.JLabel lblTittleSoLuong;
     private javax.swing.JLabel lblTittleUuDai;
     private javax.swing.JLabel lblUuDai;
+    private javax.swing.JLabel lblexit;
     private javax.swing.JPanel pnlChiTietHoaDon;
     private javax.swing.JPanel pnlHoaDon;
     private javax.swing.JPanel pnlMenu;
