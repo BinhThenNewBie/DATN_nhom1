@@ -407,6 +407,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Giá tiền không được để trống!");
             return false;
         }
+        
 
         // Check giá tiền chỉ chứa khoảng trắng
         if (giaStr.matches("\\s*")) {
