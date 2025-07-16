@@ -1,6 +1,8 @@
 package view;
 
+import DAO.HoaDonChoDAO;
 import DAO.SanPhamDAO;
+import Model.ChiTietHoaDon;
 import Model.SanPham;
 import java.awt.Image;
 import java.io.File;
@@ -25,6 +27,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
     DefaultTableModel tableModel = new DefaultTableModel();
     SanPhamDAO spDao = new SanPhamDAO();
     String strAnh = "";
+    HoaDonChoDAO hdd = new HoaDonChoDAO();
 
     /**
      * Creates new form QuanLySanPham
@@ -354,6 +357,14 @@ public class QuanLySanPham extends javax.swing.JFrame {
         String ten = txtTensp.getText().trim();
         String giaStr = txtGiatien.getText().trim();
 
+        float tong = 0;
+        List<ChiTietHoaDon> list = hdd.getAllCTHD();
+        hdd.UpdateGia(id);
+        for (ChiTietHoaDon ct : list) {
+            tong += ct.getGiaSP() * ct.getSoLuong();
+        }
+        hdd.updateTongTien(id, tong);
+        
         // Check mã sản phẩm
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhấn nút 'TẠO MÃ' trước.");
