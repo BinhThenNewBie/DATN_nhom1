@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Connection;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,14 +29,12 @@ public class UuDaiDAO {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM UUDAI");
             while (rs.next()) {
-                UuDai ud = new UuDai(
-                        rs.getString("ID_UD"),
-                        rs.getString("GIATRI"),
-                        rs.getFloat("APDUNGVOI"),
-                        rs.getDate("NGAYBATDAU"),
-                        rs.getDate("NGAYKETTHUC"),
-                        rs.getString("TRANGTHAI")
-                );
+                UuDai ud = new UuDai();
+                ud.setIdUD(rs.getString("ID_UD"));
+                ud.setGiaTri(rs.getString("GIATRI"));
+                ud.setApDungVoi(rs.getFloat("APDUNGVOI"));
+                ud.setNgayBatDau(rs.getDate("NGAYBATDAU"));
+                ud.setNgayKetThuc(rs.getDate("NGAYKETTHUC"));
                 list.add(ud);
             }
         } catch (Exception e) {
@@ -50,29 +49,36 @@ public class UuDaiDAO {
             ud.getApDungVoi()
         };
     }
+
     public Object[] getRow(UuDai ud) {
+        String trangThai;
+        Date today = new Date();
+        if (ud.getNgayKetThuc().before(today)) {
+            trangThai = "HẾT HẠN ";
+        } else {
+            trangThai = "CÒN HẠN";
+        }
+
         return new Object[]{
             ud.getIdUD(),
             ud.getGiaTri(),
-            ud.getApDungVoi(),
+            String.format("%,.0f VND", ud.getApDungVoi()),
             ud.getNgayBatDau(),
             ud.getNgayKetThuc(),
-            ud.getTrangThai()
+            trangThai
         };
     }
 
     public void them(UuDai ud) {
         try {
             Connection conn = DBconnect.getConnection();
-            String sql = "INSERT INTO UUDAI (ID_UD, GIATRI, MOTA, NGAYBATDAU, NGAYKETTHUC, TRANGTHAI) VALUES (?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO UUDAI (ID_UD, GIATRI, APDUNGVOI, NGAYBATDAU, NGAYKETTHUC) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, ud.getIdUD());
             ps.setString(2, ud.getGiaTri());
             ps.setFloat(3, ud.getApDungVoi());
             ps.setDate(4, new java.sql.Date(ud.getNgayBatDau().getTime()));
             ps.setDate(5, new java.sql.Date(ud.getNgayKetThuc().getTime()));
-            ps.setString(6, ud.getTrangThai());
-
             ps.executeUpdate();
             JOptionPane.showMessageDialog(null, "Thêm ưu đãi thành công!");
         } catch (Exception e) {
@@ -84,15 +90,13 @@ public class UuDaiDAO {
     public void sua(UuDai ud) {
         try {
             Connection conn = DBconnect.getConnection();
-            String sql = "UPDATE UUDAI SET GIATRI=?, MOTA=?, NGAYBATDAU=?, NGAYKETTHUC=?, TRANGTHAI=? WHERE ID_UD=?";
+            String sql = "UPDATE UUDAI SET GIATRI=?, APDUNGVOI=?, NGAYBATDAU=?, NGAYKETTHUC=? WHERE ID_UD=?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, ud.getGiaTri());
             ps.setFloat(2, ud.getApDungVoi());
             ps.setDate(3, new java.sql.Date(ud.getNgayBatDau().getTime()));
             ps.setDate(4, new java.sql.Date(ud.getNgayKetThuc().getTime()));
-            ps.setString(5, ud.getTrangThai());
-            ps.setString(6, ud.getIdUD());
-
+            ps.setString(5, ud.getIdUD());
             ps.executeUpdate();
             JOptionPane.showMessageDialog(null, "Cập nhật ưu đãi thành công!");
         } catch (Exception e) {
@@ -101,17 +105,9 @@ public class UuDaiDAO {
         }
     }
 
-//    public void xoa(String id) {
-//        String sql = "DELETE FROM UUDAI WHERE ID_UD = ?";
-//        try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-//
-//            ps.setString(1, id);
-//            ps.executeUpdate();
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            JOptionPane.showMessageDialog(null, "Lỗi khi xóa ưu đãi!");
-//        }
-//    }
+    private String formatVND(float amount) {
+        DecimalFormat df = new DecimalFormat("#,###");
+        return df.format(amount) + " VND";
+    }
 
 }
