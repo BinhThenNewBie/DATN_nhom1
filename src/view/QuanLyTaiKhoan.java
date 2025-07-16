@@ -38,85 +38,110 @@ public void fillTable(){
     }
 }
 public void showdetail(){
-    int chon= tblTaikhoan.getSelectedRow();
-    if(chon >=0){
+    int chon = tblTaikhoan.getSelectedRow();
+    if(chon >= 0){
         Taikhoan tk = tkd.GETALL().get(chon);
         txtIdnv.setText(tk.getID_TK());
         txtPass.setText(tk.getPass());
         txtEmail.setText(tk.getEmail());
         cboVaitro.setSelectedItem(tk.getVaiTro());
+        
         String trangThai = tk.getTrangThai();
+        
+        // Sửa logic hiển thị button
         if("LOCKED".equalsIgnoreCase(trangThai)){
             btnKhoa.setEnabled(false);
             btnMokhoa.setEnabled(true);
             btnSua.setEnabled(true);
-        }else{
+        } else {
             btnKhoa.setEnabled(true);
             btnMokhoa.setEnabled(false);
             btnSua.setEnabled(false);
         }
-}
-    
     }
+}
 public void lammoi(){
     txtEmail.setText(null);
     txtIdnv.setText(null);
     txtPass.setText(null);
 }
 public void sua(){
-   int chon = tblTaikhoan.getSelectedRow();
-        if(chon>=0){
-            Taikhoan chontk = tkd.GETALL().get(chon);
-            if("STAFF".equalsIgnoreCase(chontk.getVaiTro())){
-            JOptionPane.showMessageDialog(this, "Không đổi được mật khẩu với vai trò là STAFF");
+    int chon = tblTaikhoan.getSelectedRow();
+    if(chon >= 0){
+        Taikhoan chontk = tkd.GETALL().get(chon);
+        
+        // Kiểm tra trạng thái trước khi sửa
+        if("LOCKED".equalsIgnoreCase(chontk.getTrangThai())){
+            JOptionPane.showMessageDialog(this, "Không thể sửa tài khoản đã bị khóa!");
             return;
-            }
-            int sua = JOptionPane.showConfirmDialog(this, "Bạn muốn sửa không", "Xác nhận", JOptionPane.YES_NO_OPTION);
-     if(sua==JOptionPane.YES_OPTION){
-        String IDTK = txtIdnv.getText();
-        String Pass= txtPass.getText();
-        String Email =txtEmail.getText();
-        String vaiTro = (String) cboVaitro.getSelectedItem();
-        String trangThai = chontk.getTrangThai();
-        Taikhoan tk = new Taikhoan(IDTK, Pass, Email, vaiTro,trangThai);
-    int result = tkd.sua(IDTK, tk);
-    if( result==1){
-        fillTable();
-        JOptionPane.showMessageDialog(this, "Sửa thành công");
-    }else{
-        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra");
-    }
-     }
         }
-}
-    public void moKhoaTaiKhoan(){
-        int chon = tblTaikhoan.getSelectedRow();
-        if(chon >= 0){
-            Taikhoan chontk = tkd.GETALL().get(chon);
+        
+        // Kiểm tra vai trò STAFF
+        if("STAFF".equalsIgnoreCase(chontk.getVaiTro())){
+            JOptionPane.showMessageDialog(this, "Không được phép sửa tài khoản STAFF!");
+            return;
+        }
+        
+        int sua = JOptionPane.showConfirmDialog(this, "Bạn muốn sửa không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if(sua == JOptionPane.YES_OPTION){
+            String IDTK = txtIdnv.getText().trim();
+            String Pass = txtPass.getText().trim();
+            String Email = txtEmail.getText().trim();
+            String vaiTro = (String) cboVaitro.getSelectedItem();
             
-            // Kiểm tra nếu tài khoản chưa bị khóa
-            if("ACTIVE".equals(chontk.getTrangThai())){
-                JOptionPane.showMessageDialog(this, "Tài khoản đang hoạt động!");
+            // Validation dữ liệu
+            if(IDTK.isEmpty() || Pass.isEmpty() || Email.isEmpty()){
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
                 return;
             }
             
-            int xacNhan = JOptionPane.showConfirmDialog(this, 
-                "Bạn có chắc muốn mở khóa tài khoản: " + chontk.getID_TK() + "?", 
-                "Xác nhận mở khóa", JOptionPane.YES_NO_OPTION);
-                
-            if(xacNhan == JOptionPane.YES_OPTION){
-                int result = tkd.moKhoaTaiKhoan(chontk.getID_TK());
-                if(result == 1){
-                    fillTable();
-                    JOptionPane.showMessageDialog(this, "Mở khóa tài khoản thành công!");
-                } else {
-                    JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi mở khóa tài khoản!");
-                }
+            // Giữ nguyên trạng thái hiện tại
+            String trangThai = chontk.getTrangThai();
+            
+            Taikhoan tk = new Taikhoan(IDTK, Pass, Email, vaiTro, trangThai);
+            int result = tkd.sua(chontk.getID_TK(), tk);
+            
+            if(result == 1){
+                fillTable();
+                lammoi(); // Clear form
+                JOptionPane.showMessageDialog(this, "Sửa thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi sửa!");
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần mở khóa!");
         }
+    } else {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần sửa!");
     }
+}
+public void moKhoaTaiKhoan(){
+    int chon = tblTaikhoan.getSelectedRow();
+    if(chon >= 0){
+        Taikhoan chontk = tkd.GETALL().get(chon);
+        
+        // Kiểm tra trạng thái hiện tại
+        if("ACTIVE".equalsIgnoreCase(chontk.getTrangThai())){
+            JOptionPane.showMessageDialog(this, "Tài khoản đang hoạt động, không cần mở khóa!");
+            return;
+        }
+        
+        int xacNhan = JOptionPane.showConfirmDialog(this, 
+            "Bạn có chắc muốn mở khóa tài khoản: " + chontk.getID_TK() + "?", 
+            "Xác nhận mở khóa", JOptionPane.YES_NO_OPTION);
+            
+        if(xacNhan == JOptionPane.YES_OPTION){
+            int result = tkd.moKhoaTaiKhoan(chontk.getID_TK());
+            if(result == 1){
+                fillTable();
+                showdetail(); // Refresh button states
+                JOptionPane.showMessageDialog(this, "Mở khóa tài khoản thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi mở khóa tài khoản!");
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần mở khóa!");
+    }
+}
   // Hàm khóa tài khoản
     public void khoaTaiKhoan(){
         int chon = tblTaikhoan.getSelectedRow();

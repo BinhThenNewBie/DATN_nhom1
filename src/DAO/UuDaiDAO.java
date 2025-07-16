@@ -44,6 +44,12 @@ public class UuDaiDAO {
         return list;
     }
 
+    public Object[] getRowUuDai(UuDai ud) {
+        return new Object[]{
+            ud.getGiaTri(),
+            ud.getApDungVoi()
+        };
+    }
     public Object[] getRow(UuDai ud) {
         return new Object[]{
             ud.getIdUD(),

@@ -32,12 +32,8 @@ public class TaikhoanDAO {
                 tk.setPass(rs.getString(2));
                 tk.setEmail(rs.getString(3));
                 tk.setVaiTro(rs.getString(4));
-                // Thêm trường TrangThai (nếu chưa có trong DB thì mặc định là ACTIVE)
-                try {
-                    tk.setTrangThai(rs.getString(5));
-                } catch (Exception e) {
-                    tk.setTrangThai("ACTIVE"); // Mặc định nếu chưa có cột TrangThai
-                }
+                String trangThai = rs.getString("TRANGTHAI");
+                tk.setTrangThai(trangThai != null ? trangThai : "ACTIVE");
                 Listtk.add(tk);
             }
         } catch (Exception e) {
