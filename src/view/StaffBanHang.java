@@ -24,6 +24,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -125,17 +126,24 @@ public class StaffBanHang extends javax.swing.JFrame {
     }
 
     public void fillTableMenu() {
+        // Xoá tất cả các component con khỏi panel menu để cbi làm mới
         pnlMenu.removeAll();
-
+        
+        // Kích thước của một sản phẩm
         int itemWidth = 140;
         int itemHeight = 200;
-
+        
+        // ContentPanel: Panel chúa tất cả item sản phẩm
+        // GridBagLayout: Layout cho phép xếp itém theo dạng linh hoạt
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setBackground(Color.WHITE);
+        //Tạo khoảng cách 10px ở 4 phía
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
+        
+        // GridBagConstraints: Đối tượng điều khiển cách các component được đặt trong GridBagLayout
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
+        // Căn itém về phía trên-trái
         gbc.anchor = GridBagConstraints.NORTHWEST;
 
         String loai = cbxLoc.getSelectedItem().toString().trim();
@@ -145,7 +153,8 @@ public class StaffBanHang extends javax.swing.JFrame {
                     .filter(sp -> sp.getLoaiSanPham().equalsIgnoreCase(loai))
                     .collect(Collectors.toList());
         }
-
+        //filter để lọc, collect để thu thập kết quả
+        
         int col = 0;
         int row = 0;
         for (SanPham sp : list) {
@@ -154,14 +163,21 @@ public class StaffBanHang extends javax.swing.JFrame {
             }
 
             JPanel panel = new JPanel();
+            // Xếp các thành phần theo chiều dọc
             panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+            // Đặt kích thước 140x200px
             panel.setPreferredSize(new Dimension(itemWidth, itemHeight));
             panel.setBackground(Color.WHITE);
+            // Viền đen
             panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+            // Khoảng trống 5px phía trên
             panel.add(Box.createVerticalStrut(5));
 
+            
+            // SwingConstants.CENTER: Căn giữa text
             JLabel lblMa = new JLabel(sp.getIDSanPham(), SwingConstants.CENTER);
             lblMa.setFont(new Font("Segoe UI", Font.BOLD, 16));
+            // CENTER_ALIGMENT: Căn giữa trong BoxLayout
             lblMa.setAlignmentX(Component.CENTER_ALIGNMENT);
             lblMa.setPreferredSize(new Dimension(itemWidth, 35));
 
@@ -172,6 +188,7 @@ public class StaffBanHang extends javax.swing.JFrame {
             try {
                 ImageIcon icon = new ImageIcon("src/Images_SanPham/" + sp.getIMG());
                 Image img = icon.getImage();
+                // SCALE_SMOOTH: resize ảnh mượt mà
                 Image scaledImg = img.getScaledInstance(95, 95, Image.SCALE_SMOOTH);
                 lblImage.setIcon(new ImageIcon(scaledImg));
             } catch (Exception e) {
@@ -179,6 +196,7 @@ public class StaffBanHang extends javax.swing.JFrame {
                 lblImage.setFont(new Font("Segoe UI", Font.PLAIN, 10));
             }
 
+            
             JPanel bottom = new JPanel();
             bottom.setLayout(new BoxLayout(bottom, BoxLayout.Y_AXIS));
             bottom.setBackground(Color.WHITE);
@@ -189,6 +207,7 @@ public class StaffBanHang extends javax.swing.JFrame {
             lblTen.setAlignmentX(Component.CENTER_ALIGNMENT);
             lblTen.setForeground(Color.red);
             lblTen.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
+            // Nếu tên > 15 ký tự, cắt còn 20 ký tự + "..." 
             if (sp.getTenSanPham().length() > 15) {
                 lblTen.setText(sp.getTenSanPham().substring(0, 20) + "...");
             }
@@ -207,23 +226,25 @@ public class StaffBanHang extends javax.swing.JFrame {
             panel.add(bottom);
 
             panel.addMouseListener(new MouseAdapter() {
+                // Di chuột vào nền xám nhạt viền xanh
                 @Override
                 public void mouseEntered(MouseEvent e) {
                     panel.setBackground(new Color(240, 240, 240));
                     panel.setBorder(BorderFactory.createLineBorder(new Color(0, 120, 150), 2));
                 }
-
+                // khi di chuột ra nền trắng viền đen
                 @Override
                 public void mouseExited(MouseEvent e) {
                     panel.setBackground(Color.WHITE);
                     panel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 }
-
+                // showdetail khi ấn vào sản phẩm
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     showDetail(sp);
                 }
             });
+            // Đổi con trỏ thành hình bàn tay
             panel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
             // Vị trí trên grid
@@ -255,18 +276,41 @@ public class StaffBanHang extends javax.swing.JFrame {
             }
         }
 
+        // LƯU KÍCH THƯỚC GỐC CỦA PANEL
+        Dimension originalSize = pnlMenu.getSize();
+        Point originalLocation = pnlMenu.getLocation();
+
         JScrollPane scrollPane = new JScrollPane(contentPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         scrollPane.setBorder(null);
-        scrollPane.setPreferredSize(pnlMenu.getSize());
-        scrollPane.setMinimumSize(pnlMenu.getSize());
 
+        // CỐ ĐỊNH KÍCH THƯỚC SCROLLPANE
+        scrollPane.setPreferredSize(originalSize);
+        scrollPane.setMinimumSize(originalSize);
+        scrollPane.setMaximumSize(originalSize);
+
+        // CỐ ĐỊNH LAYOUT VÀ KÍCH THƯỚC PANEL
         pnlMenu.setLayout(new BorderLayout());
+        pnlMenu.setPreferredSize(originalSize);
+        pnlMenu.setMinimumSize(originalSize);
+        pnlMenu.setMaximumSize(originalSize);
+        pnlMenu.setSize(originalSize);
+        pnlMenu.setBounds(originalLocation.x, originalLocation.y, originalSize.width, originalSize.height);
+
         pnlMenu.add(scrollPane, BorderLayout.CENTER);
+
+        // CỐ ĐỊNH VỊ TRÍ VÀ CUỘN VỀ ĐẦU
+        SwingUtilities.invokeLater(() -> {
+            pnlMenu.setBounds(originalLocation.x, originalLocation.y, originalSize.width, originalSize.height);
+            scrollPane.getVerticalScrollBar().setValue(0);
+            scrollPane.getHorizontalScrollBar().setValue(0);
+        });
+
         pnlMenu.revalidate();
         pnlMenu.repaint();
+
     }
 
     private void showDetail(SanPham sp) {
