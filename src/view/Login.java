@@ -24,6 +24,7 @@ public class Login extends javax.swing.JFrame {
     public void forgotpass(){
         forgotpass fgp = new forgotpass();
         fgp.setVisible(true);
+        
     }    
     
     public void checklogin(){
