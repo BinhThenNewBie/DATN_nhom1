@@ -2,13 +2,10 @@ package view;
 
 import DAO.HoaDonChoDAO;
 import DAO.SanPhamDAO;
-import Model.ChiTietHoaDon;
-import Model.HoaDonCho;
 import Model.SanPham;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -362,15 +359,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
         String id = lblID.getText().trim();
         String ten = txtTensp.getText().trim();
         String giaStr = txtGiatien.getText().trim().replace(",", "").replace(".", "");
-        float giaUp = Float.parseFloat(txtGiatien.getText().trim());
-
-        float tong = 0;
-        List<ChiTietHoaDon> list = hdd.getAllCTHD();
-        hdd.UpdateGia(id, giaUp);
-        for (ChiTietHoaDon ct : list) {
-            tong += ct.getGiaSP() * ct.getSoLuong();
-        }
-        hdd.updateTongTien(id, tong);
+        
         // Check mã sản phẩm
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần sửa!");
