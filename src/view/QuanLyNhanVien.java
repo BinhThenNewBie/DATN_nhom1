@@ -234,6 +234,7 @@ public void khoa(){
                 int result = nvd.khoaTaiKhoan(chonnv.getID_NV());
                 if(result == 1){
                     fillTable();
+                    lammoi();
                     JOptionPane.showMessageDialog(this, "Khóa nhân viên thành công!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi khóa nhân viên!");
