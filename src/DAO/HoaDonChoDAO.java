@@ -86,10 +86,11 @@ public class HoaDonChoDAO {
         }
     }
     
-    public int UpdateGia(String ID_SP) {
-        String sql = "UPDATE CHITIETHOADON SET GIA = ? WHERE ID_SP = ?";
+    public int UpdateGia(String ID_SP, float gia) {
+        String sql = "UPDATE CHITIETHOADON SET GIASP = ? WHERE ID_SP = ?";
         try (Connection con = DBconnect.getConnection(); PreparedStatement pstm = con.prepareStatement(sql)) {
-            pstm.setString(1, ID_SP);
+            pstm.setFloat(1, gia);
+            pstm.setString(2, ID_SP);
 
             int row = pstm.executeUpdate();
             if (row > 0) {

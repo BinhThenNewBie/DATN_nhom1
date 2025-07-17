@@ -16,18 +16,16 @@ public class UuDai {
     private float apDungVoi;
     private Date ngayBatDau;
     private Date ngayKetThuc;
-    private String trangThai;
 
     public UuDai() {
     }
 
-    public UuDai(String idUD, String giaTri, Float apDungVoi, Date ngayBatDau, Date ngayKetThuc, String trangThai) {
+    public UuDai(String idUD, String giaTri, float apDungVoi, Date ngayBatDau, Date ngayKetThuc) {
         this.idUD = idUD;
         this.giaTri = giaTri;
         this.apDungVoi = apDungVoi;
         this.ngayBatDau = ngayBatDau;
         this.ngayKetThuc = ngayKetThuc;
-        this.trangThai = trangThai;
     }
 
     public String getIdUD() {
@@ -46,11 +44,11 @@ public class UuDai {
         this.giaTri = giaTri;
     }
 
-    public Float getApDungVoi() {
+    public float getApDungVoi() {
         return apDungVoi;
     }
 
-    public void setApDungVoi(Float apDungVoi) {
+    public void setApDungVoi(float apDungVoi) {
         this.apDungVoi = apDungVoi;
     }
 
@@ -70,13 +68,5 @@ public class UuDai {
         this.ngayKetThuc = ngayKetThuc;
     }
 
-    public String getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(String trangThai) {
-        this.trangThai = trangThai;
-    }
-
-    
+   
 }

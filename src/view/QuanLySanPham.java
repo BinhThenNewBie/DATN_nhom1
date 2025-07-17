@@ -3,10 +3,12 @@ package view;
 import DAO.HoaDonChoDAO;
 import DAO.SanPhamDAO;
 import Model.ChiTietHoaDon;
+import Model.HoaDonCho;
 import Model.SanPham;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -41,10 +43,14 @@ public class QuanLySanPham extends javax.swing.JFrame {
     }
 
     public void initTable() {
-        String[] cols = new String[]{"ID SẢN PHẨM", "TÊN SẢN PHẨM", "GIÁ TIỀN", "LOẠI SẢN PHẨM", "Ảnh", "TRẠNG THÁI"};
-        tableModel.setColumnIdentifiers(cols);
-        tblBang.setModel(tableModel);
-    }
+    String[] cols = new String[]{"ID SẢN PHẨM", "TÊN SẢN PHẨM", "GIÁ TIỀN", "LOẠI SẢN PHẨM", "ẢNH", "TRẠNG THÁI"};
+    tableModel.setColumnIdentifiers(cols);
+    tblBang.setModel(tableModel);
+
+    tblBang.getColumnModel().getColumn(4).setMinWidth(0);
+    tblBang.getColumnModel().getColumn(4).setMaxWidth(0);
+    tblBang.getColumnModel().getColumn(4).setWidth(0);
+}
 
     public void fillTable() {
         tableModel.setRowCount(0);
@@ -360,15 +366,15 @@ public class QuanLySanPham extends javax.swing.JFrame {
         String id = lblID.getText().trim();
         String ten = txtTensp.getText().trim();
         String giaStr = txtGiatien.getText().trim().replace(",", "").replace(".", "");
+        float giaUp = Float.parseFloat(txtGiatien.getText().trim());
 
         float tong = 0;
         List<ChiTietHoaDon> list = hdd.getAllCTHD();
-        hdd.UpdateGia(id);
+        hdd.UpdateGia(id, giaUp);
         for (ChiTietHoaDon ct : list) {
             tong += ct.getGiaSP() * ct.getSoLuong();
         }
         hdd.updateTongTien(id, tong);
-        
         // Check mã sản phẩm
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần sửa!");
@@ -602,8 +608,9 @@ public class QuanLySanPham extends javax.swing.JFrame {
                 // Gọi DAO để update
                 int result = spDao.suaSanPham(sp, ID);
                 if (result == 1) {
+                    fillTable();
                     JOptionPane.showMessageDialog(this, "Sửa sản phẩm thành công!");
-                    fillTable(); // Load lại bảng
+                    // Load lại bảng
                     lamMoiForm(); // Reset form sau khi sửa thành công
                 } else {
                     JOptionPane.showMessageDialog(this, "Sửa sản phẩm thất bại!");
