@@ -6,7 +6,6 @@ package view;
 
 import DAO.UuDaiDAO;
 import Model.UuDai;
-import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +13,7 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 /**
  *
@@ -160,7 +159,6 @@ public class QuanLyUuDai extends javax.swing.JFrame {
         String giatri = txtGiatri.getText().trim();
         String apdung = txtApDung.getText().trim();
 
-        // === Kiểm tra rỗng ===
         if (giatri.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập giá trị ưu đãi");
             return false;
@@ -170,7 +168,6 @@ public class QuanLyUuDai extends javax.swing.JFrame {
             return false;
         }
 
-        // === Kiểm tra định dạng giá trị ưu đãi ===
         if (!giatri.matches("^\\d+%$")) {
             JOptionPane.showMessageDialog(this, "Giá trị ưu đãi phải là số nguyên dương và có dấu % ");
             return false;
@@ -182,15 +179,19 @@ public class QuanLyUuDai extends javax.swing.JFrame {
             return false;
         }
 
-        // === Kiểm tra định dạng 'áp dụng với' ===
-        try {
-            float apDungSo = Float.parseFloat(apdung);
-            if (apDungSo <= 0) {
-                JOptionPane.showMessageDialog(this, "'Áp dụng với' phải là số dương");
-                return false;
-            }
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "'Áp dụng với' không hợp lệ (chỉ được chứa số)");
+        if (apdung.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập giá trị áp dụng với");
+            return false;
+        }
+
+        if (!apdung.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "Áp dụng với chỉ được chứa số và không âm");
+            return false;
+        }
+
+        float apDung = Float.parseFloat(apdung);
+        if (apDung < 10000 || apDung > 500000) {
+            JOptionPane.showMessageDialog(this, "Áp dụng với phải từ 10.000 đến 500.000 VND");
             return false;
         }
 
@@ -203,10 +204,15 @@ public class QuanLyUuDai extends javax.swing.JFrame {
             return false;
         }
 
-        long daysBetween = ChronoUnit.DAYS.between(
-                ngayBD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate(),
-                ngayKT.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-        );
+        LocalDate localNgayBD = ((java.sql.Date) ngayBD).toLocalDate();
+        LocalDate localNgayKT = ((java.sql.Date) ngayKT).toLocalDate();
+        
+        if (localNgayBD.isAfter(localNgayKT)) {
+        JOptionPane.showMessageDialog(this, "Ngày bắt đầu phải trước ngày kết thúc");
+        return false;
+    }
+
+        long daysBetween = ChronoUnit.DAYS.between(localNgayBD, localNgayKT);
 
         if (daysBetween < 7) {
             JOptionPane.showMessageDialog(this, "Ngày kết thúc phải cách ngày bắt đầu ít nhất 7 ngày");
@@ -214,11 +220,12 @@ public class QuanLyUuDai extends javax.swing.JFrame {
         }
 
         if (daysBetween > 183) {
-            JOptionPane.showMessageDialog(this, "Ưu đãi không được kéo dài quá 6 tháng (183 ngày)");
+            JOptionPane.showMessageDialog(this, "Ưu đãi không được kéo dài quá 6 tháng");
             return false;
         }
 
         return true;
+
     }
 
     /**
@@ -359,7 +366,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel8.setText("NGÀY");
 
-        cboNamStart.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2025" }));
+        cboNamStart.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2025", "2026" }));
 
         jLabel9.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel9.setText("NĂM");
@@ -368,7 +375,7 @@ public class QuanLyUuDai extends javax.swing.JFrame {
 
         cboThangEnd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", " " }));
 
-        cboNamEnd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2025" }));
+        cboNamEnd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2025", "2026" }));
 
         jLabel10.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         jLabel10.setText("NGÀY");

@@ -47,63 +47,87 @@ public void showdetail(){
         cboVaitro.setSelectedItem(tk.getVaiTro());
         
         String trangThai = tk.getTrangThai();
+        String vaiTro = tk.getVaiTro();
         
-        // Sửa logic hiển thị button
+        // Logic hiển thị button dựa trên trạng thái
         if("LOCKED".equalsIgnoreCase(trangThai)){
             btnKhoa.setEnabled(false);
             btnMokhoa.setEnabled(true);
-            btnSua.setEnabled(true);
+            btnSua.setEnabled(false);
+            txtEmail.setEnabled(false);
+            txtIdnv.setEnabled(false);
+            txtPass.setEnabled(false);
+            cboVaitro.setEnabled(false);
+            btnLammoi.setEnabled(false);
         } else {
             btnKhoa.setEnabled(true);
             btnMokhoa.setEnabled(false);
-            btnSua.setEnabled(false);
+            btnSua.setEnabled(true);
+            btnLammoi.setEnabled(true);
+            
+            // Nếu là STAFF, chỉ cho phép sửa email 
+            if("STAFF".equalsIgnoreCase(vaiTro)){
+                txtEmail.setEnabled(true);
+                txtIdnv.setEnabled(false);
+                txtPass.setEnabled(false);  
+                cboVaitro.setEnabled(false);
+            } else {
+                // Nếu là ADMIN, cho phép sửa tất cả
+                txtEmail.setEnabled(true);
+                txtIdnv.setEnabled(true);
+                txtPass.setEnabled(true);
+                cboVaitro.setEnabled(true);
+            }
         }
     }
 }
+
 public void lammoi(){
     txtEmail.setText(null);
     txtIdnv.setText(null);
     txtPass.setText(null);
 }
+
 public void sua(){
     int chon = tblTaikhoan.getSelectedRow();
     if(chon >= 0){
         Taikhoan chontk = tkd.GETALL().get(chon);
         
-        // Kiểm tra trạng thái trước khi sửa
-        if("LOCKED".equalsIgnoreCase(chontk.getTrangThai())){
-            JOptionPane.showMessageDialog(this, "Không thể sửa tài khoản đã bị khóa!");
-            return;
-        }
-        
-        // Kiểm tra vai trò STAFF
-        if("STAFF".equalsIgnoreCase(chontk.getVaiTro())){
-            JOptionPane.showMessageDialog(this, "Không được phép sửa tài khoản STAFF!");
-            return;
-        }
+        String vaiTroHienTai = chontk.getVaiTro();
         
         int sua = JOptionPane.showConfirmDialog(this, "Bạn muốn sửa không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
         if(sua == JOptionPane.YES_OPTION){
-            String IDTK = txtIdnv.getText().trim();
-            String Pass = txtPass.getText().trim();
             String Email = txtEmail.getText().trim();
-            String vaiTro = (String) cboVaitro.getSelectedItem();
             
             // Validation dữ liệu
-            if(IDTK.isEmpty() || Pass.isEmpty() || Email.isEmpty()){
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
+            if(Email.isEmpty()){
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập email!");
                 return;
             }
             
-            // Giữ nguyên trạng thái hiện tại
-            String trangThai = chontk.getTrangThai();
+            int result = 0;
             
-            Taikhoan tk = new Taikhoan(IDTK, Pass, Email, vaiTro, trangThai);
-            int result = tkd.sua(chontk.getID_TK(), tk);
+            // Nếu là STAFF, chỉ sửa email
+            if("STAFF".equalsIgnoreCase(vaiTroHienTai)){
+                result = tkd.suaStaff(chontk.getID_TK(), Email);
+            } else {
+                // Nếu là ADMIN, sửa tất cả
+                String IDTK = txtIdnv.getText().trim();
+                String Pass = txtPass.getText().trim();
+                String vaiTro = cboVaitro.getSelectedItem().toString(); // Lấy vai trò từ combobox
+                
+                if(IDTK.isEmpty() || Pass.isEmpty()){
+                    JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
+                    return;
+                }
+                
+                String trangThai = chontk.getTrangThai();
+                Taikhoan tk = new Taikhoan(IDTK, Pass, Email, vaiTro, trangThai);
+                result = tkd.sua(chontk.getID_TK(), tk);
+            }
             
             if(result == 1){
                 fillTable();
-                lammoi(); // Clear form
                 JOptionPane.showMessageDialog(this, "Sửa thành công!");
             } else {
                 JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi sửa!");
@@ -256,7 +280,7 @@ public void moKhoaTaiKhoan(){
 
         jLabel3.setText("VAI TRÒ");
 
-        cboVaitro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ADMIN", "STAFF" }));
+        cboVaitro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ADMIN", "STAFF", "TẤT CẢ" }));
 
         jLabel4.setText("EMAIL");
 
