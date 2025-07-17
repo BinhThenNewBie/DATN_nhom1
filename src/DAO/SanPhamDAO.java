@@ -31,17 +31,32 @@ public class SanPhamDAO {
             return false;
         }
     }
+
     public boolean moKhoaSanPham(String idSP) {
-    String sql = "UPDATE SANPHAM SET TRANGTHAI = 1 WHERE ID_SP = ?";
-    try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setString(1, idSP);
-        return ps.executeUpdate() > 0;
-    } catch (Exception ex) {
-        ex.printStackTrace();
-        return false;
+        String sql = "UPDATE SANPHAM SET TRANGTHAI = 1 WHERE ID_SP = ?";
+        try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, idSP);
+            return ps.executeUpdate() > 0;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
     }
-}
-    
+
+    public float getGiaByID(String id_SP) {
+        String sql = "SELECT GIA FROM SANPHAM WHERE ID_SP = ?";
+        try (
+                Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, id_SP);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getFloat(1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 
     // 2. Lấy sản phẩm theo ID_SP
     public List<SanPham> getAllID_SP(String ID_SP) {
@@ -68,7 +83,6 @@ public class SanPhamDAO {
         return listsp;
     }
 
-  
     // 3. Lấy tất cả sản phẩm
     public List<SanPham> getAll() {
         List<SanPham> listsp = new ArrayList<>();
