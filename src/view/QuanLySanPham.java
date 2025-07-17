@@ -437,11 +437,6 @@ public class QuanLySanPham extends javax.swing.JFrame {
             return false;
         }
 
-        // Check giá tiền bắt đầu bằng dấu +
-        if (giaStr.startsWith("+")) {
-            giaStr = giaStr.substring(1); // Bỏ dấu + ở đầu
-        }
-
         // Check giá tiền phải là số nguyên dương
         if (!giaStr.matches("^[1-9]\\d*$")) {
             if (giaStr.matches("^0+$")) {
