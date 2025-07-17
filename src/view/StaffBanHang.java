@@ -67,6 +67,7 @@ public class StaffBanHang extends javax.swing.JFrame {
         fillTableHDCho();
         fillTableCTHD();
         fillTableMenu();
+        updateGiaSP();
         setLocationRelativeTo(null);
 
         Timer timer = new Timer(0, (e) -> {
@@ -326,6 +327,31 @@ public class StaffBanHang extends javax.swing.JFrame {
         pnlMenu.revalidate();
         pnlMenu.repaint();
 
+    }
+
+    public void updateGiaSP() {
+        List<HoaDonCho> lsthdc = hdd.getALLHDCHO();
+
+        for (HoaDonCho hdc : lsthdc) {
+            String ID_HD = hdc.getID_HD();
+            List<ChiTietHoaDon> lstcthd = hdd.getAllID_HD(ID_HD);
+
+            float tong = 0;
+
+            for (ChiTietHoaDon cthd : lstcthd) {
+                float giaMoi = spd.getGiaByID(cthd.getID_SP());
+
+                // Cập nhật giá mới cho sản phẩm trong hóa đơn
+                hdd.UpdateGia(ID_HD, cthd.getID_SP(), giaMoi);
+
+                tong += giaMoi * cthd.getSoLuong();
+            }
+
+            // Cập nhật lại tổng tiền cho hóa đơn này
+            hdd.updateTongTien(ID_HD, tong);
+        }
+
+        fillTableHDCho(); // Sau khi cập nhật giá và tổng tiền thì hiển thị lại
     }
 
     private void showDetail(SanPham sp) {
