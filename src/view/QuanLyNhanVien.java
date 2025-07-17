@@ -47,7 +47,7 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
 }
 public void initTable(){
     tableModel = new DefaultTableModel();
-    String[] cols = new String[]{"ID nhân viên", "Họ và tên", "Chức vụ", "Số điện thoại", "IMG"};
+    String[] cols = new String[]{"ID nhân viên", "Họ và tên", "Chức vụ", "Số điện thoại", "Trạng thái"};
     tableModel.setColumnIdentifiers(cols);
     tblNhanvien.setModel(tableModel);
 }
@@ -91,6 +91,27 @@ public void showdetail(){
                 lblAnh.setIcon(null);
             }
         }
+        String trangThai = nv.getTrangThai();
+        if("LOCKED".equalsIgnoreCase(trangThai)){
+    btnKhoa.setEnabled(false);
+    btnMokhoa.setEnabled(true);
+    btnSua.setEnabled(false);
+    btnLamMoi.setEnabled(false);
+    btnThem.setEnabled(false);
+    txtIdnv.setEnabled(false);
+    txtSdt.setEnabled(false);
+    txtTennv.setEnabled(false);
+} else {
+    btnKhoa.setEnabled(true);
+    btnMokhoa.setEnabled(false);
+    btnSua.setEnabled(true);
+    btnLamMoi.setEnabled(true);
+    btnThem.setEnabled(true);
+    txtIdnv.setEnabled(true);
+    txtSdt.setEnabled(true);
+    txtTennv.setEnabled(true);
+}
+        
     }
 }
 public void lammoi(){
@@ -102,21 +123,148 @@ public void lammoi(){
     lblAnh.setIcon(null);
     strAnh = "";  
 }
-//public void them(){
-//  String ID_NV = txtIdnv.getText();
-//  String hoTen = txtTennv.getText();
-//  String SDT = txtSdt.getText();
-//  String chucVu = txtChucvu.getText();
-//  String IMG = 
-//}
-public void sua(){
+public void them(){
+    // Validation input
+    String ID_NV = txtIdnv.getText().trim();
+    String hoTen = txtTennv.getText().trim();
+    String SDT = txtSdt.getText().trim();
+    String chucVu = txtChucvu.getText().trim();
     
+    // Kiểm tra dữ liệu đầu vào
+    if(ID_NV.isEmpty() || hoTen.isEmpty() || SDT.isEmpty()){
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    // Kiểm tra định dạng số điện thoại
+    if(!SDT.matches("^0\\d{9}$")){
+        JOptionPane.showMessageDialog(this, "Số điện thoại phải có 10 chữ số và bắt đầu bằng 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    // Kiểm tra ID nhân viên đã tồn tại
+    for(Nhanvien nv : nvd.GETALL()){
+        if(nv.getID_NV().equals(ID_NV)){
+            JOptionPane.showMessageDialog(this, "ID nhân viên đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    }
+    
+    // SỬA LỖI: Tạo object Nhanvien với constructor đúng
+    Nhanvien nv = new Nhanvien(ID_NV, hoTen, SDT, chucVu,strAnh, "");
+    nv.setTrangThai("ACTIVE"); // Set trạng thái mặc định
+    
+    int result = nvd.Themnv(nv);
+    if(result == 1){
+        fillTable();
+        JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!");
+    } else {
+        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi thêm nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+}
+public void sua(){
+    int chon = tblNhanvien.getSelectedRow();
+    if(chon < 0){
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    
+    int sua = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn sửa thông tin nhân viên này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+    if(sua == JOptionPane.YES_OPTION){
+        // Validation input
+        String ID_NV = txtIdnv.getText().trim();
+        String hoTen = txtTennv.getText().trim();
+        String SDT = txtSdt.getText().trim();
+        String chucVu = txtChucvu.getText().trim();
+        
+        // Kiểm tra dữ liệu đầu vào
+        if(ID_NV.isEmpty() || hoTen.isEmpty() || SDT.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Kiểm tra định dạng số điện thoại
+        if(!SDT.matches("^0\\d{9}$")){
+            JOptionPane.showMessageDialog(this, "Số điện thoại phải có 10 chữ số và bắt đầu bằng 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Lấy ID nhân viên gốc từ table
+        String idNVGoc = nvd.GETALL().get(chon).getID_NV();
+        
+        // Kiểm tra nếu thay đổi ID và ID mới đã tồn tại
+        if(!ID_NV.equals(idNVGoc)){
+            for(Nhanvien nv : nvd.GETALL()){
+                if(nv.getID_NV().equals(ID_NV)){
+                    JOptionPane.showMessageDialog(this, "ID nhân viên mới đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+        }
+        
+        // SỬA LỖI: Tạo object Nhanvien với constructor đúng
+        Nhanvien nv = new Nhanvien(ID_NV, hoTen, SDT, chucVu, strAnh,"");
+        nv.setTrangThai("ACTIVE"); // Giữ nguyên trạng thái hoặc set từ UI
+        
+        int result = nvd.suanv(nv, idNVGoc);
+        if(result == 1){
+            fillTable();
+            JOptionPane.showMessageDialog(this, "Sửa thông tin nhân viên thành công!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi sửa thông tin nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }
 public void khoa(){
-    
+   int chon = tblNhanvien.getSelectedRow();
+        if(chon >= 0){
+            Nhanvien chonnv = nvd.GETALL().get(chon);
+            
+            // Kiểm tra nếu nhân viên đã bị khóa
+            if("LOCKED".equals(chonnv.getTrangThai())){
+                JOptionPane.showMessageDialog(this, "Nhân viên này đã bị khóa!");
+                return;
+            }
+            
+            int xacNhan = JOptionPane.showConfirmDialog(this, 
+                "Bạn có chắc muốn khóa tài khoản: " + chonnv.getID_NV()+ "?", 
+                "Xác nhận khóa", JOptionPane.YES_NO_OPTION);
+                
+            if(xacNhan == JOptionPane.YES_OPTION){
+                int result = nvd.khoaTaiKhoan(chonnv.getID_NV());
+                if(result == 1){
+                    fillTable();
+                    JOptionPane.showMessageDialog(this, "Khóa nhân viên thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi khóa nhân viên!");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần khóa!");
+        } 
 }
 public void mokhoa(){
-    
+    int chon = tblNhanvien.getSelectedRow();
+    if(chon >= 0){
+        Nhanvien chontk = nvd.GETALL().get(chon);
+        
+        int xacNhan = JOptionPane.showConfirmDialog(this, 
+            "Bạn có chắc muốn mở khóa tài khoản: " + chontk.getID_NV()+ "?", 
+            "Xác nhận mở khóa", JOptionPane.YES_NO_OPTION);
+            
+        if(xacNhan == JOptionPane.YES_OPTION){
+            int result = nvd.moKhoaTaiKhoan(chontk.getID_NV());
+            if(result == 1){
+                fillTable();
+                showdetail(); // Refresh button states
+                JOptionPane.showMessageDialog(this, "Mở khóa tài khoản thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi mở khóa tài khoản!");
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần mở khóa!");
+    }
 }
     /**
      * This method is called from within the constructor to initialize the form.

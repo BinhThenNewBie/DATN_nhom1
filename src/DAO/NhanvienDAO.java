@@ -42,53 +42,55 @@ public class NhanvienDAO {
         return Listnv;
     }  
     public Object[] GETROW(Nhanvien nv){
-        String ID_NV = nv.getID_NV();
-        String hoTen = nv.getHoTen();
-        String chucVu = nv.getChucVu();
-        String SDT = nv.getSDT();
-        String IMG = nv.getIMG();
-        String trangThai = nv.getTrangThai();
-        Object[] rows = new Object[]{ID_NV,hoTen,chucVu,SDT,IMG,trangThai};
-        return rows;
-    }
+    String ID_NV = nv.getID_NV();
+    String hoTen = nv.getHoTen();
+    String chucVu = nv.getChucVu();
+    String SDT = nv.getSDT();
+    String trangThai = nv.getTrangThai();
+    Object[] rows = new Object[]{ID_NV, hoTen, chucVu, SDT, trangThai};
+    return rows;
+}
     public int Themnv(Nhanvien nv){
-        String sql="INSERT INTO NHANVIEN (ID_NV, HOTEN, VAITRO, SDT, IMG)VALUES	(?, ?, ?, ?, ?)";
+        String sql="INSERT INTO NHANVIEN (ID_NV, HOTEN, VAITRO, SDT, IMG, TRANGTHAI) VALUES (?, ?, ?, ?, ?, ?)";
         Connection conn = DBconnect.getConnection();
         PreparedStatement pstm = null;
         try {
-        pstm = conn.prepareStatement(sql);
-        pstm.setString(1, nv.getID_NV());
-        pstm.setString(2, nv.getHoTen());
-        pstm.setString(3, nv.getChucVu());
-        pstm.setString(4, nv.getSDT());
-        pstm.setString(5, nv.getIMG());
-        pstm.setString(6, nv.getTrangThai());
-        if(pstm.executeLargeUpdate()>0){
-            System.out.println("Thêm nhân viên mới thành công!");
+            pstm = conn.prepareStatement(sql);
+            pstm.setString(1, nv.getID_NV());
+            pstm.setString(2, nv.getHoTen());
+            pstm.setString(3, nv.getChucVu());
+            pstm.setString(4, nv.getSDT());
+            pstm.setString(5, nv.getIMG());
+            pstm.setString(6, nv.getTrangThai() != null ? nv.getTrangThai() : "ACTIVE");
+            
+            if(pstm.executeUpdate() > 0){
+                System.out.println("Thêm nhân viên mới thành công!");
                 return 1;
-        }
+            }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return 0;
     }
     public int suanv(Nhanvien nv, String idnv){
-        String sql="UPDATE NHANVIEN SET ID_NV= ?, HOTEN=?, VAITRO=?, SDT=?, IMG=? WHERE ID_NV = ?";
+        String sql="UPDATE NHANVIEN SET HOTEN=?, VAITRO=?, SDT=?, IMG=?, TRANGTHAI=? WHERE ID_NV = ?";
         Connection conn = DBconnect.getConnection();
         PreparedStatement pstm = null;
         try {
-        pstm = conn.prepareStatement(sql);
-        pstm.setString(1, nv.getID_NV());
-        pstm.setString(2, nv.getHoTen());
-        pstm.setString(3, nv.getChucVu());
-        pstm.setString(4, nv.getSDT());
-        pstm.setString(5, nv.getIMG());
-        pstm.setString(6, nv.getTrangThai());
-        pstm.setString(7,idnv);
-        if(pstm.executeLargeUpdate()>0){
-            System.out.println("Sửa nhân viên mới thành công!");
+            pstm = conn.prepareStatement(sql);
+            pstm.setString(1, nv.getHoTen());
+            pstm.setString(2, nv.getChucVu());
+            pstm.setString(3, nv.getSDT());
+            pstm.setString(4, nv.getIMG());
+            pstm.setString(5, nv.getTrangThai() != null ? nv.getTrangThai() : "ACTIVE");
+            pstm.setString(6, idnv);
+            
+            if(pstm.executeUpdate() > 0){
+                System.out.println("Sửa nhân viên thành công!");
                 return 1;
-        }
+            }
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return 0;
     }
