@@ -8,6 +8,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.Timer;
@@ -45,19 +46,54 @@ public class Admin extends javax.swing.JFrame {
     }
 
     private void initDefaultElement() {
-        JButton[] buttons = {btnQLNV, btnQLTK, btnQLSP, btnQLKM, btnQLBH, btnTKDT, btnDangXuat};
-        for (JButton btn : buttons) {
-            btn.setFocusPainted(false);
-            btn.setBorderPainted(false);
-            btn.setContentAreaFilled(false);
-            btn.setOpaque(true);
-            btn.setBackground(Color.decode("#1c2e4a"));
-            btn.setForeground(Color.decode("#FDFAF6"));
-        }
+    JButton[] buttons = {btnQLNV, btnQLTK, btnQLSP, btnQLKM, btnQLBH, btnTKDT, btnDangXuat};
 
-        pnlMenu.setBorder(new EmptyBorder(0, 0, 0, 0));
-        Logo.setBorder(new EmptyBorder(0, 0, 0, 0));
+    Color normalColor = Color.decode("#1c2e4a");   // mặc định
+    Color hoverColor = Color.decode("#3b5998");    // khi di chuột
+    Color selectedColor = Color.decode("#4E6688"); // khi được click
+
+    for (JButton btn : buttons) {
+        btn.setFocusPainted(false);
+        btn.setBorderPainted(false);
+        btn.setContentAreaFilled(false);
+        btn.setOpaque(true);
+        btn.setBackground(normalColor);
+        btn.setForeground(Color.decode("#FDEAF6"));
+
+        // Gán listener cho hiệu ứng hover + click
+        btn.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                if (!btn.getBackground().equals(selectedColor)) {
+                    btn.setBackground(hoverColor);
+                    btn.setBorder(BorderFactory.createLineBorder(Color.decode("#88aaff"), 2));
+                }
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                if (!btn.getBackground().equals(selectedColor)) {
+                    btn.setBackground(normalColor);
+                    btn.setBorder(null);
+                }
+            }
+
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                // Reset tất cả nút về màu gốc
+                for (JButton b : buttons) {
+                    b.setBackground(normalColor);
+                    b.setBorder(null);
+                }
+                // Đặt màu click cho nút này
+                btn.setBackground(selectedColor);
+                btn.setBorder(null); // Không cần viền khi chọn
+            }
+        });
     }
+
+    pnlMenu.setBorder(new EmptyBorder(0, 0, 0, 0));
+    Logo.setBorder(new EmptyBorder(0, 0, 0, 0));
+}
+
+
     
 
     /**
