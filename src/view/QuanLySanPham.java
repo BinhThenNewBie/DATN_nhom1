@@ -43,10 +43,14 @@ public class QuanLySanPham extends javax.swing.JFrame {
     }
 
     public void initTable() {
-        String[] cols = new String[]{"ID SẢN PHẨM", "TÊN SẢN PHẨM", "GIÁ TIỀN", "LOẠI SẢN PHẨM", "Ảnh", "TRẠNG THÁI"};
-        tableModel.setColumnIdentifiers(cols);
-        tblBang.setModel(tableModel);
-    }
+    String[] cols = new String[]{"ID SẢN PHẨM", "TÊN SẢN PHẨM", "GIÁ TIỀN", "LOẠI SẢN PHẨM", "ẢNH", "TRẠNG THÁI"};
+    tableModel.setColumnIdentifiers(cols);
+    tblBang.setModel(tableModel);
+
+    tblBang.getColumnModel().getColumn(4).setMinWidth(0);
+    tblBang.getColumnModel().getColumn(4).setMaxWidth(0);
+    tblBang.getColumnModel().getColumn(4).setWidth(0);
+}
 
     public void fillTable() {
         tableModel.setRowCount(0);
