@@ -23,24 +23,26 @@ import javax.swing.JOptionPane;
 public class UuDaiDAO {
 
     public List<UuDai> getAll() {
-        List<UuDai> list = new ArrayList<>();
+        List<UuDai> listud = new ArrayList<>();
+        String sql = "SELECT * FROM UUDAI";
+        Connection con = DBconnect.getConnection();
         try {
-            Connection conn = DBconnect.getConnection();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM UUDAI");
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(sql);
             while (rs.next()) {
                 UuDai ud = new UuDai();
-                ud.setIdUD(rs.getString("ID_UD"));
-                ud.setGiaTri(rs.getString("GIATRI"));
-                ud.setApDungVoi(rs.getFloat("APDUNGVOI"));
-                ud.setNgayBatDau(rs.getDate("NGAYBATDAU"));
-                ud.setNgayKetThuc(rs.getDate("NGAYKETTHUC"));
-                list.add(ud);
+                ud.setIdUD(rs.getString(1));
+                ud.setGiaTri(rs.getString(2));
+                ud.setApDungVoi(rs.getFloat(3));
+                ud.setNgayBatDau(rs.getDate(4));
+                ud.setNgayKetThuc(rs.getDate(5));
+                listud.add(ud);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return list;
+
+        return listud;
     }
 
     public Object[] getRowUuDai(UuDai ud) {
@@ -54,7 +56,7 @@ public class UuDaiDAO {
         String trangThai;
         Date today = new Date();
         if (ud.getNgayKetThuc().before(today)) {
-            trangThai = "HẾT HẠN ";
+            trangThai = "HẾT HẠN";
         } else {
             trangThai = "CÒN HẠN";
         }
@@ -62,7 +64,7 @@ public class UuDaiDAO {
         return new Object[]{
             ud.getIdUD(),
             ud.getGiaTri(),
-            String.format("%,.0f VND", ud.getApDungVoi()),
+            formatVND(ud.getApDungVoi()),
             ud.getNgayBatDau(),
             ud.getNgayKetThuc(),
             trangThai
@@ -109,5 +111,4 @@ public class UuDaiDAO {
         DecimalFormat df = new DecimalFormat("#,###");
         return df.format(amount) + " VND";
     }
-
 }

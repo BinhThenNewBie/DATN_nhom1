@@ -67,6 +67,6 @@ public class UuDai {
     public void setNgayKetThuc(Date ngayKetThuc) {
         this.ngayKetThuc = ngayKetThuc;
     }
-
-   
+    
+    
 }
