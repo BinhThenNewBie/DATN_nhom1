@@ -65,6 +65,7 @@ public void showdetail(){
         txtIdnv.setText(nv.getID_NV());
         txtSdt.setText(nv.getSDT());
         txtTennv.setText(nv.getHoTen());
+        txtChucvu.setText(nv.getChucVu());
      // Thiết lập kích thước cố định cho ảnh (ví dụ: 200x200 pixels)
         int IMAGE_WIDTH = 220;
         int IMAGE_HEIGHT = 240;
@@ -101,9 +102,13 @@ public void lammoi(){
     lblAnh.setIcon(null);
     strAnh = "";  
 }
-public void them(){
-    
-}
+//public void them(){
+//  String ID_NV = txtIdnv.getText();
+//  String hoTen = txtTennv.getText();
+//  String SDT = txtSdt.getText();
+//  String chucVu = txtChucvu.getText();
+//  String IMG = 
+//}
 public void sua(){
     
 }
