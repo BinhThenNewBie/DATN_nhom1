@@ -305,11 +305,6 @@ public void locnv(){
     }
 }
 
-// Phương thức bổ sung để reset về hiển thị tất cả
-public void hienThiTatCa(){
-    fillTable();
-    cboLoc.setSelectedIndex(0); // Reset ComboBox về item đầu tiên
-}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
