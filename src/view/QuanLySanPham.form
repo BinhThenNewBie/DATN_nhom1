@@ -404,7 +404,7 @@
                                   <Group type="102" attributes="0">
                                       <Component id="txtTimkiem" min="-2" pref="212" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jButton3" min="-2" pref="120" max="-2" attributes="0"/>
+                                      <Component id="btnTimKiem" min="-2" pref="120" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace min="-2" pref="75" max="-2" attributes="0"/>
@@ -413,12 +413,12 @@
                                   <Group type="102" attributes="0">
                                       <Component id="cboLocSP" min="-2" pref="180" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jButton4" min="-2" pref="120" max="-2" attributes="0"/>
+                                      <Component id="btnLoc" min="-2" pref="120" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
                           <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                              <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                              <Component id="btnMoKhoa" min="-2" max="-2" attributes="0"/>
                               <Component id="jScrollPane1" min="-2" pref="893" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -438,11 +438,11 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="txtTimkiem" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
                           <Component id="cboLocSP" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
-                          <Component id="jButton4" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
-                          <Component id="jButton3" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
+                          <Component id="btnLoc" alignment="3" min="-2" pref="36" max="-2" attributes="0"/>
+                          <Component id="btnTimKiem" alignment="3" min="-2" pref="37" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnMoKhoa" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jScrollPane1" min="-2" pref="355" max="-2" attributes="0"/>
                       <EmptySpace pref="15" max="32767" attributes="0"/>
@@ -469,7 +469,7 @@
                 <Property name="text" type="java.lang.String" value="T&#xcc;M KI&#x1ebe;M S&#x1ea2;N PH&#x1ea8;M"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton3">
+            <Component class="javax.swing.JButton" name="btnTimKiem">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="56" green="33" red="1f" type="rgb"/>
@@ -483,7 +483,7 @@
                 <Property name="text" type="java.lang.String" value="T&#xcc;M KI&#x1ebe;M"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnTimKiemActionPerformed"/>
               </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -510,7 +510,7 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JButton" name="jButton4">
+            <Component class="javax.swing.JButton" name="btnLoc">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="56" green="33" red="1f" type="rgb"/>
@@ -524,7 +524,7 @@
                 <Property name="text" type="java.lang.String" value="L&#x1ecc;C"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton4ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLocActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel8">
@@ -556,7 +556,7 @@
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton1">
+            <Component class="javax.swing.JButton" name="btnMoKhoa">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="56" green="33" red="1f" type="rgb"/>
@@ -570,7 +570,7 @@
                 <Property name="text" type="java.lang.String" value="M&#x1ede; KH&#xd3;A"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMoKhoaActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

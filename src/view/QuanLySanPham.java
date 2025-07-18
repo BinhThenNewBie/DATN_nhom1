@@ -33,9 +33,9 @@ public class QuanLySanPham extends javax.swing.JFrame {
      */
     public QuanLySanPham() {
         initComponents();
- this.setSize(1000, 950);               // Đặt kích thước cửa sổ
-this.setResizable(false);             // Không cho resize (tuỳ chọn)
-this.setLocationRelativeTo(null);     // Canh giữa màn hình      
+        this.setSize(1000, 950);               // Đặt kích thước cửa sổ
+        this.setResizable(false);             // Không cho resize (tuỳ chọn)
+        this.setLocationRelativeTo(null);     // Canh giữa màn hình      
         initTable();
         fillTable();
     }
@@ -100,6 +100,41 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
                     lblAnh.setText("Ảnh Bị Lỗi");
                     lblAnh.setIcon(null);
                 }
+            }
+            int trangThai = sp.getTrangThai();
+            if (trangThai == 0) {
+                btnThemSP.setEnabled(false);
+                btnMoKhoa.setEnabled(true);
+                btnSuaSP.setEnabled(false);
+                btnLamMoiSP.setEnabled(false);
+                btnTaoMa.setEnabled(false);
+                khoaSP.setEnabled(false);
+                btnTimKiem.setEnabled(false);
+                btnLoc.setEnabled(false);
+                lblID.setEnabled(false);
+                lblAnh.setEnabled(false);
+                cboLoai.setEnabled(false);
+                cboLocSP.setEnabled(false);
+                txtTensp.setEnabled(false);
+                txtGiatien.setEnabled(false);
+                txtTimkiem.setEnabled(false);
+
+            } else {
+                btnThemSP.setEnabled(true);
+                btnMoKhoa.setEnabled(false);
+                btnSuaSP.setEnabled(true);
+                btnLamMoiSP.setEnabled(true);
+                btnTaoMa.setEnabled(true);
+                khoaSP.setEnabled(true);
+                btnTimKiem.setEnabled(true);
+                btnLoc.setEnabled(true);
+                lblID.setEnabled(true);
+                lblAnh.setEnabled(true);
+                cboLoai.setEnabled(true);
+                cboLocSP.setEnabled(true);
+                txtTensp.setEnabled(true);
+                txtGiatien.setEnabled(true);
+                txtTimkiem.setEnabled(true);
             }
         }
     }
@@ -248,10 +283,11 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
         return false;
     }
 
-    private boolean validateThemSanPham() {
+    private boolean validatethemSanPham() {
         String id = lblID.getText().trim();
-        String ten = txtTensp.getText().trim();
-        String giaStr = txtGiatien.getText().trim().replace(",", "").replace(".", "");
+        String tenSP = txtTensp.getText().trim();
+        String giaStr = txtGiatien.getText().trim();
+        String loaiSP = (cboLoai.getSelectedItem() != null) ? cboLoai.getSelectedItem().toString().trim() : "";
 
         // Check mã sản phẩm
         if (id.isEmpty()) {
@@ -259,113 +295,111 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
             return false;
         }
 
-        // Check tên sản phẩm
-        if (ten.isEmpty()) {
+        // ======= 1. Tên sản phẩm =======
+        // 1.1 Không được để trống
+        if (tenSP.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Tên sản phẩm không được để trống!");
             return false;
         }
-        // Không chứa ký tự không hợp lệ (chỉ cho phép số)
-        if (!giaStr.matches("^[0-9]+$")) {
-            if (giaStr.contains("-")) {
-                JOptionPane.showMessageDialog(this, "Giá tiền không được là số âm!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Giá tiền chỉ được chứa số, không chứa ký tự");
-            }
+
+        // 1.2 Không được chứa số
+        if (tenSP.matches(".*\\d.*")) {
+            JOptionPane.showMessageDialog(this, "Tên sản phẩm không được chứa số!");
             return false;
         }
 
-        if (ten.matches(".*[^a-zA-ZÀ-ỹ\\s].*")) {
+        // 1.3 Không được chứa ký tự đặc biệt (chỉ cho phép chữ và khoảng trắng)
+        if (!tenSP.matches("^[\\p{L}\\s]+$")) {
             JOptionPane.showMessageDialog(this, "Tên sản phẩm không được chứa ký tự đặc biệt!");
             return false;
         }
 
-        // Check tên đã tồn tại
-        List<SanPham> danhSach = new SanPhamDAO().getAll();
-        for (SanPham sp : danhSach) {
-            if (sp.getTenSanPham().equalsIgnoreCase(ten)) {
-                JOptionPane.showMessageDialog(this, "Tên sản phẩm đã tồn tại. Vui lòng nhập tên khác!");
+        // 1.4 Không được trùng với tên sản phẩm đã có
+        for (SanPham sp : spDao.getAll()) {
+            if (tenSP.equalsIgnoreCase(sp.getTenSanPham())) {
+                JOptionPane.showMessageDialog(this, "Tên sản phẩm đã tồn tại trong bảng!");
                 return false;
             }
         }
 
-        //
+        // ======= 2. Giá tiền =======
+        // 2.1 Không được để trống
         if (giaStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Giá tiền không được để trống!");
             return false;
         }
 
-        if (giaStr.matches("^\\s+$")) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không được chỉ chứa khoảng trắng!");
-            return false;
-        }
-
-        if (giaStr.matches(".*[a-zA-ZÀ-ỹ].*")) {
+        // 2.2 Không chứa chữ cái
+        if (giaStr.matches(".*[a-zA-Z].*")) {
             JOptionPane.showMessageDialog(this, "Giá tiền không được chứa chữ cái!");
             return false;
         }
 
-        if (!giaStr.matches("^\\d+$")) {
-            JOptionPane.showMessageDialog(this, "Giá tiền chỉ được chứa số, không chứa ký tự đặc biệt!");
+        // 2.3 Không chứa ký tự đặc biệt
+        if (giaStr.matches(".*[~!@#$%^&*()_=|<>?{}\\[\\]\\\\/:;'\".,`\\s].*")) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không được chứa ký tự đặc biệt!");
             return false;
         }
 
-        if (giaStr.matches("^0\\d+")) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không được bắt đầu bằng số 0!");
+        // 2.3 Không được là biểu thức như 10+1, 10-1, 10*2, 100/5
+        if (giaStr.contains("+") || giaStr.contains("*") || giaStr.contains("/")) {
+            JOptionPane.showMessageDialog(this, "Không nhập biểu thức, chỉ nhập số nguyên dương!");
             return false;
         }
 
-        // 6. Phải là số nguyên dương và trong khoảng cho phép
+        // 2.4 Phải là số nguyên dương và trong khoảng 10.000 – 500.000
         try {
             int gia = Integer.parseInt(giaStr);
 
             if (gia <= 0) {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải là số nguyên dương!");
+                JOptionPane.showMessageDialog(this, "Giá tiền phải là số dương!");
                 return false;
             }
 
             if (gia < 10000) {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải từ 10.000 VND trở lên!");
+                JOptionPane.showMessageDialog(this, "Giá tiền phải lớn hơn hoặc bằng 10.000!");
                 return false;
             }
 
             if (gia > 500000) {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải nhỏ hơn hoặc bằng 500.000 VND!");
+                JOptionPane.showMessageDialog(this, "Giá tiền không được vượt quá 500.000!");
                 return false;
             }
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không hợp lệ!");
+            JOptionPane.showMessageDialog(this, "Giá tiền phải là số nguyên dương hợp lệ!");
             return false;
         }
 
-        return true;
+        return true; // Tất cả hợp lệ
     }
 
     private boolean validateSuaSanPham() {
         String id = lblID.getText().trim();
-        String ten = txtTensp.getText().trim();
+        String tenSP = txtTensp.getText().trim();
         String giaStr = txtGiatien.getText().trim().replace(",", "").replace(".", "");
-        
+
         // Check mã sản phẩm
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần sửa!");
             return false;
         }
 
-        // Check tên sản phẩm không được để trống
-        if (ten.isEmpty()) {
+        // ======= 1. Tên sản phẩm =======
+        // 1.1 Không được để trống
+        if (tenSP.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Tên sản phẩm không được để trống!");
             return false;
         }
 
-        // Check tên sản phẩm không được chứa số
-        if (ten.matches(".*\\d.*")) {
+        // 1.2 Không được chứa số
+        if (tenSP.matches(".*\\d.*")) {
             JOptionPane.showMessageDialog(this, "Tên sản phẩm không được chứa số!");
             return false;
         }
 
-        // Check tên sản phẩm không được chứa ký tự đặc biệt
-        if (ten.matches(".*[^a-zA-ZÀ-ỹ\\s].*")) {
+        // 1.3 Không được chứa ký tự đặc biệt (chỉ cho phép chữ và khoảng trắng)
+        if (!tenSP.matches("^[\\p{L}\\s]+$")) {
             JOptionPane.showMessageDialog(this, "Tên sản phẩm không được chứa ký tự đặc biệt!");
             return false;
         }
@@ -373,56 +407,58 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
         // Check tên đã tồn tại (chỉ check với sản phẩm khác, không check với chính nó)
         List<SanPham> danhSach = new SanPhamDAO().getAll();
         for (SanPham sp : danhSach) {
-            if (sp.getTenSanPham().equalsIgnoreCase(ten) && !sp.getIDSanPham().equals(id)) {
+            if (sp.getTenSanPham().equalsIgnoreCase(tenSP) && !sp.getIDSanPham().equals(id)) {
                 JOptionPane.showMessageDialog(this, "Tên sản phẩm đã tồn tại. Vui lòng nhập tên khác!");
                 return false;
             }
         }
 
-        // Check giá tiền rỗng
-        if (giaStr.isEmpty() || giaStr.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không được để trống hoặc chỉ chứa khoảng trắng!");
+        // ======= 2. Giá tiền =======
+        // 2.1 Không được để trống
+        if (giaStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không được để trống!");
             return false;
         }
 
-// Check giá tiền chứa chữ cái
-        if (giaStr.matches(".*[a-zA-ZÀ-ỹ].*")) {
+        // 2.2 Không chứa chữ cái
+        if (giaStr.matches(".*[a-zA-Z].*")) {
             JOptionPane.showMessageDialog(this, "Giá tiền không được chứa chữ cái!");
             return false;
         }
 
-// Check chứa ký tự đặc biệt hoặc dấu âm
-        if (!giaStr.matches("^[0-9]+$")) {
-            if (giaStr.contains("-")) {
-                JOptionPane.showMessageDialog(this, "Giá tiền không được là số âm!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Giá tiền chỉ được chứa số, không chứa ký tự đặc biệt!");
-            }
+        // 2.3 Không chứa ký tự đặc biệt
+        if (giaStr.matches(".*[~!@#$%^&*()_=|<>?{}\\[\\]\\\\/:;'\".,`\\s].*")) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không được chứa ký tự đặc biệt!");
             return false;
         }
 
-// Không cho phép giá bắt đầu bằng 0 (nhưng cho phép số 0 duy nhất thì đã loại ở trên)
-        if (giaStr.matches("^0\\d+")) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không được bắt đầu bằng số 0!");
+        // 2.3 Không được là biểu thức như 10+1, 10-1, 10*2, 100/5
+        if (giaStr.contains("+") || giaStr.contains("*") || giaStr.contains("/")) {
+            JOptionPane.showMessageDialog(this, "Không nhập biểu thức, chỉ nhập số nguyên dương!");
             return false;
         }
 
-// Parse và kiểm tra khoảng giá
+        // 2.4 Phải là số nguyên dương và trong khoảng 10.000 – 500.000
         try {
             int gia = Integer.parseInt(giaStr);
 
+            if (gia <= 0) {
+                JOptionPane.showMessageDialog(this, "Giá tiền phải là số dương!");
+                return false;
+            }
+
             if (gia < 10000) {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải từ 10.000 VND trở lên!");
+                JOptionPane.showMessageDialog(this, "Giá tiền phải lớn hơn hoặc bằng 10.000!");
                 return false;
             }
 
             if (gia > 500000) {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải nhỏ hơn hoặc bằng 500.000 VND!");
+                JOptionPane.showMessageDialog(this, "Giá tiền không được vượt quá 500.000!");
                 return false;
             }
 
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không hợp lệ!");
+            JOptionPane.showMessageDialog(this, "Giá tiền phải là số nguyên dương hợp lệ!");
             return false;
         }
 
@@ -440,7 +476,7 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
         if (kiemTraSanPhamBiKhoa()) {
             return;
         }
-        if (!validateThemSanPham()) {
+        if (!validatethemSanPham()) {
             return;
         }
 
@@ -609,13 +645,13 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
         jPanel1 = new javax.swing.JPanel();
         txtTimkiem = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        btnTimKiem = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBang = new javax.swing.JTable();
-        jButton4 = new javax.swing.JButton();
+        btnLoc = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
         cboLocSP = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        btnMoKhoa = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -811,13 +847,13 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
         jLabel7.setForeground(new java.awt.Color(31, 51, 86));
         jLabel7.setText("TÌM KIẾM SẢN PHẨM");
 
-        jButton3.setBackground(new java.awt.Color(31, 51, 86));
-        jButton3.setFont(new java.awt.Font("Segoe UI Light", 1, 15)); // NOI18N
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("TÌM KIẾM");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnTimKiem.setBackground(new java.awt.Color(31, 51, 86));
+        btnTimKiem.setFont(new java.awt.Font("Segoe UI Light", 1, 15)); // NOI18N
+        btnTimKiem.setForeground(new java.awt.Color(255, 255, 255));
+        btnTimKiem.setText("TÌM KIẾM");
+        btnTimKiem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnTimKiemActionPerformed(evt);
             }
         });
 
@@ -839,13 +875,13 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
         });
         jScrollPane1.setViewportView(tblBang);
 
-        jButton4.setBackground(new java.awt.Color(31, 51, 86));
-        jButton4.setFont(new java.awt.Font("Segoe UI Light", 1, 15)); // NOI18N
-        jButton4.setForeground(new java.awt.Color(255, 255, 255));
-        jButton4.setText("LỌC");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnLoc.setBackground(new java.awt.Color(31, 51, 86));
+        btnLoc.setFont(new java.awt.Font("Segoe UI Light", 1, 15)); // NOI18N
+        btnLoc.setForeground(new java.awt.Color(255, 255, 255));
+        btnLoc.setText("LỌC");
+        btnLoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnLocActionPerformed(evt);
             }
         });
 
@@ -856,13 +892,13 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
         cboLocSP.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         cboLocSP.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TẤT CẢ", "CAFE", "BÁNH NGỌT", "NƯỚC ÉP" }));
 
-        jButton1.setBackground(new java.awt.Color(31, 51, 86));
-        jButton1.setFont(new java.awt.Font("Segoe UI Light", 1, 13)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("MỞ KHÓA");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnMoKhoa.setBackground(new java.awt.Color(31, 51, 86));
+        btnMoKhoa.setFont(new java.awt.Font("Segoe UI Light", 1, 13)); // NOI18N
+        btnMoKhoa.setForeground(new java.awt.Color(255, 255, 255));
+        btnMoKhoa.setText("MỞ KHÓA");
+        btnMoKhoa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnMoKhoaActionPerformed(evt);
             }
         });
 
@@ -879,16 +915,16 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(txtTimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(75, 75, 75)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(cboLocSP, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(btnLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(jButton1)
+                        .addComponent(btnMoKhoa)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 893, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(20, Short.MAX_VALUE))
         );
@@ -903,10 +939,10 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtTimkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cboLocSP, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTimKiem, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(btnMoKhoa)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(15, Short.MAX_VALUE))
@@ -970,15 +1006,15 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
 
     }
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTimKiemActionPerformed
         // TODO add your handling code here:
         timKiemTheoTen();
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnTimKiemActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocActionPerformed
         // TODO add your handling code here:
         locTheoLoai();
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btnLocActionPerformed
 
     private void btnThemSPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemSPActionPerformed
         // TODO add your handling code here:
@@ -1014,10 +1050,10 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
         khoaSanPham();
     }//GEN-LAST:event_khoaSPActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnMoKhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMoKhoaActionPerformed
         // TODO add your handling code here:
         moKhoaSanPham();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_btnMoKhoaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1057,14 +1093,14 @@ this.setLocationRelativeTo(null);     // Canh giữa màn hình
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLamMoiSP;
+    private javax.swing.JButton btnLoc;
+    private javax.swing.JButton btnMoKhoa;
     private javax.swing.JButton btnSuaSP;
     private javax.swing.JButton btnTaoMa;
     private javax.swing.JButton btnThemSP;
+    private javax.swing.JButton btnTimKiem;
     private javax.swing.JComboBox<String> cboLoai;
     private javax.swing.JComboBox<String> cboLocSP;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
