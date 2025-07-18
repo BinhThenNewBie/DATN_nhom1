@@ -46,8 +46,9 @@ public class NhanvienDAO {
     String hoTen = nv.getHoTen();
     String chucVu = nv.getChucVu();
     String SDT = nv.getSDT();
+    String IMG = nv.getIMG();
     String trangThai = nv.getTrangThai();
-    Object[] rows = new Object[]{ID_NV, hoTen, chucVu, SDT, trangThai};
+    Object[] rows = new Object[]{ID_NV, hoTen, chucVu, SDT,IMG, trangThai};
     return rows;
 }
     public int Themnv(Nhanvien nv){

@@ -66,7 +66,7 @@ public void showdetail(){
         txtSdt.setText(nv.getSDT());
         txtTennv.setText(nv.getHoTen());
         txtChucvu.setText(nv.getChucVu());
-     // Thiết lập kích thước cố định cho ảnh (ví dụ: 200x200 pixels)
+     // Thiết lập kích thước cố định cho ảnh (ví dụ: 220x240 pixels)
         int IMAGE_WIDTH = 220;
         int IMAGE_HEIGHT = 240;
         
@@ -220,12 +220,6 @@ public void khoa(){
         if(chon >= 0){
             Nhanvien chonnv = nvd.GETALL().get(chon);
             
-            // Kiểm tra nếu nhân viên đã bị khóa
-            if("LOCKED".equals(chonnv.getTrangThai())){
-                JOptionPane.showMessageDialog(this, "Nhân viên này đã bị khóa!");
-                return;
-            }
-            
             int xacNhan = JOptionPane.showConfirmDialog(this, 
                 "Bạn có chắc muốn khóa tài khoản: " + chonnv.getID_NV()+ "?", 
                 "Xác nhận khóa", JOptionPane.YES_NO_OPTION);
@@ -257,7 +251,7 @@ public void mokhoa(){
             int result = nvd.moKhoaTaiKhoan(chontk.getID_NV());
             if(result == 1){
                 fillTable();
-                showdetail(); // Refresh button states
+                showdetail();
                 JOptionPane.showMessageDialog(this, "Mở khóa tài khoản thành công!");
             } else {
                 JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi mở khóa tài khoản!");
