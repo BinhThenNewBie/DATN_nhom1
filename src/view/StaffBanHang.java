@@ -128,7 +128,7 @@ public class StaffBanHang extends javax.swing.JFrame {
 
         TableColumnModel columnModel = tblUuDai.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(100); // Cột 1
-        columnModel.getColumn(1).setPreferredWidth(200); // Cột 2 (to gấp đôi)
+        columnModel.getColumn(1).setPreferredWidth(200); // Cột 2 
     }
 
     public void fillTableCTHD() {
@@ -555,7 +555,7 @@ public class StaffBanHang extends javax.swing.JFrame {
             tong += ct.getGiaSP() * ct.getSoLuong();
         }
 
-        // --- Kiểm tra nếu hóa đơn đã áp dụng ưu đãi ---
+        //Kiểm tra nếu hóa đơn đã áp dụng ưu đãi
         String uuDai = hdd.getALLHDCHO().stream()
                 .filter(hd -> hd.getID_HD().equals(ID_HD))
                 .findFirst()
@@ -608,7 +608,7 @@ public class StaffBanHang extends javax.swing.JFrame {
 
         String ID_HD = lblMaHD.getText();
 
-        // ✅ Kiểm tra ưu đãi trước khi xoá
+        //Kiểm tra ưu đãi trước khi xoá
         String uuDai = hdd.getALLHDCHO().stream()
                 .filter(hd -> hd.getID_HD().equals(ID_HD))
                 .findFirst()
@@ -652,7 +652,7 @@ public class StaffBanHang extends javax.swing.JFrame {
 
         String ID_HD = lblMaHD.getText();
 
-        //  Kiểm tra ưu đãi trước khi sửa
+        //Kiểm tra ưu đãi trước khi sửa
         String uuDai = hdd.getALLHDCHO().stream()
                 .filter(hd -> hd.getID_HD().equals(ID_HD))
                 .findFirst()
