@@ -21,218 +21,231 @@ import javax.swing.table.DefaultTableModel;
  * @author ADMIN
  */
 public class QuanLyNhanVien extends javax.swing.JFrame {
-      DefaultTableModel tableModel= new DefaultTableModel();
-      NhanvienDAO nvd = new NhanvienDAO();
-      String strAnh = "";
+
+    DefaultTableModel tableModel = new DefaultTableModel();
+    NhanvienDAO nvd = new NhanvienDAO();
+    String strAnh = "";
+
     /**
      * Creates new form QuanLyNhanVien
      */
     public QuanLyNhanVien() {
         initComponents();
+        initComponents();
+        this.setSize(1000, 950);               // Đặt kích thước cửa sổ
+        this.setResizable(false);             // Không cho resize (tuỳ chọn)
+        this.setLocationRelativeTo(null);     // Canh giữa màn hình    
         initTable();
         fillTable();
-        setLocationRelativeTo(null);
     }
+
     private ImageIcon resizeImage(String imagePath, int width, int height) {
-    try {
-        ImageIcon originalIcon = new ImageIcon(getClass().getResource(imagePath));
-        Image originalImage = originalIcon.getImage();
-        
-        // Resize ảnh với kích thước cố định
-        Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(resizedImage);
-    } catch (Exception e) {
-        return null;
+        try {
+            ImageIcon originalIcon = new ImageIcon(getClass().getResource(imagePath));
+            Image originalImage = originalIcon.getImage();
+
+            // Resize ảnh với kích thước cố định
+            Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+            return new ImageIcon(resizedImage);
+        } catch (Exception e) {
+            return null;
+        }
     }
-}
-public void initTable(){
-    tableModel = new DefaultTableModel();
-    String[] cols = new String[]{"ID nhân viên", "Họ và tên", "Chức vụ", "Số điện thoại", "Trạng thái"};
-    tableModel.setColumnIdentifiers(cols);
-    tblNhanvien.setModel(tableModel);
-}
-public void fillTable(){
-    tableModel.setRowCount(0);
-    for (Nhanvien nv : nvd.GETALL()) {
-        Object[] rows = nvd.GETROW(nv);
-        tableModel.addRow(rows);
+
+    public void initTable() {
+        tableModel = new DefaultTableModel();
+        String[] cols = new String[]{"ID nhân viên", "Họ và tên", "Chức vụ", "Số điện thoại", "Trạng thái"};
+        tableModel.setColumnIdentifiers(cols);
+        tblNhanvien.setModel(tableModel);
     }
-}
-public void showdetail(){
-    int chon= tblNhanvien.getSelectedRow();
-    if(chon >=0){
-        Nhanvien nv = nvd.GETALL().get(chon);
-        txtIdnv.setText(nv.getID_NV());
-        txtSdt.setText(nv.getSDT());
-        txtTennv.setText(nv.getHoTen());
-        txtChucvu.setText(nv.getChucVu());
-     // Thiết lập kích thước cố định cho ảnh (ví dụ: 200x200 pixels)
-        int IMAGE_WIDTH = 220;
-        int IMAGE_HEIGHT = 240;
-        
-        if(nv.getIMG() == null || nv.getIMG().equals("NO IMAGE") || nv.getIMG().isEmpty()){
-            lblAnh.setText("NO IMAGE");
-            lblAnh.setIcon(null);
-        } else {
-            try {
-                strAnh = nv.getIMG();
-                // Sử dụng method helper để resize ảnh
-                ImageIcon resizedIcon = resizeImage("/Images_nhanvien/" + strAnh, IMAGE_WIDTH, IMAGE_HEIGHT);
-                
-                if(resizedIcon != null) {
-                    lblAnh.setText("");
-                    lblAnh.setIcon(resizedIcon);
-                } else {
-                    lblAnh.setText("Không tìm thấy ảnh");
+
+    public void fillTable() {
+        tableModel.setRowCount(0);
+        for (Nhanvien nv : nvd.GETALL()) {
+            Object[] rows = nvd.GETROW(nv);
+            tableModel.addRow(rows);
+        }
+    }
+
+    public void showdetail() {
+        int chon = tblNhanvien.getSelectedRow();
+        if (chon >= 0) {
+            Nhanvien nv = nvd.GETALL().get(chon);
+            txtIdnv.setText(nv.getID_NV());
+            txtSdt.setText(nv.getSDT());
+            txtTennv.setText(nv.getHoTen());
+            txtChucvu.setText(nv.getChucVu());
+            // Thiết lập kích thước cố định cho ảnh (ví dụ: 200x200 pixels)
+            int IMAGE_WIDTH = 220;
+            int IMAGE_HEIGHT = 240;
+
+            if (nv.getIMG() == null || nv.getIMG().equals("NO IMAGE") || nv.getIMG().isEmpty()) {
+                lblAnh.setText("NO IMAGE");
+                lblAnh.setIcon(null);
+            } else {
+                try {
+                    strAnh = nv.getIMG();
+                    // Sử dụng method helper để resize ảnh
+                    ImageIcon resizedIcon = resizeImage("/Images_nhanvien/" + strAnh, IMAGE_WIDTH, IMAGE_HEIGHT);
+
+                    if (resizedIcon != null) {
+                        lblAnh.setText("");
+                        lblAnh.setIcon(resizedIcon);
+                    } else {
+                        lblAnh.setText("Không tìm thấy ảnh");
+                        lblAnh.setIcon(null);
+                    }
+                } catch (Exception e) {
+                    lblAnh.setText("Lỗi hiển thị ảnh");
                     lblAnh.setIcon(null);
                 }
-            } catch (Exception e) {
-                lblAnh.setText("Lỗi hiển thị ảnh");
-                lblAnh.setIcon(null);
             }
-        }
-        String trangThai = nv.getTrangThai();
-        if("LOCKED".equalsIgnoreCase(trangThai)){
-    btnKhoa.setEnabled(false);
-    btnMokhoa.setEnabled(true);
-    btnSua.setEnabled(false);
-    btnLamMoi.setEnabled(false);
-    btnThem.setEnabled(false);
-    txtIdnv.setEnabled(false);
-    txtSdt.setEnabled(false);
-    txtTennv.setEnabled(false);
-} else {
-    btnKhoa.setEnabled(true);
-    btnMokhoa.setEnabled(false);
-    btnSua.setEnabled(true);
-    btnLamMoi.setEnabled(true);
-    btnThem.setEnabled(true);
-    txtIdnv.setEnabled(true);
-    txtSdt.setEnabled(true);
-    txtTennv.setEnabled(true);
-}
-        
-    }
-}
-public void lammoi(){
-   txtIdnv.setText("");
-    txtTennv.setText("");
-    txtSdt.setText("");
-    txtChucvu.setText("STAFF");
-    lblAnh.setText("ẢNH NHÂN VIÊN");
-    lblAnh.setIcon(null);
-    strAnh = "";  
-}
-public void them(){
-    // Validation input
-    String ID_NV = txtIdnv.getText().trim();
-    String hoTen = txtTennv.getText().trim();
-    String SDT = txtSdt.getText().trim();
-    String chucVu = txtChucvu.getText().trim();
-    
-    // Kiểm tra dữ liệu đầu vào
-    if(ID_NV.isEmpty() || hoTen.isEmpty() || SDT.isEmpty()){
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-    // Kiểm tra định dạng số điện thoại
-    if(!SDT.matches("^0\\d{9}$")){
-        JOptionPane.showMessageDialog(this, "Số điện thoại phải có 10 chữ số và bắt đầu bằng 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-    
-    // Kiểm tra ID nhân viên đã tồn tại
-    for(Nhanvien nv : nvd.GETALL()){
-        if(nv.getID_NV().equals(ID_NV)){
-            JOptionPane.showMessageDialog(this, "ID nhân viên đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return;
+            String trangThai = nv.getTrangThai();
+            if ("LOCKED".equalsIgnoreCase(trangThai)) {
+                btnKhoa.setEnabled(false);
+                btnMokhoa.setEnabled(true);
+                btnSua.setEnabled(false);
+                btnLamMoi.setEnabled(false);
+                btnThem.setEnabled(false);
+                txtIdnv.setEnabled(false);
+                txtSdt.setEnabled(false);
+                txtTennv.setEnabled(false);
+            } else {
+                btnKhoa.setEnabled(true);
+                btnMokhoa.setEnabled(false);
+                btnSua.setEnabled(true);
+                btnLamMoi.setEnabled(true);
+                btnThem.setEnabled(true);
+                txtIdnv.setEnabled(true);
+                txtSdt.setEnabled(true);
+                txtTennv.setEnabled(true);
+            }
+
         }
     }
-    
-    // SỬA LỖI: Tạo object Nhanvien với constructor đúng
-    Nhanvien nv = new Nhanvien(ID_NV, hoTen, SDT, chucVu,strAnh, "");
-    nv.setTrangThai("ACTIVE"); // Set trạng thái mặc định
-    
-    int result = nvd.Themnv(nv);
-    if(result == 1){
-        fillTable();
-        JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!");
-    } else {
-        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi thêm nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+
+    public void lammoi() {
+        txtIdnv.setText("");
+        txtTennv.setText("");
+        txtSdt.setText("");
+        txtChucvu.setText("STAFF");
+        lblAnh.setText("ẢNH NHÂN VIÊN");
+        lblAnh.setIcon(null);
+        strAnh = "";
     }
-}
-public void sua(){
-    int chon = tblNhanvien.getSelectedRow();
-    if(chon < 0){
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-        return;
-    }
-    
-    int sua = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn sửa thông tin nhân viên này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
-    if(sua == JOptionPane.YES_OPTION){
+
+    public void them() {
         // Validation input
         String ID_NV = txtIdnv.getText().trim();
         String hoTen = txtTennv.getText().trim();
         String SDT = txtSdt.getText().trim();
         String chucVu = txtChucvu.getText().trim();
-        
+
         // Kiểm tra dữ liệu đầu vào
-        if(ID_NV.isEmpty() || hoTen.isEmpty() || SDT.isEmpty()){
+        if (ID_NV.isEmpty() || hoTen.isEmpty() || SDT.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         // Kiểm tra định dạng số điện thoại
-        if(!SDT.matches("^0\\d{9}$")){
+        if (!SDT.matches("^0\\d{9}$")) {
             JOptionPane.showMessageDialog(this, "Số điện thoại phải có 10 chữ số và bắt đầu bằng 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
-        // Lấy ID nhân viên gốc từ table
-        String idNVGoc = nvd.GETALL().get(chon).getID_NV();
-        
-        // Kiểm tra nếu thay đổi ID và ID mới đã tồn tại
-        if(!ID_NV.equals(idNVGoc)){
-            for(Nhanvien nv : nvd.GETALL()){
-                if(nv.getID_NV().equals(ID_NV)){
-                    JOptionPane.showMessageDialog(this, "ID nhân viên mới đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
+
+        // Kiểm tra ID nhân viên đã tồn tại
+        for (Nhanvien nv : nvd.GETALL()) {
+            if (nv.getID_NV().equals(ID_NV)) {
+                JOptionPane.showMessageDialog(this, "ID nhân viên đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
             }
         }
-        
+
         // SỬA LỖI: Tạo object Nhanvien với constructor đúng
-        Nhanvien nv = new Nhanvien(ID_NV, hoTen, SDT, chucVu, strAnh,"");
-        nv.setTrangThai("ACTIVE"); // Giữ nguyên trạng thái hoặc set từ UI
-        
-        int result = nvd.suanv(nv, idNVGoc);
-        if(result == 1){
+        Nhanvien nv = new Nhanvien(ID_NV, hoTen, SDT, chucVu, strAnh, "");
+        nv.setTrangThai("ACTIVE"); // Set trạng thái mặc định
+
+        int result = nvd.Themnv(nv);
+        if (result == 1) {
             fillTable();
-            JOptionPane.showMessageDialog(this, "Sửa thông tin nhân viên thành công!");
+            JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!");
         } else {
-            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi sửa thông tin nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi thêm nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
-}
-public void khoa(){
-   int chon = tblNhanvien.getSelectedRow();
-        if(chon >= 0){
+
+    public void sua() {
+        int chon = tblNhanvien.getSelectedRow();
+        if (chon < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int sua = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn sửa thông tin nhân viên này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+        if (sua == JOptionPane.YES_OPTION) {
+            // Validation input
+            String ID_NV = txtIdnv.getText().trim();
+            String hoTen = txtTennv.getText().trim();
+            String SDT = txtSdt.getText().trim();
+            String chucVu = txtChucvu.getText().trim();
+
+            // Kiểm tra dữ liệu đầu vào
+            if (ID_NV.isEmpty() || hoTen.isEmpty() || SDT.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Kiểm tra định dạng số điện thoại
+            if (!SDT.matches("^0\\d{9}$")) {
+                JOptionPane.showMessageDialog(this, "Số điện thoại phải có 10 chữ số và bắt đầu bằng 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Lấy ID nhân viên gốc từ table
+            String idNVGoc = nvd.GETALL().get(chon).getID_NV();
+
+            // Kiểm tra nếu thay đổi ID và ID mới đã tồn tại
+            if (!ID_NV.equals(idNVGoc)) {
+                for (Nhanvien nv : nvd.GETALL()) {
+                    if (nv.getID_NV().equals(ID_NV)) {
+                        JOptionPane.showMessageDialog(this, "ID nhân viên mới đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+            }
+
+            // SỬA LỖI: Tạo object Nhanvien với constructor đúng
+            Nhanvien nv = new Nhanvien(ID_NV, hoTen, SDT, chucVu, strAnh, "");
+            nv.setTrangThai("ACTIVE"); // Giữ nguyên trạng thái hoặc set từ UI
+
+            int result = nvd.suanv(nv, idNVGoc);
+            if (result == 1) {
+                fillTable();
+                JOptionPane.showMessageDialog(this, "Sửa thông tin nhân viên thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi sửa thông tin nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public void khoa() {
+        int chon = tblNhanvien.getSelectedRow();
+        if (chon >= 0) {
             Nhanvien chonnv = nvd.GETALL().get(chon);
-            
+
             // Kiểm tra nếu nhân viên đã bị khóa
-            if("LOCKED".equals(chonnv.getTrangThai())){
+            if ("LOCKED".equals(chonnv.getTrangThai())) {
                 JOptionPane.showMessageDialog(this, "Nhân viên này đã bị khóa!");
                 return;
             }
-            
-            int xacNhan = JOptionPane.showConfirmDialog(this, 
-                "Bạn có chắc muốn khóa tài khoản: " + chonnv.getID_NV()+ "?", 
-                "Xác nhận khóa", JOptionPane.YES_NO_OPTION);
-                
-            if(xacNhan == JOptionPane.YES_OPTION){
+
+            int xacNhan = JOptionPane.showConfirmDialog(this,
+                    "Bạn có chắc muốn khóa tài khoản: " + chonnv.getID_NV() + "?",
+                    "Xác nhận khóa", JOptionPane.YES_NO_OPTION);
+
+            if (xacNhan == JOptionPane.YES_OPTION) {
                 int result = nvd.khoaTaiKhoan(chonnv.getID_NV());
-                if(result == 1){
+                if (result == 1) {
                     fillTable();
                     lammoi();
                     JOptionPane.showMessageDialog(this, "Khóa nhân viên thành công!");
@@ -242,69 +255,71 @@ public void khoa(){
             }
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần khóa!");
-        } 
-}
-public void mokhoa(){
-    int chon = tblNhanvien.getSelectedRow();
-    if(chon >= 0){
-        Nhanvien chontk = nvd.GETALL().get(chon);
-        
-        int xacNhan = JOptionPane.showConfirmDialog(this, 
-            "Bạn có chắc muốn mở khóa tài khoản: " + chontk.getID_NV()+ "?", 
-            "Xác nhận mở khóa", JOptionPane.YES_NO_OPTION);
-            
-        if(xacNhan == JOptionPane.YES_OPTION){
-            int result = nvd.moKhoaTaiKhoan(chontk.getID_NV());
-            if(result == 1){
-                fillTable();
-                showdetail(); // Refresh button states
-                JOptionPane.showMessageDialog(this, "Mở khóa tài khoản thành công!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi mở khóa tài khoản!");
+        }
+    }
+
+    public void mokhoa() {
+        int chon = tblNhanvien.getSelectedRow();
+        if (chon >= 0) {
+            Nhanvien chontk = nvd.GETALL().get(chon);
+
+            int xacNhan = JOptionPane.showConfirmDialog(this,
+                    "Bạn có chắc muốn mở khóa tài khoản: " + chontk.getID_NV() + "?",
+                    "Xác nhận mở khóa", JOptionPane.YES_NO_OPTION);
+
+            if (xacNhan == JOptionPane.YES_OPTION) {
+                int result = nvd.moKhoaTaiKhoan(chontk.getID_NV());
+                if (result == 1) {
+                    fillTable();
+                    showdetail(); // Refresh button states
+                    JOptionPane.showMessageDialog(this, "Mở khóa tài khoản thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi mở khóa tài khoản!");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần mở khóa!");
+        }
+    }
+
+    public void locnv() {
+        // Lấy trạng thái được chọn từ ComboBox
+        String trangThaiLoc = cboLoc.getSelectedItem().toString();
+
+        // Xóa dữ liệu hiện tại trong bảng
+        tableModel.setRowCount(0);
+
+        // Nếu chọn "TẤT CẢ", hiển thị toàn bộ nhân viên
+        if ("TẤT CẢ".equals(trangThaiLoc)) {
+            fillTable();
+            return;
+        }
+
+        // Duyệt qua tất cả nhân viên và chỉ hiển thị những nhân viên có trạng thái phù hợp
+        for (Nhanvien nv : nvd.GETALL()) {
+            // Kiểm tra trạng thái của nhân viên
+            String trangThaiNV = nv.getTrangThai();
+
+            // Nếu trạng thái null hoặc rỗng, coi như ACTIVE
+            if (trangThaiNV == null || trangThaiNV.isEmpty()) {
+                trangThaiNV = "ACTIVE";
+            }
+
+            // Chỉ thêm vào bảng nếu trạng thái khớp với lựa chọn
+            if (trangThaiLoc.equalsIgnoreCase(trangThaiNV)) {
+                Object[] rows = nvd.GETROW(nv);
+                tableModel.addRow(rows);
             }
         }
-    } else {
-        JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần mở khóa!");
-    }
-}
-public void locnv(){
-    // Lấy trạng thái được chọn từ ComboBox
-    String trangThaiLoc = cboLoc.getSelectedItem().toString();
-    
-    // Xóa dữ liệu hiện tại trong bảng
-    tableModel.setRowCount(0);
-    
-    // Nếu chọn "TẤT CẢ", hiển thị toàn bộ nhân viên
-    if("TẤT CẢ".equals(trangThaiLoc)) {
-        fillTable();
-        return;
-    }
-    
-    // Duyệt qua tất cả nhân viên và chỉ hiển thị những nhân viên có trạng thái phù hợp
-    for (Nhanvien nv : nvd.GETALL()) {
-        // Kiểm tra trạng thái của nhân viên
-        String trangThaiNV = nv.getTrangThai();
-        
-        // Nếu trạng thái null hoặc rỗng, coi như ACTIVE
-        if(trangThaiNV == null || trangThaiNV.isEmpty()) {
-            trangThaiNV = "ACTIVE";
-        }
-        
-        // Chỉ thêm vào bảng nếu trạng thái khớp với lựa chọn
-        if(trangThaiLoc.equalsIgnoreCase(trangThaiNV)) {
-            Object[] rows = nvd.GETROW(nv);
-            tableModel.addRow(rows);
+
+        // Thông báo kết quả lọc
+        int soLuongKetQua = tableModel.getRowCount();
+        if (soLuongKetQua == 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Không tìm thấy nhân viên nào có trạng thái: " + trangThaiLoc,
+                    "Thông báo", JOptionPane.INFORMATION_MESSAGE);
         }
     }
-    
-    // Thông báo kết quả lọc
-    int soLuongKetQua = tableModel.getRowCount();
-    if(soLuongKetQua == 0) {
-        JOptionPane.showMessageDialog(this, 
-            "Không tìm thấy nhân viên nào có trạng thái: " + trangThaiLoc, 
-            "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-    }
-}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -473,9 +488,13 @@ public void locnv(){
         jLabel9.setForeground(new java.awt.Color(31, 51, 86));
         jLabel9.setText("LỌC NHÂN VIÊN");
 
+        cboLoc.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         cboLoc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVE", "LOCKED", "TẤT CẢ" }));
 
-        btnloc.setText("Lọc");
+        btnloc.setBackground(new java.awt.Color(31, 51, 86));
+        btnloc.setFont(new java.awt.Font("Segoe UI Light", 1, 15)); // NOI18N
+        btnloc.setForeground(new java.awt.Color(255, 255, 255));
+        btnloc.setText("LỌC");
         btnloc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnlocActionPerformed(evt);
@@ -487,46 +506,50 @@ public void locnv(){
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(70, 70, 70)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(btnSua, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(btnKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addComponent(btnLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addGap(17, 17, 17)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jLabel2)
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING))
-                                    .addGap(29, 29, 29)
-                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addComponent(txtTennv)
-                                        .addComponent(txtChucvu, javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(txtSdt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGroup(jPanel1Layout.createSequentialGroup()
-                                    .addComponent(jLabel1)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(txtIdnv, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(59, 59, 59)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 868, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(cboLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(39, 39, 39)
-                            .addComponent(btnloc)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnMokhoa)
-                            .addGap(10, 10, 10))))
-                .addContainerGap(123, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(87, 87, 87)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING))
+                                .addGap(29, 29, 29)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(txtTennv)
+                                    .addComponent(txtChucvu, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(txtSdt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtIdnv, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(59, 59, 59)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnSua, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 868, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel9)
+                                        .addGap(749, 749, 749))
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(cboLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(btnloc, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(btnMokhoa)))))))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -550,124 +573,126 @@ public void locnv(){
                             .addComponent(txtChucvu, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4)))
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addGap(39, 39, 39)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnThem)
                     .addComponent(btnSua)
                     .addComponent(btnKhoa)
                     .addComponent(btnLamMoi))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel9)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnMokhoa)
-                        .addGap(18, 18, 18))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(cboLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnloc))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)))
+                            .addComponent(cboLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnloc, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, 28, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnMokhoa)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(54, 54, 54))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(48, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 7, Short.MAX_VALUE))
+                .addGap(37, 37, 37))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+    private void btnlocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlocActionPerformed
         // TODO add your handling code here:
-        them();
-    }//GEN-LAST:event_btnThemActionPerformed
-
-    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
-        // TODO add your handling code here:
-        sua();
-    }//GEN-LAST:event_btnSuaActionPerformed
-
-    private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
-        // TODO add your handling code here:
-        lammoi();
-    }//GEN-LAST:event_btnLamMoiActionPerformed
-
-    private void lblAnhMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAnhMouseClicked
-        // TODO add your handling code here:
-         JFileChooser jFC = new JFileChooser("src\\Images_nhanvien");
-    // Thêm filter để chỉ chọn file ảnh
-    jFC.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
-        "Image Files", "jpg", "jpeg", "png", "gif", "bmp"));
-    
-    int result = jFC.showOpenDialog(this);
-    if(result == JFileChooser.APPROVE_OPTION) {
-        File file = jFC.getSelectedFile();
-        
-        // Kiểm tra xem file có tồn tại không
-        if(file != null && file.exists()) {
-            try {
-                // Thiết lập kích thước cố định
-                int IMAGE_WIDTH = 220;
-                int IMAGE_HEIGHT = 240;
-                
-                // Đọc ảnh từ file
-                BufferedImage originalImage = ImageIO.read(file);
-                
-                // Resize ảnh với kích thước cố định
-                Image resizedImage = originalImage.getScaledInstance(
-                    IMAGE_WIDTH, IMAGE_HEIGHT, Image.SCALE_SMOOTH);
-                
-                // Hiển thị ảnh đã resize
-                ImageIcon imageIcon = new ImageIcon(resizedImage);
-                lblAnh.setText("");
-                lblAnh.setIcon(imageIcon);
-                
-                // Lưu tên file để sử dụng sau này
-                strAnh = file.getName();
-                
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Lỗi khi đọc file ảnh: " + ex.getMessage(), 
-                    "Lỗi", JOptionPane.ERROR_MESSAGE);
-                lblAnh.setText("Lỗi đọc ảnh");
-                lblAnh.setIcon(null);
-            }
-        }
-    }
-    }//GEN-LAST:event_lblAnhMouseClicked
-
-    private void tblNhanvienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNhanvienMouseClicked
-        // TODO add your handling code here:
-        showdetail();
-    }//GEN-LAST:event_tblNhanvienMouseClicked
+        locnv();
+    }//GEN-LAST:event_btnlocActionPerformed
 
     private void btnMokhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMokhoaActionPerformed
         // TODO add your handling code here:
         mokhoa();
     }//GEN-LAST:event_btnMokhoaActionPerformed
 
+    private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
+        // TODO add your handling code here:
+        lammoi();
+    }//GEN-LAST:event_btnLamMoiActionPerformed
+
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
+        // TODO add your handling code here:
+        sua();
+    }//GEN-LAST:event_btnSuaActionPerformed
+
     private void btnKhoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKhoaActionPerformed
         // TODO add your handling code here:
         khoa();
     }//GEN-LAST:event_btnKhoaActionPerformed
 
-    private void btnlocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlocActionPerformed
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         // TODO add your handling code here:
-        locnv();
-    }//GEN-LAST:event_btnlocActionPerformed
+        them();
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void tblNhanvienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNhanvienMouseClicked
+        // TODO add your handling code here:
+        showdetail();
+    }//GEN-LAST:event_tblNhanvienMouseClicked
+
+    private void lblAnhMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblAnhMouseClicked
+        // TODO add your handling code here:
+        JFileChooser jFC = new JFileChooser("src\\Images_nhanvien");
+        // Thêm filter để chỉ chọn file ảnh
+        jFC.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+            "Image Files", "jpg", "jpeg", "png", "gif", "bmp"));
+
+    int result = jFC.showOpenDialog(this);
+    if (result == JFileChooser.APPROVE_OPTION) {
+        File file = jFC.getSelectedFile();
+
+        // Kiểm tra xem file có tồn tại không
+        if (file != null && file.exists()) {
+            try {
+                // Thiết lập kích thước cố định
+                int IMAGE_WIDTH = 220;
+                int IMAGE_HEIGHT = 240;
+
+                // Đọc ảnh từ file
+                BufferedImage originalImage = ImageIO.read(file);
+
+                // Resize ảnh với kích thước cố định
+                Image resizedImage = originalImage.getScaledInstance(
+                    IMAGE_WIDTH, IMAGE_HEIGHT, Image.SCALE_SMOOTH);
+
+                // Hiển thị ảnh đã resize
+                ImageIcon imageIcon = new ImageIcon(resizedImage);
+                lblAnh.setText("");
+                lblAnh.setIcon(imageIcon);
+
+                // Lưu tên file để sử dụng sau này
+                strAnh = file.getName();
+
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Lỗi khi đọc file ảnh: " + ex.getMessage(),
+                    "Lỗi", JOptionPane.ERROR_MESSAGE);
+                lblAnh.setText("Lỗi đọc ảnh");
+                lblAnh.setIcon(null);
+            }
+        }
+        }
+    }//GEN-LAST:event_lblAnhMouseClicked
 
     /**
      * @param args the command line arguments

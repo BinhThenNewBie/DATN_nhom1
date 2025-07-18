@@ -33,8 +33,9 @@ public class QuanLySanPham extends javax.swing.JFrame {
      */
     public QuanLySanPham() {
         initComponents();
-        setLocationRelativeTo(null); // Đưa ra giữa màn hình
-        setResizable(false);         // Không cho resize (tùy chọn)        
+ this.setSize(1000, 950);               // Đặt kích thước cửa sổ
+this.setResizable(false);             // Không cho resize (tuỳ chọn)
+this.setLocationRelativeTo(null);     // Canh giữa màn hình      
         initTable();
         fillTable();
     }
@@ -804,7 +805,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        txtTimkiem.setFont(new java.awt.Font("Dialog", 1, 12)); // NOI18N
+        txtTimkiem.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
 
         jLabel7.setFont(new java.awt.Font("Segoe UI Light", 1, 16)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(31, 51, 86));
@@ -852,7 +853,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
         jLabel8.setForeground(new java.awt.Color(31, 51, 86));
         jLabel8.setText("LỌC SẢN PHẨM");
 
-        cboLocSP.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        cboLocSP.setFont(new java.awt.Font("Segoe UI Light", 1, 14)); // NOI18N
         cboLocSP.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TẤT CẢ", "CAFE", "BÁNH NGỌT", "NƯỚC ÉP" }));
 
         jButton1.setBackground(new java.awt.Color(31, 51, 86));
@@ -907,7 +908,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(15, Short.MAX_VALUE))
         );
 
@@ -916,20 +917,20 @@ public class QuanLySanPham extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
+                .addGap(29, 29, 29)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addContainerGap(37, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addGap(27, 27, 27))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
