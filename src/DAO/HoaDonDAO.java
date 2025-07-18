@@ -21,13 +21,14 @@ public class HoaDonDAO {
     List<HoaDon> lstHD = new ArrayList<>();
     
     public int saveHOADON(HoaDon hd) {
-        String sql = "INSERT INTO HOADON VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO HOADON VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection con = DBconnect.getConnection(); PreparedStatement pstm = con.prepareStatement(sql)) {
             pstm.setString(1, hd.getID_HD());
             pstm.setString(2, hd.getNgayThangNam());
-            pstm.setString(2, hd.getThoiGian());
-            pstm.setString(2, hd.getMon());
-            pstm.setFloat(3, hd.getTongTien());
+            pstm.setString(3, hd.getThoiGian());
+            pstm.setString(4, hd.getMon());
+            pstm.setFloat(5, hd.getTongTien());
+            pstm.setString(6, hd.getUuDai());
             int row = pstm.executeUpdate();
             if (row > 0) {
                 return 1;
@@ -49,6 +50,7 @@ public class HoaDonDAO {
                 hd.setThoiGian(rs.getString(3));
                 hd.setMon(rs.getString(4));
                 hd.setTongTien(rs.getFloat(5));
+                hd.setUuDai(rs.getString(6));
                 lstHD.add(hd);
             }
         } catch (Exception e) {
@@ -63,7 +65,8 @@ public class HoaDonDAO {
             hd.getNgayThangNam(),
             hd.getThoiGian(),
             hd.getMon(),
-            hd.getTongTien()
+            hd.getTongTien(),
+            hd.getUuDai()
         };
         return row;
     }

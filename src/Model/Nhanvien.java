@@ -6,13 +6,15 @@ package Model;
 
 /**
  *
- * @author ADMIN
+ * @author nmttt
  */
 public class Nhanvien {
-   private String ID_NV, hoTen, SDT, chucVu, IMG,trangThai;
+    private String ID_NV, hoTen, SDT, chucVu, IMG,trangThai;
 
     public Nhanvien() {
     }
+    
+    
 
     public Nhanvien(String ID_NV, String hoTen, String SDT, String chucVu, String IMG, String trangThai) {
         this.ID_NV = ID_NV;
@@ -70,6 +72,6 @@ public class Nhanvien {
     public void setTrangThai(String trangThai) {
         this.trangThai = trangThai;
     }
-
-     
+    
+    
 }

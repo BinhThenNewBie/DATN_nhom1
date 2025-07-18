@@ -46,7 +46,7 @@ import javax.swing.table.TableColumnModel;
  *
  * @author ADMIN
  */
-public class StaffBanHang extends javax.swing.JFrame {
+public class AdminBanHang extends javax.swing.JFrame {
 
     DefaultTableModel modelUuDai;
     DefaultTableModel modelHDCho;
@@ -61,7 +61,7 @@ public class StaffBanHang extends javax.swing.JFrame {
     /**
      * Creates new form StaffBanHang
      */
-    public StaffBanHang() {
+    public AdminBanHang() {
         initComponents();
         initTable();
         fillTableUuDai();
@@ -128,7 +128,7 @@ public class StaffBanHang extends javax.swing.JFrame {
 
         TableColumnModel columnModel = tblUuDai.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(100); // Cột 1
-        columnModel.getColumn(1).setPreferredWidth(200); // Cột 2 
+        columnModel.getColumn(1).setPreferredWidth(200); // Cột 2 (to gấp đôi)
     }
 
     public void fillTableCTHD() {
@@ -555,7 +555,7 @@ public class StaffBanHang extends javax.swing.JFrame {
             tong += ct.getGiaSP() * ct.getSoLuong();
         }
 
-        //Kiểm tra nếu hóa đơn đã áp dụng ưu đãi
+        // --- Kiểm tra nếu hóa đơn đã áp dụng ưu đãi ---
         String uuDai = hdd.getALLHDCHO().stream()
                 .filter(hd -> hd.getID_HD().equals(ID_HD))
                 .findFirst()
@@ -608,7 +608,7 @@ public class StaffBanHang extends javax.swing.JFrame {
 
         String ID_HD = lblMaHD.getText();
 
-        //Kiểm tra ưu đãi trước khi xoá
+        // ✅ Kiểm tra ưu đãi trước khi xoá
         String uuDai = hdd.getALLHDCHO().stream()
                 .filter(hd -> hd.getID_HD().equals(ID_HD))
                 .findFirst()
@@ -652,7 +652,7 @@ public class StaffBanHang extends javax.swing.JFrame {
 
         String ID_HD = lblMaHD.getText();
 
-        //Kiểm tra ưu đãi trước khi sửa
+        //  Kiểm tra ưu đãi trước khi sửa
         String uuDai = hdd.getALLHDCHO().stream()
                 .filter(hd -> hd.getID_HD().equals(ID_HD))
                 .findFirst()
@@ -951,12 +951,8 @@ public class StaffBanHang extends javax.swing.JFrame {
         jScrollPane4 = new javax.swing.JScrollPane();
         tblHoaDon = new javax.swing.JTable();
         lblTime = new javax.swing.JLabel();
-        btnLogOut = new javax.swing.JButton();
         cbxLoc = new javax.swing.JComboBox<>();
         btnLoc = new javax.swing.JButton();
-        lblexit = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jSeparator6 = new javax.swing.JSeparator();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -1367,16 +1363,6 @@ public class StaffBanHang extends javax.swing.JFrame {
         lblTime.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         lblTime.setForeground(new java.awt.Color(0, 51, 102));
 
-        btnLogOut.setBackground(new java.awt.Color(31, 51, 86));
-        btnLogOut.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnLogOut.setForeground(new java.awt.Color(255, 255, 255));
-        btnLogOut.setText("LOG OUT");
-        btnLogOut.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLogOutActionPerformed(evt);
-            }
-        });
-
         cbxLoc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "TẤT CẢ", "CAFE", "BÁNH NGỌT", "NƯỚC ÉP" }));
 
         btnLoc.setBackground(new java.awt.Color(31, 51, 86));
@@ -1388,18 +1374,6 @@ public class StaffBanHang extends javax.swing.JFrame {
                 btnLocActionPerformed(evt);
             }
         });
-
-        lblexit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainForm_Admin/image/dangxuat.png"))); // NOI18N
-        lblexit.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lblexitMouseClicked(evt);
-            }
-        });
-
-        jLabel1.setFont(new java.awt.Font("Segoe UI Semibold", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 51, 102));
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainForm_Admin/image/trangchu.png"))); // NOI18N
-        jLabel1.setText("STAFF");
 
         jButton1.setBackground(new java.awt.Color(31, 51, 86));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -1419,40 +1393,30 @@ public class StaffBanHang extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, 1269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pnlThongTin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addComponent(pnlThongTin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(28, 28, 28)
-                                        .addComponent(cbxLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(pnlMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(pnlUuDai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(28, 28, 28)
+                                .addComponent(cbxLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(pnlChiTietHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(pnlHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblexit)
-                                .addGap(31, 31, 31)
-                                .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jButton1)
-                                .addGap(42, 42, 42)))
-                        .addGap(30, 30, 30))))
+                                .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(pnlMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pnlUuDai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(pnlChiTietHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(pnlHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(30, 30, 30))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1)
+                .addGap(74, 74, 74))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1462,12 +1426,10 @@ public class StaffBanHang extends javax.swing.JFrame {
                         .addGap(19, 19, 19)
                         .addComponent(lblTime, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(cbxLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(btnLoc)))))
+                        .addGap(9, 9, 9)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cbxLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnLoc))))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pnlThongTin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1478,15 +1440,9 @@ public class StaffBanHang extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(pnlChiTietHoaDon, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(pnlUuDai, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(26, 26, 26)
-                .addComponent(jSeparator6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblexit, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btnLogOut)
-                        .addComponent(jButton1)))
-                .addGap(20, 20, 20))
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         pack();
@@ -1549,18 +1505,6 @@ public class StaffBanHang extends javax.swing.JFrame {
         uuDai();
     }//GEN-LAST:event_btnApDungActionPerformed
 
-    private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
-        // TODO add your handling code here:
-        Login lg = new Login();
-        lg.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnLogOutActionPerformed
-
-    private void lblexitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblexitMouseClicked
-        // TODO add your handling code here:
-        this.dispose();
-    }//GEN-LAST:event_lblexitMouseClicked
-
     private void btnLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocActionPerformed
         // TODO add your handling code here:
         fillTableMenu();
@@ -1600,20 +1544,21 @@ public class StaffBanHang extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(StaffBanHang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AdminBanHang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(StaffBanHang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AdminBanHang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(StaffBanHang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AdminBanHang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(StaffBanHang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AdminBanHang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new StaffBanHang().setVisible(true);
+                new AdminBanHang().setVisible(true);
             }
         });
     }
@@ -1623,7 +1568,6 @@ public class StaffBanHang extends javax.swing.JFrame {
     private javax.swing.JButton btnHuyDon;
     private javax.swing.JButton btnHuyUuDai;
     private javax.swing.JButton btnLoc;
-    private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnTaoHoaDon;
     private javax.swing.JButton btnThanhToan;
@@ -1631,7 +1575,6 @@ public class StaffBanHang extends javax.swing.JFrame {
     private javax.swing.JButton btnXoa;
     private javax.swing.JComboBox<String> cbxLoc;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
@@ -1640,7 +1583,6 @@ public class StaffBanHang extends javax.swing.JFrame {
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
-    private javax.swing.JSeparator jSeparator6;
     private javax.swing.JLabel lblAnhSanPham;
     private javax.swing.JLabel lblMaHD;
     private javax.swing.JLabel lblMaSP;
@@ -1655,7 +1597,6 @@ public class StaffBanHang extends javax.swing.JFrame {
     private javax.swing.JLabel lblTittleSoLuong;
     private javax.swing.JLabel lblTittleUuDai;
     private javax.swing.JLabel lblUuDai;
-    private javax.swing.JLabel lblexit;
     private javax.swing.JPanel pnlChiTietHoaDon;
     private javax.swing.JPanel pnlHoaDon;
     private javax.swing.JPanel pnlMenu;
