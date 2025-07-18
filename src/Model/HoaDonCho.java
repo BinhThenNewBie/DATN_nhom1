@@ -13,15 +13,18 @@ public class HoaDonCho {
     private String ngayThangNam;
     private String thoiGian;
     private float tongTien;
-
+    private String uuDai;
+    
+    
     public HoaDonCho() {
     }
 
-    public HoaDonCho(String ID_HD, String ngayThangNam, String thoiGian, float tongTien) {
+    public HoaDonCho(String ID_HD, String ngayThangNam, String thoiGian, float tongTien, String uuDai) {
         this.ID_HD = ID_HD;
         this.ngayThangNam = ngayThangNam;
         this.thoiGian = thoiGian;
         this.tongTien = tongTien;
+        this.uuDai = uuDai;
     }
 
     public String getID_HD() {
@@ -55,6 +58,16 @@ public class HoaDonCho {
     public void setTongTien(float tongTien) {
         this.tongTien = tongTien;
     }
+
+    public String getUuDai() {
+        return uuDai;
+    }
+
+    public void setUuDai(String uuDai) {
+        this.uuDai = uuDai;
+    }
     
+    
+     
     
 }

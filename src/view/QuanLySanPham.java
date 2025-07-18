@@ -2,13 +2,10 @@ package view;
 
 import DAO.HoaDonChoDAO;
 import DAO.SanPhamDAO;
-import Model.ChiTietHoaDon;
-import Model.HoaDonCho;
 import Model.SanPham;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -43,9 +40,13 @@ public class QuanLySanPham extends javax.swing.JFrame {
     }
 
     public void initTable() {
-        String[] cols = new String[]{"ID SẢN PHẨM", "TÊN SẢN PHẨM", "GIÁ TIỀN", "LOẠI SẢN PHẨM", "Ảnh", "TRẠNG THÁI"};
+        String[] cols = new String[]{"ID SẢN PHẨM", "TÊN SẢN PHẨM", "GIÁ TIỀN", "LOẠI SẢN PHẨM", "ẢNH", "TRẠNG THÁI"};
         tableModel.setColumnIdentifiers(cols);
         tblBang.setModel(tableModel);
+
+        tblBang.getColumnModel().getColumn(4).setMinWidth(0);
+        tblBang.getColumnModel().getColumn(4).setMaxWidth(0);
+        tblBang.getColumnModel().getColumn(4).setWidth(0);
     }
 
     public void fillTable() {
@@ -250,8 +251,6 @@ public class QuanLySanPham extends javax.swing.JFrame {
         String id = lblID.getText().trim();
         String ten = txtTensp.getText().trim();
         String giaStr = txtGiatien.getText().trim().replace(",", "").replace(".", "");
-        String duongDanAnh = lblAnh.getToolTipText();
-        String loai = cboLoai.getSelectedItem().toString();
 
         // Check mã sản phẩm
         if (id.isEmpty()) {
@@ -264,10 +263,16 @@ public class QuanLySanPham extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Tên sản phẩm không được để trống!");
             return false;
         }
-        if (ten.matches(".*\\d.*")) {
-            JOptionPane.showMessageDialog(this, "Tên sản phẩm không được chứa số!");
+        // Không chứa ký tự không hợp lệ (chỉ cho phép số)
+        if (!giaStr.matches("^[0-9]+$")) {
+            if (giaStr.contains("-")) {
+                JOptionPane.showMessageDialog(this, "Giá tiền không được là số âm!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Giá tiền chỉ được chứa số, không chứa ký tự");
+            }
             return false;
         }
+
         if (ten.matches(".*[^a-zA-ZÀ-ỹ\\s].*")) {
             JOptionPane.showMessageDialog(this, "Tên sản phẩm không được chứa ký tự đặc biệt!");
             return false;
@@ -282,63 +287,40 @@ public class QuanLySanPham extends javax.swing.JFrame {
             }
         }
 
-// Check giá tiền rỗng
+        //
         if (giaStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Giá tiền không được để trống!");
             return false;
         }
 
-        // Check giá tiền chỉ chứa khoảng trắng
-        if (giaStr.matches("\\s*")) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không được chứa khoảng trắng!");
+        if (giaStr.matches("^\\s+$")) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không được chỉ chứa khoảng trắng!");
             return false;
         }
 
-        // Check giá tiền có chứa chữ cái
         if (giaStr.matches(".*[a-zA-ZÀ-ỹ].*")) {
             JOptionPane.showMessageDialog(this, "Giá tiền không được chứa chữ cái!");
             return false;
         }
 
-        // Check giá tiền có chứa ký tự đặc biệt (trừ dấu + và -)
-        if (giaStr.matches(".*[^0-9+\\-].*")) {
-            JOptionPane.showMessageDialog(this, "Giá tiền chỉ được chứa số!");
+        if (!giaStr.matches("^\\d+$")) {
+            JOptionPane.showMessageDialog(this, "Giá tiền chỉ được chứa số, không chứa ký tự đặc biệt!");
             return false;
         }
 
-        // Check giá tiền có dấu âm
-        if (giaStr.startsWith("-") || giaStr.contains("-")) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không được là số âm!");
+        if (giaStr.matches("^0\\d+")) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không được bắt đầu bằng số 0!");
             return false;
         }
 
-        // Check giá tiền bắt đầu bằng dấu +
-        if (giaStr.startsWith("+")) {
-            giaStr = giaStr.substring(1); // Bỏ dấu + ở đầu
-        }
-
-        // Check giá tiền phải là số nguyên dương
-        if (!giaStr.matches("^[1-9]\\d*$")) {
-            if (giaStr.matches("^0+$")) {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải là số nguyên dương (không được là 0)!");
-            } else if (giaStr.matches("^0\\d+$")) {
-                JOptionPane.showMessageDialog(this, "Giá tiền không được có số 0 ở đầu.");
-            } else {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải là số nguyên dương hợp lệ!");
-            }
-            return false;
-        }
-
+        // 6. Phải là số nguyên dương và trong khoảng cho phép
         try {
-            long giaLong = Long.parseLong(giaStr);
+            int gia = Integer.parseInt(giaStr);
 
-            // Check giá tiền vượt quá giới hạn int
-            if (giaLong > Integer.MAX_VALUE) {
-                JOptionPane.showMessageDialog(this, "Giá tiền quá lớn. Vui lòng nhập giá trị nhỏ hơn!");
+            if (gia <= 0) {
+                JOptionPane.showMessageDialog(this, "Giá tiền phải là số nguyên dương!");
                 return false;
             }
-
-            int gia = (int) giaLong;
 
             if (gia < 10000) {
                 JOptionPane.showMessageDialog(this, "Giá tiền phải từ 10.000 VND trở lên!");
@@ -362,15 +344,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
         String id = lblID.getText().trim();
         String ten = txtTensp.getText().trim();
         String giaStr = txtGiatien.getText().trim().replace(",", "").replace(".", "");
-        float giaUp = Float.parseFloat(txtGiatien.getText().trim());
-
-        float tong = 0;
-        List<ChiTietHoaDon> list = hdd.getAllCTHD();
-        hdd.UpdateGia(id, giaUp);
-        for (ChiTietHoaDon ct : list) {
-            tong += ct.getGiaSP() * ct.getSoLuong();
-        }
-        hdd.updateTongTien(id, tong);
+        
         // Check mã sản phẩm
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần sửa!");
@@ -405,62 +379,36 @@ public class QuanLySanPham extends javax.swing.JFrame {
         }
 
         // Check giá tiền rỗng
-        if (giaStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không được để trống!");
+        if (giaStr.isEmpty() || giaStr.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không được để trống hoặc chỉ chứa khoảng trắng!");
             return false;
         }
 
-        // Check giá tiền chỉ chứa khoảng trắng
-        if (giaStr.matches("\\s*")) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không được chứa khoảng trắng!");
-            return false;
-        }
-
-        // Check giá tiền có chứa chữ cái
+// Check giá tiền chứa chữ cái
         if (giaStr.matches(".*[a-zA-ZÀ-ỹ].*")) {
             JOptionPane.showMessageDialog(this, "Giá tiền không được chứa chữ cái!");
             return false;
         }
 
-        // Check giá tiền có chứa ký tự đặc biệt (trừ dấu + và -)
-        if (giaStr.matches(".*[^0-9+\\-].*")) {
-            JOptionPane.showMessageDialog(this, "Giá tiền chỉ được chứa số!");
-            return false;
-        }
-
-        // Check giá tiền có dấu âm
-        if (giaStr.startsWith("-") || giaStr.contains("-")) {
-            JOptionPane.showMessageDialog(this, "Giá tiền không được là số âm!");
-            return false;
-        }
-
-        // Check giá tiền bắt đầu bằng dấu +
-        if (giaStr.startsWith("+")) {
-            giaStr = giaStr.substring(1); // Bỏ dấu + ở đầu
-        }
-
-        // Check giá tiền phải là số nguyên dương
-        if (!giaStr.matches("^[1-9]\\d*$")) {
-            if (giaStr.matches("^0+$")) {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải là số nguyên dương (không được là 0)!");
-            } else if (giaStr.matches("^0\\d+$")) {
-                JOptionPane.showMessageDialog(this, "Giá tiền không được có số 0 ở đầu!");
+// Check chứa ký tự đặc biệt hoặc dấu âm
+        if (!giaStr.matches("^[0-9]+$")) {
+            if (giaStr.contains("-")) {
+                JOptionPane.showMessageDialog(this, "Giá tiền không được là số âm!");
             } else {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải là số nguyên dương hợp lệ!");
+                JOptionPane.showMessageDialog(this, "Giá tiền chỉ được chứa số, không chứa ký tự đặc biệt!");
             }
             return false;
         }
 
+// Không cho phép giá bắt đầu bằng 0 (nhưng cho phép số 0 duy nhất thì đã loại ở trên)
+        if (giaStr.matches("^0\\d+")) {
+            JOptionPane.showMessageDialog(this, "Giá tiền không được bắt đầu bằng số 0!");
+            return false;
+        }
+
+// Parse và kiểm tra khoảng giá
         try {
-            long giaLong = Long.parseLong(giaStr);
-
-            // Check giá tiền vượt quá giới hạn int
-            if (giaLong > Integer.MAX_VALUE) {
-                JOptionPane.showMessageDialog(this, "Giá tiền quá lớn. Vui lòng nhập giá trị nhỏ hơn!");
-                return false;
-            }
-
-            int gia = (int) giaLong;
+            int gia = Integer.parseInt(giaStr);
 
             if (gia < 10000) {
                 JOptionPane.showMessageDialog(this, "Giá tiền phải từ 10.000 VND trở lên!");
@@ -478,6 +426,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
         }
 
         return true;
+
     }
 
     private void taoMaSanPham() {

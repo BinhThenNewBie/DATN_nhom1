@@ -47,7 +47,7 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
 }
 public void initTable(){
     tableModel = new DefaultTableModel();
-    String[] cols = new String[]{"ID nhân viên", "Họ và tên", "Chức vụ", "Số điện thoại", "IMG"};
+    String[] cols = new String[]{"ID nhân viên", "Họ và tên", "Chức vụ", "Số điện thoại", "Trạng thái"};
     tableModel.setColumnIdentifiers(cols);
     tblNhanvien.setModel(tableModel);
 }
@@ -91,6 +91,27 @@ public void showdetail(){
                 lblAnh.setIcon(null);
             }
         }
+        String trangThai = nv.getTrangThai();
+        if("LOCKED".equalsIgnoreCase(trangThai)){
+    btnKhoa.setEnabled(false);
+    btnMokhoa.setEnabled(true);
+    btnSua.setEnabled(false);
+    btnLamMoi.setEnabled(false);
+    btnThem.setEnabled(false);
+    txtIdnv.setEnabled(false);
+    txtSdt.setEnabled(false);
+    txtTennv.setEnabled(false);
+} else {
+    btnKhoa.setEnabled(true);
+    btnMokhoa.setEnabled(false);
+    btnSua.setEnabled(true);
+    btnLamMoi.setEnabled(true);
+    btnThem.setEnabled(true);
+    txtIdnv.setEnabled(true);
+    txtSdt.setEnabled(true);
+    txtTennv.setEnabled(true);
+}
+        
     }
 }
 public void lammoi(){
@@ -102,22 +123,189 @@ public void lammoi(){
     lblAnh.setIcon(null);
     strAnh = "";  
 }
-//public void them(){
-//  String ID_NV = txtIdnv.getText();
-//  String hoTen = txtTennv.getText();
-//  String SDT = txtSdt.getText();
-//  String chucVu = txtChucvu.getText();
-//  String IMG = 
-//}
-public void sua(){
+public void them(){
+    // Validation input
+    String ID_NV = txtIdnv.getText().trim();
+    String hoTen = txtTennv.getText().trim();
+    String SDT = txtSdt.getText().trim();
+    String chucVu = txtChucvu.getText().trim();
     
+    // Kiểm tra dữ liệu đầu vào
+    if(ID_NV.isEmpty() || hoTen.isEmpty() || SDT.isEmpty()){
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    // Kiểm tra định dạng số điện thoại
+    if(!SDT.matches("^0\\d{9}$")){
+        JOptionPane.showMessageDialog(this, "Số điện thoại phải có 10 chữ số và bắt đầu bằng 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    // Kiểm tra ID nhân viên đã tồn tại
+    for(Nhanvien nv : nvd.GETALL()){
+        if(nv.getID_NV().equals(ID_NV)){
+            JOptionPane.showMessageDialog(this, "ID nhân viên đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    }
+    
+    // SỬA LỖI: Tạo object Nhanvien với constructor đúng
+    Nhanvien nv = new Nhanvien(ID_NV, hoTen, SDT, chucVu,strAnh, "");
+    nv.setTrangThai("ACTIVE"); // Set trạng thái mặc định
+    
+    int result = nvd.Themnv(nv);
+    if(result == 1){
+        fillTable();
+        JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!");
+    } else {
+        JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi thêm nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+}
+public void sua(){
+    int chon = tblNhanvien.getSelectedRow();
+    if(chon < 0){
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên cần sửa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    
+    int sua = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn sửa thông tin nhân viên này?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+    if(sua == JOptionPane.YES_OPTION){
+        // Validation input
+        String ID_NV = txtIdnv.getText().trim();
+        String hoTen = txtTennv.getText().trim();
+        String SDT = txtSdt.getText().trim();
+        String chucVu = txtChucvu.getText().trim();
+        
+        // Kiểm tra dữ liệu đầu vào
+        if(ID_NV.isEmpty() || hoTen.isEmpty() || SDT.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Kiểm tra định dạng số điện thoại
+        if(!SDT.matches("^0\\d{9}$")){
+            JOptionPane.showMessageDialog(this, "Số điện thoại phải có 10 chữ số và bắt đầu bằng 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        // Lấy ID nhân viên gốc từ table
+        String idNVGoc = nvd.GETALL().get(chon).getID_NV();
+        
+        // Kiểm tra nếu thay đổi ID và ID mới đã tồn tại
+        if(!ID_NV.equals(idNVGoc)){
+            for(Nhanvien nv : nvd.GETALL()){
+                if(nv.getID_NV().equals(ID_NV)){
+                    JOptionPane.showMessageDialog(this, "ID nhân viên mới đã tồn tại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
+        }
+        
+        // SỬA LỖI: Tạo object Nhanvien với constructor đúng
+        Nhanvien nv = new Nhanvien(ID_NV, hoTen, SDT, chucVu, strAnh,"");
+        nv.setTrangThai("ACTIVE"); // Giữ nguyên trạng thái hoặc set từ UI
+        
+        int result = nvd.suanv(nv, idNVGoc);
+        if(result == 1){
+            fillTable();
+            JOptionPane.showMessageDialog(this, "Sửa thông tin nhân viên thành công!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi sửa thông tin nhân viên!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 }
 public void khoa(){
-    
+   int chon = tblNhanvien.getSelectedRow();
+        if(chon >= 0){
+            Nhanvien chonnv = nvd.GETALL().get(chon);
+            
+            // Kiểm tra nếu nhân viên đã bị khóa
+            if("LOCKED".equals(chonnv.getTrangThai())){
+                JOptionPane.showMessageDialog(this, "Nhân viên này đã bị khóa!");
+                return;
+            }
+            
+            int xacNhan = JOptionPane.showConfirmDialog(this, 
+                "Bạn có chắc muốn khóa tài khoản: " + chonnv.getID_NV()+ "?", 
+                "Xác nhận khóa", JOptionPane.YES_NO_OPTION);
+                
+            if(xacNhan == JOptionPane.YES_OPTION){
+                int result = nvd.khoaTaiKhoan(chonnv.getID_NV());
+                if(result == 1){
+                    fillTable();
+                    lammoi();
+                    JOptionPane.showMessageDialog(this, "Khóa nhân viên thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi khóa nhân viên!");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần khóa!");
+        } 
 }
 public void mokhoa(){
-    
+    int chon = tblNhanvien.getSelectedRow();
+    if(chon >= 0){
+        Nhanvien chontk = nvd.GETALL().get(chon);
+        
+        int xacNhan = JOptionPane.showConfirmDialog(this, 
+            "Bạn có chắc muốn mở khóa tài khoản: " + chontk.getID_NV()+ "?", 
+            "Xác nhận mở khóa", JOptionPane.YES_NO_OPTION);
+            
+        if(xacNhan == JOptionPane.YES_OPTION){
+            int result = nvd.moKhoaTaiKhoan(chontk.getID_NV());
+            if(result == 1){
+                fillTable();
+                showdetail(); // Refresh button states
+                JOptionPane.showMessageDialog(this, "Mở khóa tài khoản thành công!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi mở khóa tài khoản!");
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản cần mở khóa!");
+    }
 }
+public void locnv(){
+    // Lấy trạng thái được chọn từ ComboBox
+    String trangThaiLoc = cboLoc.getSelectedItem().toString();
+    
+    // Xóa dữ liệu hiện tại trong bảng
+    tableModel.setRowCount(0);
+    
+    // Nếu chọn "TẤT CẢ", hiển thị toàn bộ nhân viên
+    if("TẤT CẢ".equals(trangThaiLoc)) {
+        fillTable();
+        return;
+    }
+    
+    // Duyệt qua tất cả nhân viên và chỉ hiển thị những nhân viên có trạng thái phù hợp
+    for (Nhanvien nv : nvd.GETALL()) {
+        // Kiểm tra trạng thái của nhân viên
+        String trangThaiNV = nv.getTrangThai();
+        
+        // Nếu trạng thái null hoặc rỗng, coi như ACTIVE
+        if(trangThaiNV == null || trangThaiNV.isEmpty()) {
+            trangThaiNV = "ACTIVE";
+        }
+        
+        // Chỉ thêm vào bảng nếu trạng thái khớp với lựa chọn
+        if(trangThaiLoc.equalsIgnoreCase(trangThaiNV)) {
+            Object[] rows = nvd.GETROW(nv);
+            tableModel.addRow(rows);
+        }
+    }
+    
+    // Thông báo kết quả lọc
+    int soLuongKetQua = tableModel.getRowCount();
+    if(soLuongKetQua == 0) {
+        JOptionPane.showMessageDialog(this, 
+            "Không tìm thấy nhân viên nào có trạng thái: " + trangThaiLoc, 
+            "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+    }
+}
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -127,6 +315,7 @@ public void mokhoa(){
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel8 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         lblAnh = new javax.swing.JLabel();
@@ -145,6 +334,13 @@ public void mokhoa(){
         btnLamMoi = new javax.swing.JButton();
         txtSdt = new javax.swing.JTextField();
         btnMokhoa = new javax.swing.JButton();
+        jLabel9 = new javax.swing.JLabel();
+        cboLoc = new javax.swing.JComboBox<>();
+        btnloc = new javax.swing.JButton();
+
+        jLabel8.setFont(new java.awt.Font("Segoe UI Light", 1, 16)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(31, 51, 86));
+        jLabel8.setText("LỌC SẢN PHẨM");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -273,6 +469,19 @@ public void mokhoa(){
             }
         });
 
+        jLabel9.setFont(new java.awt.Font("Segoe UI Light", 1, 16)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(31, 51, 86));
+        jLabel9.setText("LỌC NHÂN VIÊN");
+
+        cboLoc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "ACTIVE", "LOCKED", "TẤT CẢ" }));
+
+        btnloc.setText("Lọc");
+        btnloc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnlocActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -280,37 +489,44 @@ public void mokhoa(){
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(70, 70, 70)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnSua, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(btnMokhoa)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 868, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel2)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING))
-                                .addGap(29, 29, 29)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtTennv)
-                                    .addComponent(txtChucvu, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(txtSdt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(txtIdnv, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(59, 59, 59)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(97, Short.MAX_VALUE))
+                    .addComponent(jLabel9)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(btnThem, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(btnSua, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(btnKhoa, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(btnLamMoi, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(17, 17, 17)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel2)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING))
+                                    .addGap(29, 29, 29)
+                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtTennv)
+                                        .addComponent(txtChucvu, javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(txtSdt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(txtIdnv, javax.swing.GroupLayout.PREFERRED_SIZE, 331, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGap(59, 59, 59)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 868, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                            .addComponent(cboLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(39, 39, 39)
+                            .addComponent(btnloc)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnMokhoa)
+                            .addGap(10, 10, 10))))
+                .addContainerGap(123, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -340,11 +556,21 @@ public void mokhoa(){
                     .addComponent(btnSua)
                     .addComponent(btnKhoa)
                     .addComponent(btnLamMoi))
-                .addGap(14, 14, 14)
-                .addComponent(btnMokhoa)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnMokhoa)
+                        .addGap(18, 18, 18))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel9)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cboLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnloc))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)))
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -352,12 +578,14 @@ public void mokhoa(){
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 6, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 7, Short.MAX_VALUE))
         );
 
         pack();
@@ -436,6 +664,11 @@ public void mokhoa(){
         khoa();
     }//GEN-LAST:event_btnKhoaActionPerformed
 
+    private void btnlocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnlocActionPerformed
+        // TODO add your handling code here:
+        locnv();
+    }//GEN-LAST:event_btnlocActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -477,10 +710,14 @@ public void mokhoa(){
     private javax.swing.JButton btnMokhoa;
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThem;
+    private javax.swing.JButton btnloc;
+    private javax.swing.JComboBox<String> cboLoc;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;

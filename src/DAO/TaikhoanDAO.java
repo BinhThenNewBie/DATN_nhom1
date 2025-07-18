@@ -71,6 +71,22 @@ public class TaikhoanDAO {
         return 0;
     }
     
+// Thêm phương thức sửa riêng cho STAFF (chỉ sửa được email )
+public int suaStaff(String idTK, String email){
+    String sql = "UPDATE TAIKHOAN SET EMAIL=? WHERE ID_TK = ?";
+    try (Connection con = DBconnect.getConnection();
+         PreparedStatement pstm = con.prepareStatement(sql)) {
+        pstm.setString(1, email);
+        pstm.setString(2, idTK);
+        if (pstm.executeUpdate() > 0) {
+            System.out.println("Sửa thông tin STAFF thành công!");
+            return 1;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    return 0;
+}
     // Phương thức đổi mật khẩu
     public int passwordchange(String passin, String email){
     String sql = "UPDATE TAIKHOAN SET PASS = ? WHERE EMAIL = ?";
