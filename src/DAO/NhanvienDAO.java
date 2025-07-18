@@ -29,7 +29,7 @@ public class NhanvienDAO {
             while (rs.next()) {
                 Nhanvien nv = new Nhanvien();
                 nv.setID_NV(rs.getString(1));
-                nv.setHoTen(rs.getNString(2));
+                nv.setHoTen(rs.getString(2));
                 nv.setChucVu(rs.getString(3));
                 nv.setSDT(rs.getString(4));
                 nv.setIMG(rs.getString(5));
