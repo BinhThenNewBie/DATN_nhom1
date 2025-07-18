@@ -139,7 +139,7 @@ public class HoaDonChoDAO {
     }
 
     public int DeleteCTHD(String ID_HD) {
-        String sql = "DELETE FROM CHITIETHOADON WHERE ID_HD LIKE ?";
+        String sql = "DELETE FROM CHITIETHOADON WHERE ID_HD = ?";
         try (Connection con = DBconnect.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, ID_HD);
             ps.executeUpdate();
@@ -151,6 +151,8 @@ public class HoaDonChoDAO {
     }
 
     // LƯU THÔNG TIN VÀO HÓA ĐƠN CHỜ 
+  
+
     public int SaveHDCHO(HoaDonCho hdc) {
         String sql = "INSERT INTO HOADONCHO VALUES (?, ?, ?, ?, ?)";
         try (Connection con = DBconnect.getConnection(); PreparedStatement pstm = con.prepareStatement(sql)) {
