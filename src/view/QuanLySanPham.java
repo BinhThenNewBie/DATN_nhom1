@@ -252,24 +252,20 @@ public class QuanLySanPham extends javax.swing.JFrame {
         String ten = txtTensp.getText().trim();
         String giaStr = txtGiatien.getText().trim().replace(",", "").replace(".", "");
 
-        // Check mã sản phẩm
+        // Kiểm tra ID sản phẩm
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhấn nút 'TẠO MÃ' trước!");
             return false;
         }
 
-        // Check tên sản phẩm
+        // ===== TÊN SẢN PHẨM =====
         if (ten.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Tên sản phẩm không được để trống!");
             return false;
         }
-        // Không chứa ký tự không hợp lệ (chỉ cho phép số)
-        if (!giaStr.matches("^[0-9]+$")) {
-            if (giaStr.contains("-")) {
-                JOptionPane.showMessageDialog(this, "Giá tiền không được là số âm!");
-            } else {
-                JOptionPane.showMessageDialog(this, "Giá tiền chỉ được chứa số, không chứa ký tự");
-            }
+
+        if (ten.matches(".*\\d.*")) {
+            JOptionPane.showMessageDialog(this, "Tên sản phẩm không được chứa số!");
             return false;
         }
 
@@ -278,7 +274,6 @@ public class QuanLySanPham extends javax.swing.JFrame {
             return false;
         }
 
-        // Check tên đã tồn tại
         List<SanPham> danhSach = new SanPhamDAO().getAll();
         for (SanPham sp : danhSach) {
             if (sp.getTenSanPham().equalsIgnoreCase(ten)) {
@@ -287,33 +282,43 @@ public class QuanLySanPham extends javax.swing.JFrame {
             }
         }
 
-        //
+        // ===== ẢNH SẢN PHẨM =====
+        if (lblAnh.getIcon() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ảnh sản phẩm!");
+            return false;
+        }
+
+        // ===== GIÁ TIỀN =====
         if (giaStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Giá tiền không được để trống!");
             return false;
         }
 
+// 2. Khoảng trắng
         if (giaStr.matches("^\\s+$")) {
             JOptionPane.showMessageDialog(this, "Giá tiền không được chỉ chứa khoảng trắng!");
             return false;
         }
 
+// 3. Có chữ cái
         if (giaStr.matches(".*[a-zA-ZÀ-ỹ].*")) {
             JOptionPane.showMessageDialog(this, "Giá tiền không được chứa chữ cái!");
             return false;
         }
 
-        if (!giaStr.matches("^\\d+$")) {
+// 4. Ký tự đặc biệt (chỉ cho phép số)
+        if (!giaStr.matches("^-?\\d+$")) {
             JOptionPane.showMessageDialog(this, "Giá tiền chỉ được chứa số, không chứa ký tự đặc biệt!");
             return false;
         }
 
-        if (giaStr.matches("^0\\d+")) {
+// 5. Số 0 ở đầu (chỉ kiểm nếu không âm)
+        if (giaStr.matches("^[0]\\d+")) {
             JOptionPane.showMessageDialog(this, "Giá tiền không được bắt đầu bằng số 0!");
             return false;
         }
 
-        // 6. Phải là số nguyên dương và trong khoảng cho phép
+// 6 & 7. Parse và kiểm tra giới hạn
         try {
             int gia = Integer.parseInt(giaStr);
 
@@ -322,13 +327,8 @@ public class QuanLySanPham extends javax.swing.JFrame {
                 return false;
             }
 
-            if (gia < 10000) {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải từ 10.000 VND trở lên!");
-                return false;
-            }
-
-            if (gia > 500000) {
-                JOptionPane.showMessageDialog(this, "Giá tiền phải nhỏ hơn hoặc bằng 500.000 VND!");
+            if (gia < 10000 || gia > 500000) {
+                JOptionPane.showMessageDialog(this, "Giá tiền phải từ 10.000 VND đến 500.000 VND!");
                 return false;
             }
 
@@ -336,7 +336,6 @@ public class QuanLySanPham extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Giá tiền không hợp lệ!");
             return false;
         }
-
         return true;
     }
 
@@ -344,7 +343,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
         String id = lblID.getText().trim();
         String ten = txtTensp.getText().trim();
         String giaStr = txtGiatien.getText().trim().replace(",", "").replace(".", "");
-        
+
         // Check mã sản phẩm
         if (id.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm cần sửa!");
