@@ -9,6 +9,7 @@ import DAO.HoaDonDAO;
 import DAO.SanPhamDAO;
 import DAO.UuDaiDAO;
 import Model.ChiTietHoaDon;
+import Model.HoaDon;
 import Model.HoaDonCho;
 import Model.SanPham;
 import Model.UuDai;
@@ -53,7 +54,7 @@ public class StaffBanHang extends javax.swing.JFrame {
     ChiTietHoaDon cthd = new ChiTietHoaDon();
     UuDaiDAO udd = new UuDaiDAO();
     HoaDonChoDAO hdd = new HoaDonChoDAO();
-    HoaDonDAO hd = new HoaDonDAO();
+    HoaDonDAO hdDAO = new HoaDonDAO();
     SanPhamDAO spd = new SanPhamDAO();
     String strAnh = "";
 
@@ -115,7 +116,7 @@ public class StaffBanHang extends javax.swing.JFrame {
 
     public void fillTableUuDai() {
         modelUuDai.setRowCount(0);
-        for (UuDai ud : udd.getAll()) {     
+        for (UuDai ud : udd.getAll()) {
             Date today = new Date();
             if (!ud.getNgayKetThuc().before(today)) {
                 modelUuDai.addRow(new Object[]{
@@ -747,12 +748,18 @@ public class StaffBanHang extends javax.swing.JFrame {
     public void uuDai() {
         int j = tblUuDai.getSelectedRow();
         int i = tblHoaDon.getSelectedRow();
+
+        if (i < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn hoá đơn trong bảng để áp dụng ưu đãi.");
+            return;
+        }
+
         String ID_HD = lblMaHD.getText();
         String uuDai = lblUuDai.getText();
         float tong = 0;
 
         if (ID_HD.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn hoá đơn");
+            JOptionPane.showMessageDialog(this, "Mã hoá đơn không hợp lệ!");
             return;
         }
 
@@ -774,20 +781,23 @@ public class StaffBanHang extends javax.swing.JFrame {
             return;
         }
 
-        if (i >= 0 && j >= 0) {
+        if (j >= 0) {
             try {
                 float tongTien = unformatCurrency(tblHoaDon.getValueAt(i, 1).toString());
                 float giaUuDai = unformatCurrency(tblUuDai.getValueAt(j, 1).toString());
                 String giaTri = tblUuDai.getValueAt(j, 0).toString();
+
                 if (tongTien >= giaUuDai) {
                     float phanTram = Float.parseFloat(giaTri.replace("%", "").trim());
                     lblUuDai.setText(giaTri + " Đã áp dụng");
+
                     List<ChiTietHoaDon> list = hdd.getAllID_HD(ID_HD);
                     for (ChiTietHoaDon ct : list) {
                         tong += ct.getGiaSP() * ct.getSoLuong();
                     }
+
                     float tongSauUuDai = tong * (1 - phanTram / 100);
-                    hdd.updateUuDai(ID_HD, giaTri); // Lưu đúng ưu đãi dạng "20%" chứ không kèm " Đã áp dụng"
+                    hdd.updateUuDai(ID_HD, giaTri); // chỉ lưu "%", không lưu "Đã áp dụng"
                     hdd.updateTongTien(ID_HD, tongSauUuDai);
                     fillTableHDCho();
                 } else {
@@ -815,6 +825,87 @@ public class StaffBanHang extends javax.swing.JFrame {
         hdd.updateUuDai(ID_HD, "0%");
         hdd.updateTongTien(ID_HD, tong);
         fillTableHDCho();
+    }
+
+    public void thanhToan() {
+        if (tblChiTietHoaDon.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Không có hóa đơn nào trong danh sách!");
+            return;
+        }
+        int i = tblHoaDon.getSelectedRow();
+        if (i < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn để thanh toán");
+            return;
+        }
+
+        String ID_HD = tblHoaDon.getValueAt(i, 0).toString();
+        String thoiGian = hdd.getALLHDCHO().get(i).getThoiGian();
+        String ngayThangNam = hdd.getALLHDCHO().get(i).getNgayThangNam();
+        String uuDai = hdd.getALLHDCHO().get(i).getUuDai();
+        float tienHD = hdd.getALLHDCHO().get(i).getTongTien();
+        float tongTien = 0;
+
+        List<ChiTietHoaDon> ds = hdd.getAllID_HD(ID_HD);
+        for (ChiTietHoaDon ct : ds) {
+            tongTien += ct.getGiaSP() * ct.getSoLuong();
+        }
+        float tienUuDai = tongTien - tienHD;
+
+        // Ghép tên sản phẩm
+        String tenSP = ds.stream()
+                .map(ChiTietHoaDon::getTenSP)
+                .distinct()
+                .collect(Collectors.joining(", "));
+
+        // Tạo nội dung hóa đơn
+        StringBuilder sb = new StringBuilder();
+        sb.append("HOÁ ĐƠN THANH TOÁN\n");
+        sb.append("--------------------------------------------------\n");
+        sb.append("Mã hóa đơn   : ").append(ID_HD).append("\n");
+        sb.append("Ngày lập     : ").append(ngayThangNam).append("\n");
+        sb.append("Thời gian    : ").append(thoiGian).append("\n\n");
+        sb.append("Danh sách món:\n");
+        sb.append("--------------------------------------------------\n");
+        sb.append(String.format("%-25s %-5s %-15s\n", "Tên món", "SL", "Giá món"));
+        sb.append("--------------------------------------------------\n");
+        for (ChiTietHoaDon ct : ds) {
+            String ten = ct.getTenSP();
+            int soLuong = ct.getSoLuong();
+            float gia = ct.getGiaSP();
+            sb.append(String.format("%-25s %-5d %-15s\n", ten, soLuong, formatVND(gia)));
+        }
+        sb.append("--------------------------------------------------\n");
+        sb.append("Tổng tiền    : ").append(formatVND(tongTien)).append("\n");
+        if (!uuDai.equalsIgnoreCase("")) {
+            sb.append("Ưu đãi       : ").append(uuDai).append(" - ").append(formatVND(tienUuDai)).append("\n");
+        } else {
+            sb.append("Ưu đãi       : Không - 0 VND\n");
+        }
+        sb.append("Thành tiền   : ").append(formatVND(tienHD)).append("\n");
+
+        // Xác nhận thanh toán
+        if (JOptionPane.showConfirmDialog(this, sb.toString(), "Xác nhận thanh toán",
+                JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        // Lưu hóa đơn
+        HoaDon hd = new HoaDon(ID_HD, ngayThangNam, thoiGian, tenSP, tienHD, uuDai);
+        int save = hdDAO.saveHOADON(hd);
+        int deleteCTHD = hdd.DeleteCTHD(ID_HD);
+        int delete = hdd.DeleteHD(ID_HD);
+
+        if (save > 0 && deleteCTHD > 0 && delete > 0) {
+            fillTableHDCho();
+            modelCTHD.setRowCount(0);
+            lblMaHD.setText("");
+            lblMaSP.setText("");
+            lblUuDai.setText("");
+            txtSoLuong.setText("");
+            JOptionPane.showMessageDialog(this, "Thánh toán thành công!", "Xác nhận", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this, "Thanh toán thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -866,6 +957,7 @@ public class StaffBanHang extends javax.swing.JFrame {
         lblexit = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jSeparator6 = new javax.swing.JSeparator();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -1187,8 +1279,8 @@ public class StaffBanHang extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pnlHoaDon.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -1309,6 +1401,16 @@ public class StaffBanHang extends javax.swing.JFrame {
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/MainForm_Admin/image/trangchu.png"))); // NOI18N
         jLabel1.setText("STAFF");
 
+        jButton1.setBackground(new java.awt.Color(31, 51, 86));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("XUẤT HOÁ ĐƠN");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -1337,18 +1439,19 @@ public class StaffBanHang extends javax.swing.JFrame {
                                         .addGap(18, 18, 18)
                                         .addComponent(pnlMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(lblexit)
-                                        .addGap(31, 31, 31)
-                                        .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(pnlUuDai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(pnlChiTietHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(pnlHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(pnlUuDai, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(pnlChiTietHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(pnlHoaDon, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblexit)
+                                .addGap(31, 31, 31)
+                                .addComponent(btnLogOut, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton1)
+                                .addGap(42, 42, 42)))
                         .addGap(30, 30, 30))))
         );
         layout.setVerticalGroup(
@@ -1380,7 +1483,9 @@ public class StaffBanHang extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblexit, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(btnLogOut))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnLogOut)
+                        .addComponent(jButton1)))
                 .addGap(20, 20, 20))
         );
 
@@ -1403,7 +1508,7 @@ public class StaffBanHang extends javax.swing.JFrame {
 
     private void btnThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThanhToanActionPerformed
         // TODO add your handling code here:
-
+        thanhToan();
     }//GEN-LAST:event_btnThanhToanActionPerformed
 
     private void tblUuDaiMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUuDaiMouseClicked
@@ -1471,6 +1576,13 @@ public class StaffBanHang extends javax.swing.JFrame {
         showDetailsHDCho();
     }//GEN-LAST:event_tblHoaDonMouseClicked
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        XuatHoaDon xhd = new XuatHoaDon();
+        xhd.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1518,6 +1630,7 @@ public class StaffBanHang extends javax.swing.JFrame {
     private javax.swing.JButton btnThem;
     private javax.swing.JButton btnXoa;
     private javax.swing.JComboBox<String> cbxLoc;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
