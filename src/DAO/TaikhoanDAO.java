@@ -136,24 +136,4 @@ public class TaikhoanDAO {
         }
         return 0;
     }
-    
-    public int passwordchange(String passin, String email){
-    String sql = "UPDATE TAIKHOAN SET PASS = ? WHERE EMAIL = ?";
-    try (Connection con = DBconnect.getConnection();
-         PreparedStatement pstm = con.prepareStatement(sql)) {
-        
-        pstm.setString(1, passin);
-        pstm.setString(2, email);
-        
-        // Execute update và trả về số dòng bị ảnh hưởng
-        int rowsAffected = pstm.executeUpdate();
-        
-        return rowsAffected; // Trả về 1 nếu thành công, 0 nếu không tìm thấy email
-        
-    } catch (Exception e) {
-        e.printStackTrace();
-        return -1; // Trả về -1 nếu có lỗi
-        
-    }
-}
 }
