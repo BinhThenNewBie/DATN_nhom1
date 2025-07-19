@@ -32,7 +32,6 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
      */
     public QuanLyNhanVien() {
         initComponents();
-        initComponents();
         this.setSize(1000, 950);               // Đặt kích thước cửa sổ
         this.setResizable(false);             // Không cho resize (tuỳ chọn)
         this.setLocationRelativeTo(null);     // Canh giữa màn hình    
