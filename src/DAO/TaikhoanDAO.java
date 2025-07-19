@@ -10,7 +10,13 @@ package DAO;
  */
 public class TaikhoanDAO {
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+<<<<<<< Updated upstream
+=======
+    
+>>>>>>> parent of a3e531a (k)
 =======
 <<<<<<< Updated upstream
 =======
@@ -42,6 +48,10 @@ public class TaikhoanDAO {
         return Listtk;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
+>>>>>>> parent of a3e531a (k)
 =======
 >>>>>>> Stashed changes
 >>>>>>> parent of a3e531a (k)
