@@ -18,12 +18,7 @@ import java.sql.ResultSet;
  */
 
 public class TaikhoanDAO {
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-    
-=======
->>>>>>> main
+
     // Lấy tất cả tài khoản
     public List<Taikhoan> GETALL(){
         List<Taikhoan> Listtk = new ArrayList<>();
@@ -49,10 +44,6 @@ public class TaikhoanDAO {
         }
         return Listtk;
     }
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
->>>>>>> main
     
     // Chuyển đổi Taikhoan thành Object array cho table
     public Object[] GETROW(Taikhoan tk){
