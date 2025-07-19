@@ -55,7 +55,7 @@ public class QuanLyNhanVien extends javax.swing.JFrame {
 
     public void initTable() {
         tableModel = new DefaultTableModel();
-        String[] cols = new String[]{"ID nhân viên", "Họ và tên", "Chức vụ", "Số điện thoại", "Trạng thái"};
+        String[] cols = new String[]{"ID nhân viên", "Họ và tên", "Chức vụ", "Số điện thoại","IMG", "Trạng thái"};
         tableModel.setColumnIdentifiers(cols);
         tblNhanvien.setModel(tableModel);
     }
