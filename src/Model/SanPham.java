@@ -6,7 +6,7 @@ package Model;
 
 /**
  *
- * @author Admin
+ * @author nmttt
  */
 public class SanPham {
     private String IDSanPham, tenSanPham;
