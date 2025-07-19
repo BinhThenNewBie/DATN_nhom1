@@ -6,21 +6,20 @@ package Model;
 
 /**
  *
- * @author nmttt
+ * @author ADMIN
  */
 public class Nhanvien {
-    private String ID_NV, hoTen, chucVu, SDT, IMG,trangThai;
+    private String ID_NV, hoTen, SDT, chucVu, IMG;
 
     public Nhanvien() {
     }
 
-    public Nhanvien(String ID_NV, String hoTen, String chucVu, String SDT, String IMG, String trangThai) {
+    public Nhanvien(String ID_NV, String hoTen, String SDT, String chucVu, String IMG) {
         this.ID_NV = ID_NV;
         this.hoTen = hoTen;
-        this.chucVu = chucVu;
         this.SDT = SDT;
+        this.chucVu = chucVu;
         this.IMG = IMG;
-        this.trangThai = trangThai;
     }
 
     public String getID_NV() {
@@ -39,20 +38,20 @@ public class Nhanvien {
         this.hoTen = hoTen;
     }
 
-    public String getChucVu() {
-        return chucVu;
-    }
-
-    public void setChucVu(String chucVu) {
-        this.chucVu = chucVu;
-    }
-
     public String getSDT() {
         return SDT;
     }
 
     public void setSDT(String SDT) {
         this.SDT = SDT;
+    }
+
+    public String getChucVu() {
+        return chucVu;
+    }
+
+    public void setChucVu(String chucVu) {
+        this.chucVu = chucVu;
     }
 
     public String getIMG() {
@@ -62,18 +61,5 @@ public class Nhanvien {
     public void setIMG(String IMG) {
         this.IMG = IMG;
     }
-
-    public String getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(String trangThai) {
-        this.trangThai = trangThai;
-    }
-    
-    
-
-    
-    
     
 }

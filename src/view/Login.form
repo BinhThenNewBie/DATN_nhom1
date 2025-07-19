@@ -108,9 +108,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="LOGIN"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLoginActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnForgot">
           <Properties>
@@ -125,9 +122,6 @@
             </Property>
             <Property name="text" type="java.lang.String" value="FORGOT?"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnForgotActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="txtusername">
         </Component>

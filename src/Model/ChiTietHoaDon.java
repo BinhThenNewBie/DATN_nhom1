@@ -65,7 +65,6 @@ public class ChiTietHoaDon {
     public void setSoLuong(int soLuong) {
         this.soLuong = soLuong;
     }
-
-   
+    
     
 }

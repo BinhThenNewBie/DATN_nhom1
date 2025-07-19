@@ -8,18 +8,19 @@ package Model;
  *
  * @author QuynhAnh2311
  */
-public class HoaDon {
-    private String ID_HD, ngayThangNam, thoiGian, mon;
+public class HoaDonCho {
+    private String ID_HD;
+    private String ngayThangNam;
+    private String thoiGian;
     private float tongTien;
 
-    public HoaDon() {
+    public HoaDonCho() {
     }
 
-    public HoaDon(String ID_HD, String ngayThangNam, String thoiGian, String mon, float tongTien) {
+    public HoaDonCho(String ID_HD, String ngayThangNam, String thoiGian, float tongTien) {
         this.ID_HD = ID_HD;
         this.ngayThangNam = ngayThangNam;
         this.thoiGian = thoiGian;
-        this.mon = mon;
         this.tongTien = tongTien;
     }
 
@@ -45,14 +46,6 @@ public class HoaDon {
 
     public void setThoiGian(String thoiGian) {
         this.thoiGian = thoiGian;
-    }
-
-    public String getMon() {
-        return mon;
-    }
-
-    public void setMon(String mon) {
-        this.mon = mon;
     }
 
     public float getTongTien() {
