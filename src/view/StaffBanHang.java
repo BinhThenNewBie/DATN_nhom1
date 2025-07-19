@@ -100,15 +100,15 @@ public class StaffBanHang extends javax.swing.JFrame {
     }
 
     public void fillTableHDCho() {
-        modelHDCho.setRowCount(0); 
-        List<HoaDon> list = hdd.getALL(); 
+        modelHDCho.setRowCount(0);
+        List<HoaDon> list = hdd.getALL();
         for (HoaDon hdc : list) {
             String trangThai = hdc.getTrangThai();
-            if(trangThai.equalsIgnoreCase("Chưa thanh toán")){
+            if (trangThai.equalsIgnoreCase("Chưa thanh toán")) {
                 modelHDCho.addRow(new Object[]{
-                hdc.getID_HD(),
-                formatVND(hdc.getTongTien())
-            });
+                    hdc.getID_HD(),
+                    formatVND(hdc.getTongTien())
+                });
             }
         }
     }
@@ -348,7 +348,7 @@ public class StaffBanHang extends javax.swing.JFrame {
             }
 
             // Áp dụng ưu đãi nếu có
-            String uuDai = hdc.getUuDai(); 
+            String uuDai = hdc.getUuDai();
             float tongSauUuDai = tong;
 
             if (!uuDai.equals("0%")) {
@@ -832,6 +832,7 @@ public class StaffBanHang extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Không có hóa đơn nào trong danh sách!");
             return;
         }
+
         int i = tblHoaDon.getSelectedRow();
         if (i < 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn hóa đơn để thanh toán");
@@ -842,21 +843,24 @@ public class StaffBanHang extends javax.swing.JFrame {
         String thoiGian = hdd.getALL().get(i).getThoiGian();
         String ngayThangNam = hdd.getALL().get(i).getNgayThangNam();
         String uuDai = hdd.getALL().get(i).getUuDai();
-        float tienHD = hdd.getALL().get(i).getTongTien();
-        float tongTien = 0;
         String trangThai = "Đã thanh toán";
 
         List<ChiTietHoaDon> ds = hdd.getAllID_HD(ID_HD);
+        float tongTien = 0;
+
         for (ChiTietHoaDon ct : ds) {
             tongTien += ct.getGiaSP() * ct.getSoLuong();
         }
-        float tienUuDai = tongTien - tienHD;
 
-        // Ghép tên sản phẩm
-        String tenSP = ds.stream()
-                .map(ChiTietHoaDon::getTenSP)
-                .distinct()
-                .collect(Collectors.joining(", "));
+        float tienUuDai = 0;
+        float tienHD = tongTien; // Giả định không có ưu đãi
+
+        if (!uuDai.equalsIgnoreCase("") && !uuDai.equals("0%")) {
+            String uuDaiPhanTram = uuDai.replace("%", "").trim();
+            float phanTram = Float.parseFloat(uuDaiPhanTram);
+            tienUuDai = tongTien * (phanTram / 100f);
+            tienHD = tongTien - tienUuDai;
+        }
 
         // Tạo nội dung hóa đơn
         StringBuilder sb = new StringBuilder();
@@ -869,18 +873,20 @@ public class StaffBanHang extends javax.swing.JFrame {
         sb.append("--------------------------------------------------\n");
         sb.append(String.format("%-25s %-5s %-15s\n", "Tên món", "SL", "Giá món"));
         sb.append("--------------------------------------------------\n");
+
         for (ChiTietHoaDon ct : ds) {
             String ten = ct.getTenSP();
             int soLuong = ct.getSoLuong();
             float gia = ct.getGiaSP();
             sb.append(String.format("%-25s %-5d %-15s\n", ten, soLuong, formatVND(gia)));
         }
+
         sb.append("--------------------------------------------------\n");
         sb.append("Tổng tiền    : ").append(formatVND(tongTien)).append("\n");
-        if (!uuDai.equalsIgnoreCase("")) {
+        if (!uuDai.equalsIgnoreCase("") && !uuDai.equals("0%")) {
             sb.append("Ưu đãi       : ").append(uuDai).append(" - ").append(formatVND(tienUuDai)).append("\n");
         } else {
-            sb.append("Ưu đãi       : Không - 0 VND\n");
+            sb.append("Ưu đãi       : 0% - 0 VND\n");
         }
         sb.append("Thành tiền   : ").append(formatVND(tienHD)).append("\n");
 
@@ -889,11 +895,9 @@ public class StaffBanHang extends javax.swing.JFrame {
                 JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
             return;
         }
-        
-        
+
         // Lưu hóa đơn
         int update = hdd.updatetrangThai(ID_HD, trangThai);
-
         if (update == 1) {
             fillTableHDCho();
             modelCTHD.setRowCount(0);
