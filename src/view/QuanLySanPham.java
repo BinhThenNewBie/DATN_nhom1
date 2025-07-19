@@ -1,6 +1,6 @@
 package view;
 
-import DAO.HoaDonChoDAO;
+import DAO.HoaDonDAO;
 import DAO.SanPhamDAO;
 import Model.SanPham;
 import java.awt.Image;
@@ -27,7 +27,7 @@ public class QuanLySanPham extends javax.swing.JFrame {
     DefaultTableModel tableModel = new DefaultTableModel();
     SanPhamDAO spDao = new SanPhamDAO();
     String strAnh = "";
-    HoaDonChoDAO hdd = new HoaDonChoDAO();
+    HoaDonDAO hdd = new HoaDonDAO();
 
     /**
      * Creates new form QuanLySanPham

@@ -4,13 +4,11 @@
  */
 package view;
 
-import DAO.HoaDonChoDAO;
 import DAO.HoaDonDAO;
 import DAO.SanPhamDAO;
 import DAO.UuDaiDAO;
 import Model.ChiTietHoaDon;
 import Model.HoaDon;
-import Model.HoaDonCho;
 import Model.SanPham;
 import Model.UuDai;
 import java.awt.BorderLayout;
@@ -53,8 +51,7 @@ public class StaffBanHang extends javax.swing.JFrame {
     DefaultTableModel modelCTHD;
     ChiTietHoaDon cthd = new ChiTietHoaDon();
     UuDaiDAO udd = new UuDaiDAO();
-    HoaDonChoDAO hdd = new HoaDonChoDAO();
-    HoaDonDAO hdDAO = new HoaDonDAO();
+    HoaDonDAO hdd = new HoaDonDAO();
     SanPhamDAO spd = new SanPhamDAO();
     String strAnh = "";
 
@@ -103,14 +100,16 @@ public class StaffBanHang extends javax.swing.JFrame {
     }
 
     public void fillTableHDCho() {
-        modelHDCho.setRowCount(0); // Xóa sạch bảng
-
-        List<HoaDonCho> list = hdd.getALLHDCHO(); // Lấy tất cả hóa đơn chờ
-        for (HoaDonCho hdc : list) {
-            modelHDCho.addRow(new Object[]{
+        modelHDCho.setRowCount(0); 
+        List<HoaDon> list = hdd.getALL(); 
+        for (HoaDon hdc : list) {
+            String trangThai = hdc.getTrangThai();
+            if(trangThai.equalsIgnoreCase("Chưa thanh toán")){
+                modelHDCho.addRow(new Object[]{
                 hdc.getID_HD(),
                 formatVND(hdc.getTongTien())
             });
+            }
         }
     }
 
@@ -335,8 +334,8 @@ public class StaffBanHang extends javax.swing.JFrame {
     }
 
     public void updateGiaSP() {
-        List<HoaDonCho> lsthdc = hdd.getALLHDCHO();
-        for (HoaDonCho hdc : lsthdc) {
+        List<HoaDon> lsthdc = hdd.getALL();
+        for (HoaDon hdc : lsthdc) {
             String ID_HD = hdc.getID_HD();
             List<ChiTietHoaDon> lstcthd = hdd.getAllID_HD(ID_HD);
             float tong = 0;
@@ -349,7 +348,7 @@ public class StaffBanHang extends javax.swing.JFrame {
             }
 
             // Áp dụng ưu đãi nếu có
-            String uuDai = hdc.getUuDai();  // Giả sử dạng "10%" hoặc "0%"
+            String uuDai = hdc.getUuDai(); 
             float tongSauUuDai = tong;
 
             if (!uuDai.equals("0%")) {
@@ -408,7 +407,7 @@ public class StaffBanHang extends javax.swing.JFrame {
         int i = tblHoaDon.getSelectedRow();
         if (i >= 0) {
             String ID_HD = tblHoaDon.getValueAt(i, 0).toString();
-            String uudai = hdd.getALLHDCHO().get(i).getUuDai();
+            String uudai = hdd.getALL().get(i).getUuDai();
             lblMaHD.setText(ID_HD);
             lblUuDai.setText(uudai + " Đã áp dụng");
             List<ChiTietHoaDon> lstcthd = hdd.getAllID_HD(ID_HD);
@@ -510,7 +509,8 @@ public class StaffBanHang extends javax.swing.JFrame {
         String thoiGian = sdfTime.format(now);
         float tongTien = 0.0f;
         String uuDai = "0%";
-        HoaDonCho newHD = new HoaDonCho(newMaHD, ngayThangNam, thoiGian, tongTien, uuDai);
+        String trangThai = "Chưa thanh toán";
+        HoaDon newHD = new HoaDon(newMaHD, ngayThangNam, thoiGian, tongTien, uuDai, trangThai);
         hdd.SaveHDCHO(newHD);
 
         lblMaSP.setText("");
@@ -556,7 +556,7 @@ public class StaffBanHang extends javax.swing.JFrame {
         }
 
         //Kiểm tra nếu hóa đơn đã áp dụng ưu đãi
-        String uuDai = hdd.getALLHDCHO().stream()
+        String uuDai = hdd.getALL().stream()
                 .filter(hd -> hd.getID_HD().equals(ID_HD))
                 .findFirst()
                 .map(hd -> hd.getUuDai())
@@ -609,7 +609,7 @@ public class StaffBanHang extends javax.swing.JFrame {
         String ID_HD = lblMaHD.getText();
 
         //Kiểm tra ưu đãi trước khi xoá
-        String uuDai = hdd.getALLHDCHO().stream()
+        String uuDai = hdd.getALL().stream()
                 .filter(hd -> hd.getID_HD().equals(ID_HD))
                 .findFirst()
                 .map(hd -> hd.getUuDai())
@@ -653,7 +653,7 @@ public class StaffBanHang extends javax.swing.JFrame {
         String ID_HD = lblMaHD.getText();
 
         //Kiểm tra ưu đãi trước khi sửa
-        String uuDai = hdd.getALLHDCHO().stream()
+        String uuDai = hdd.getALL().stream()
                 .filter(hd -> hd.getID_HD().equals(ID_HD))
                 .findFirst()
                 .map(hd -> hd.getUuDai())
@@ -769,7 +769,7 @@ public class StaffBanHang extends javax.swing.JFrame {
         }
 
         // Kiểm tra nếu hóa đơn đã áp dụng ưu đãi thì không cho áp dụng tiếp
-        String uuDaiHienTai = hdd.getALLHDCHO().get(i).getUuDai();
+        String uuDaiHienTai = hdd.getALL().get(i).getUuDai();
         try {
             float daApDung = Float.parseFloat(uuDaiHienTai.replace("%", "").trim());
             if (daApDung > 0) {
@@ -839,11 +839,12 @@ public class StaffBanHang extends javax.swing.JFrame {
         }
 
         String ID_HD = tblHoaDon.getValueAt(i, 0).toString();
-        String thoiGian = hdd.getALLHDCHO().get(i).getThoiGian();
-        String ngayThangNam = hdd.getALLHDCHO().get(i).getNgayThangNam();
-        String uuDai = hdd.getALLHDCHO().get(i).getUuDai();
-        float tienHD = hdd.getALLHDCHO().get(i).getTongTien();
+        String thoiGian = hdd.getALL().get(i).getThoiGian();
+        String ngayThangNam = hdd.getALL().get(i).getNgayThangNam();
+        String uuDai = hdd.getALL().get(i).getUuDai();
+        float tienHD = hdd.getALL().get(i).getTongTien();
         float tongTien = 0;
+        String trangThai = "Đã thanh toán";
 
         List<ChiTietHoaDon> ds = hdd.getAllID_HD(ID_HD);
         for (ChiTietHoaDon ct : ds) {
@@ -888,14 +889,12 @@ public class StaffBanHang extends javax.swing.JFrame {
                 JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
             return;
         }
-
+        
+        
         // Lưu hóa đơn
-        HoaDon hd = new HoaDon(ID_HD, ngayThangNam, thoiGian, tenSP, tienHD, uuDai);
-        int save = hdDAO.saveHOADON(hd);
-        int deleteCTHD = hdd.DeleteCTHD(ID_HD);
-        int delete = hdd.DeleteHD(ID_HD);
+        int update = hdd.updatetrangThai(ID_HD, trangThai);
 
-        if (save > 0 && deleteCTHD > 0 && delete > 0) {
+        if (update == 1) {
             fillTableHDCho();
             modelCTHD.setRowCount(0);
             lblMaHD.setText("");
