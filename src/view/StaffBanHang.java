@@ -293,7 +293,11 @@ public class StaffBanHang extends javax.swing.JFrame {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+<<<<<<< Updated upstream
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+=======
+                .addContainerGap(293, Short.MAX_VALUE))
+>>>>>>> Stashed changes
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
