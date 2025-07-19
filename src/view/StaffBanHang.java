@@ -510,8 +510,8 @@ public class StaffBanHang extends javax.swing.JFrame {
         float tongTien = 0.0f;
         String uuDai = "0%";
         String trangThai = "Chưa thanh toán";
-        HoaDon newHD = new HoaDon(newMaHD, ngayThangNam, thoiGian, tongTien, uuDai, trangThai);
-        hdd.SaveHDCHO(newHD);
+        HoaDon hd = new HoaDon(newMaHD, ngayThangNam, thoiGian, tongTien, uuDai, trangThai);
+        hdd.SaveHDCHO(hd);
 
         lblMaSP.setText("");
         lblUuDai.setText("");
@@ -839,7 +839,7 @@ public class StaffBanHang extends javax.swing.JFrame {
             return;
         }
 
-        String ID_HD = tblHoaDon.getValueAt(i, 0).toString();
+        String ID_HD = hdd.getALL().get(i).getID_HD();
         String thoiGian = hdd.getALL().get(i).getThoiGian();
         String ngayThangNam = hdd.getALL().get(i).getNgayThangNam();
         String uuDai = hdd.getALL().get(i).getUuDai();
